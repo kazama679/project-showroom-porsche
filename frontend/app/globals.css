@@ -1,0 +1,254 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Hide scrollbars globally - remove from all overflow elements */
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+*::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+:root {
+  /* Ferrari Design System - Light Mode */
+  /* Primary Colors */
+  --ferrari-red: #DA291C;
+  --dark-red: #B01E0A;
+  --deep-red: #9D2211;
+  
+  /* Surfaces */
+  --absolute-black: #000000;
+  --dark-surface: #303030;
+  --light-gray-surface: #D2D2D2;
+  
+  /* Text & Neutrals */
+  --near-black: #181818;
+  --dark-gray: #666666;
+  --mid-gray: #8F8F8F;
+  --silver-gray: #969696;
+  
+  /* Semantic */
+  --warning-red: #F13A2C;
+  --success-green: #03904A;
+  --info-blue: #4C98B9;
+  --link-blue: #3860BE;
+  
+  /* Accents */
+  --racing-yellow: #FFF200;
+  --modena-yellow: #F6E500;
+  
+  --background: #FFFFFF;
+  --foreground: #181818;
+  --card: #FFFFFF;
+  --card-foreground: #181818;
+  --popover: #FFFFFF;
+  --popover-foreground: #181818;
+  --primary: #DA291C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #303030;
+  --secondary-foreground: #FFFFFF;
+  --muted: #D2D2D2;
+  --muted-foreground: #8F8F8F;
+  --accent: #DA291C;
+  --accent-foreground: #FFFFFF;
+  --destructive: #F13A2C;
+  --destructive-foreground: #FFFFFF;
+  --border: #D2D2D2;
+  --input: #FFFFFF;
+  --ring: #DA291C;
+  --chart-1: #DA291C;
+  --chart-2: #4C98B9;
+  --chart-3: #03904A;
+  --chart-4: #F6E500;
+  --chart-5: #8F8F8F;
+  --radius: 0.125rem;
+  --sidebar: #000000;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #DA291C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #303030;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #303030;
+  --sidebar-ring: #DA291C;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #FFFFFF;
+  --card: #303030;
+  --card-foreground: #FFFFFF;
+  --popover: #303030;
+  --popover-foreground: #FFFFFF;
+  --primary: #DA291C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFFFFF;
+  --secondary-foreground: #000000;
+  --muted: #8F8F8F;
+  --muted-foreground: #D2D2D2;
+  --accent: #DA291C;
+  --accent-foreground: #FFFFFF;
+  --destructive: #F13A2C;
+  --destructive-foreground: #FFFFFF;
+  --border: #303030;
+  --input: #303030;
+  --ring: #DA291C;
+  --chart-1: #DA291C;
+  --chart-2: #4C98B9;
+  --chart-3: #03904A;
+  --chart-4: #F6E500;
+  --chart-5: #8F8F8F;
+  --sidebar: #000000;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #DA291C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #303030;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #303030;
+  --sidebar-ring: #DA291C;
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Ferrari Design System Styles */
+@layer components {
+  .ferrari-btn-primary {
+    @apply bg-[#DA291C] text-white hover:bg-[#B01E0A] active:bg-[#9D2211] px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
+  }
+
+  .ferrari-btn-secondary {
+    @apply bg-white text-black border border-black hover:bg-gray-100 px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
+  }
+
+  .ferrari-btn-ghost {
+    @apply bg-transparent text-white border border-white hover:bg-[#1EAEDB] px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
+  }
+
+  .ferrari-card {
+    @apply bg-white rounded-[2px] border border-[#D2D2D2];
+  }
+
+  .ferrari-card-dark {
+    @apply bg-[#303030] text-white rounded-[2px] border border-[#303030];
+  }
+
+  .ferrari-heading {
+    @apply text-[1.63rem] font-medium leading-[1.2] tracking-normal;
+  }
+
+  .ferrari-subheading {
+    @apply text-lg font-bold leading-tight;
+  }
+
+  .ferrari-label {
+    @apply text-xs font-medium uppercase tracking-wider;
+  }
+
+  .ferrari-stat-label {
+    @apply text-[0.75rem] font-normal uppercase tracking-[1px] text-[#8F8F8F];
+  }
+
+  .ferrari-border-subtle {
+    @apply border-t border-[#D2D2D2];
+  }
+
+  .dark .ferrari-border-subtle {
+    @apply border-[#303030];
+  }
+}
+
+/* Typography */
+@layer utilities {
+  .text-ferrari-heading {
+    @apply text-[1.625rem] font-medium leading-[1.2];
+  }
+
+  .text-ferrari-subheading {
+    @apply text-xl font-bold leading-tight;
+  }
+
+  .text-ferrari-body {
+    @apply text-base font-normal leading-relaxed text-[#181818];
+  }
+
+  .text-ferrari-label {
+    @apply text-xs uppercase font-medium tracking-wider text-[#666666];
+  }
+
+  .text-ferrari-stat {
+    @apply text-3xl font-medium text-[#181818];
+  }
+
+  .dark .text-ferrari-body {
+    @apply text-white;
+  }
+
+  .dark .text-ferrari-stat {
+    @apply text-white;
+  }
+
+  .dark .text-ferrari-label {
+    @apply text-[#D2D2D2];
+  }
+}
