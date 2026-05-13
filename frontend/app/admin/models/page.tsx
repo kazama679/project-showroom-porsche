@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-react'
+import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, Settings } from 'lucide-react'
 import { DataTable } from '@/components/admin/data-table'
 import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
@@ -12,6 +12,7 @@ import { Alert } from '@/components/admin/alert'
 import { useLanguage } from '@/lib/language-context'
 import { carModelService, CarModelItem, CarModelFormData } from '@/lib/car-model'
 import { carSeriesService, CarSeries } from '@/lib/car-series'
+import { carSpecService, CarSpecsDTO } from '@/lib/car-specs'
 import { bodyTypeService, BodyType } from '@/lib/body-type'
 import { authService, getErrorMessage } from '@/lib/auth'
 
@@ -32,6 +33,10 @@ export default function ModelsPage() {
   const [editingModel, setEditingModel] = useState<CarModelItem | null>(null)
   const [deletingModel, setDeletingModel] = useState<CarModelItem | null>(null)
   const [saving, setSaving] = useState(false)
+
+  const [isSpecsModalOpen, setIsSpecsModalOpen] = useState(false)
+  const [currentSpecsModel, setCurrentSpecsModel] = useState<CarModelItem | null>(null)
+  const [specsFormData, setSpecsFormData] = useState<CarSpecsDTO>({ performance: null, engine: null, electric: null })
 
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
@@ -146,6 +151,39 @@ export default function ModelsPage() {
     finally { setSaving(false) }
   }
 
+  const handleOpenSpecsModal = async (item: CarModelItem) => {
+    if (!isAdmin) { showAlertMessage(t('admin.no_permission'), 'warning'); return }
+    setCurrentSpecsModel(item)
+    setLoading(true)
+    try {
+      const specs = await carSpecService.getSpecsByCarModelId(item.id)
+      setSpecsFormData({
+        performance: specs?.performance || { horsepower: null, acceleration0100: null, topSpeed: null },
+        engine: specs?.engine || { engineType: '', drivetrain: '', fuelConsumption: null },
+        electric: specs?.electric || { rangeKm: null, batteryCapacity: null, chargingTime: null }
+      })
+      setIsSpecsModalOpen(true)
+    } catch (error) {
+      showAlertMessage(getErrorMessage(error), 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveSpecs = async () => {
+    if (!currentSpecsModel || !isAdmin) return
+    setSaving(true)
+    try {
+      await carSpecService.saveSpecs(currentSpecsModel.id, specsFormData)
+      showAlertMessage(t('admin.specs_updated'), 'success')
+      setIsSpecsModalOpen(false)
+    } catch (error) {
+      showAlertMessage(getErrorMessage(error), 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(price)
   }
@@ -196,6 +234,10 @@ export default function ModelsPage() {
                 key: 'actions' as keyof CarModelItem, label: t('admin.actions'), align: 'center' as const,
                 render: (value: any, row: any) => (
                   <div className="flex gap-2 justify-center">
+                    <button onClick={(e) => { e.stopPropagation(); handleOpenSpecsModal(row) }}
+                      className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors" title={t('admin.manage_specs')}>
+                      <Settings size={16} className="text-[#188038]" />
+                    </button>
                     <button onClick={(e) => { e.stopPropagation(); handleOpenModal(row) }}
                       className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors" title={t('admin.edit')}>
                       <Edit2 size={16} className="text-[#8F8F8F]" />
@@ -242,7 +284,13 @@ export default function ModelsPage() {
               onChange={(e) => setFormData({ ...formData, basePrice: parseFloat(e.target.value) || 0 })} required />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <FormInput label={t('admin.model_fuel_type')} value={formData.fuelType}
+            <Select label={t('admin.model_fuel_type')} placeholder={t('admin.model_fuel_type')}
+              options={[
+                { label: t('admin.fuel_gasoline'), value: 'Gasoline' },
+                { label: t('admin.fuel_electric'), value: 'Electric' },
+                { label: t('admin.fuel_hybrid'), value: 'Hybrid' }
+              ]}
+              value={formData.fuelType || 'Gasoline'}
               onChange={(e) => setFormData({ ...formData, fuelType: e.target.value })} />
             <FormInput label={t('admin.model_transmission')} value={formData.transmission}
               onChange={(e) => setFormData({ ...formData, transmission: e.target.value })} />
@@ -267,6 +315,57 @@ export default function ModelsPage() {
             <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">{t('admin.model_confirm_delete_msg')}</p>
             {deletingModel && <p className="text-sm font-semibold text-[#181818] dark:text-white mt-2">{deletingModel.name}</p>}
           </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isSpecsModalOpen} onClose={() => setIsSpecsModalOpen(false)} title={`${t('admin.manage_specs')} - ${currentSpecsModel?.name}`} size="lg"
+        footer={<>
+          <Button variant="secondary" onClick={() => setIsSpecsModalOpen(false)} disabled={saving}>{t('common.cancel')}</Button>
+          <Button variant="primary" onClick={handleSaveSpecs} loading={saving}>{t('admin.update')}</Button>
+        </>}>
+        <div className="space-y-6">
+          {/* Performance Specs */}
+          <div>
+            <h4 className="font-semibold text-lg border-b pb-2 mb-4">{t('admin.performance_specs')}</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <FormInput label={t('admin.horsepower')} type="number" value={specsFormData.performance?.horsepower || ''}
+                onChange={(e) => setSpecsFormData({ ...specsFormData, performance: { ...specsFormData.performance!, horsepower: parseInt(e.target.value) || null } })} />
+              <FormInput label={t('admin.acceleration')} type="number" value={specsFormData.performance?.acceleration0100 || ''}
+                onChange={(e) => setSpecsFormData({ ...specsFormData, performance: { ...specsFormData.performance!, acceleration0100: parseFloat(e.target.value) || null } })} />
+              <FormInput label={t('admin.top_speed')} type="number" value={specsFormData.performance?.topSpeed || ''}
+                onChange={(e) => setSpecsFormData({ ...specsFormData, performance: { ...specsFormData.performance!, topSpeed: parseInt(e.target.value) || null } })} />
+            </div>
+          </div>
+
+          {/* Engine Specs */}
+          {(currentSpecsModel?.fuelType === 'Gasoline' || currentSpecsModel?.fuelType === 'Hybrid' || !currentSpecsModel?.fuelType) && (
+            <div>
+              <h4 className="font-semibold text-lg border-b pb-2 mb-4">{t('admin.engine_specs')}</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <FormInput label={t('admin.engine_type')} value={specsFormData.engine?.engineType || ''}
+                  onChange={(e) => setSpecsFormData({ ...specsFormData, engine: { ...specsFormData.engine!, engineType: e.target.value } })} />
+                <FormInput label={t('admin.drivetrain')} value={specsFormData.engine?.drivetrain || ''}
+                  onChange={(e) => setSpecsFormData({ ...specsFormData, engine: { ...specsFormData.engine!, drivetrain: e.target.value } })} />
+                <FormInput label={t('admin.fuel_consumption')} type="number" value={specsFormData.engine?.fuelConsumption || ''}
+                  onChange={(e) => setSpecsFormData({ ...specsFormData, engine: { ...specsFormData.engine!, fuelConsumption: parseFloat(e.target.value) || null } })} />
+              </div>
+            </div>
+          )}
+
+          {/* Electric Specs */}
+          {(currentSpecsModel?.fuelType === 'Electric' || currentSpecsModel?.fuelType === 'Hybrid') && (
+            <div>
+              <h4 className="font-semibold text-lg border-b pb-2 mb-4">{t('admin.electric_specs')}</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <FormInput label={t('admin.range')} type="number" value={specsFormData.electric?.rangeKm || ''}
+                  onChange={(e) => setSpecsFormData({ ...specsFormData, electric: { ...specsFormData.electric!, rangeKm: parseInt(e.target.value) || null } })} />
+                <FormInput label={t('admin.battery_capacity')} type="number" value={specsFormData.electric?.batteryCapacity || ''}
+                  onChange={(e) => setSpecsFormData({ ...specsFormData, electric: { ...specsFormData.electric!, batteryCapacity: parseFloat(e.target.value) || null } })} />
+                <FormInput label={t('admin.charging_time')} type="number" value={specsFormData.electric?.chargingTime || ''}
+                  onChange={(e) => setSpecsFormData({ ...specsFormData, electric: { ...specsFormData.electric!, chargingTime: parseFloat(e.target.value) || null } })} />
+              </div>
+            </div>
+          )}
         </div>
       </Modal>
     </PageLayout>

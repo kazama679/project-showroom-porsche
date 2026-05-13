@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, FileText } from 'lucide-react'
 import { DataTable } from '@/components/admin/data-table'
 import { Badge } from '@/components/admin/badge'
@@ -177,7 +178,7 @@ export default function MediaPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-[#DA291C]/10 rounded-[2px] flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {value ? (
-                        <img src={value} alt="" className="w-full h-full object-cover"
+                        <Image src={value} alt="" width={40} height={40} unoptimized className="w-full h-full object-cover"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DA291C" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/></svg>' }} />
                       ) : <FileText size={16} className="text-[#DA291C]" />}
                     </div>
@@ -229,7 +230,7 @@ export default function MediaPage() {
             <label className="block text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">Image (Cloudinary) *</label>
             {editingMedia?.imageUrl && !formData.image && (
               <div className="mb-2">
-                <img src={editingMedia.imageUrl} alt="Current Media" className="h-32 object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded p-2" />
+                <Image src={editingMedia.imageUrl} alt="Current Media" width={128} height={128} unoptimized className="object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded p-2" />
               </div>
             )}
             <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}

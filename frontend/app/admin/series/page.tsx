@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-react'
 import { DataTable } from '@/components/admin/data-table'
 import { Badge } from '@/components/admin/badge'
@@ -192,7 +193,7 @@ export default function SeriesPage() {
               { key: 'id', label: 'ID', align: 'center', sortable: true },
               { key: 'name', label: t('admin.series_name'), sortable: true },
               { key: 'brandName', label: t('admin.series_brand'), render: (value: any) => value || '—' },
-              { key: 'imageUrl', label: 'Image', align: 'center', render: (value: any) => value ? <img src={value} alt="Series" className="h-10 w-16 object-cover rounded" /> : '—' },
+              { key: 'imageUrl', label: 'Image', align: 'center', render: (value: any) => value ? <Image src={value} alt="Series" width={64} height={40} unoptimized className="object-cover rounded" /> : '—' },
               { key: 'description', label: t('admin.series_description'), render: (value: any) => value || '—' },
               { key: 'isActive', label: t('admin.series_status'), align: 'center',
                 render: (value: any) => (
@@ -247,7 +248,7 @@ export default function SeriesPage() {
             <label className="block text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">Image (Cloudinary)</label>
             {editingSeries?.imageUrl && !formData.image && (
               <div className="mb-2">
-                <img src={editingSeries.imageUrl} alt="Current Series" className="h-32 object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded" />
+                <Image src={editingSeries.imageUrl} alt="Current Series" width={128} height={128} unoptimized className="object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded" />
               </div>
             )}
             <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}

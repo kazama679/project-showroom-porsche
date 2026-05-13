@@ -45,6 +45,7 @@ const menuItemsConfig: MenuItem[] = [
     submenu: [
       { labelKey: "admin.inventory", href: "/admin/cars" },
       { labelKey: "admin.brands", href: "/admin/brands" },
+      { labelKey: "admin.body_design", href: "/admin/body-types" },
       { labelKey: "admin.series", href: "/admin/series" },
       { labelKey: "admin.models", href: "/admin/models" },
       { labelKey: "admin.options", href: "/admin/options" },
@@ -106,7 +107,7 @@ export function Sidebar() {
 
   const NavItem = ({ item }: { item: MenuItem }) => {
     const hasSubmenu = "submenu" in item;
-    const active = !hasSubmenu && isActive(item.href, item.exact);
+    const active = !hasSubmenu && !!item.href && isActive(item.href, item.exact);
     const Icon = item.icon;
     const label = t(item.labelKey);
 

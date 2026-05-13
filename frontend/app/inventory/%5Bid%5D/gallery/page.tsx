@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ChevronUp } from 'lucide-react'
 
 interface GalleryImage {
@@ -78,7 +79,7 @@ export default function CarGallery({ params }: { params: { id: string } }) {
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <a href="/" className="text-2xl font-bold">PORSCHE</a>
+            <Link href="/" className="text-2xl font-bold">PORSCHE</Link>
           </div>
           <div className="flex items-center gap-6">
             <button className="p-2 hover:bg-gray-100 rounded">★</button>
@@ -112,10 +113,13 @@ export default function CarGallery({ params }: { params: { id: string } }) {
                   : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-300'
               }`}
             >
-              <img
+              <Image
                 src={cat.thumbnail}
                 alt={cat.name}
-                className="w-24 h-24 object-cover rounded"
+                width={96}
+                height={96}
+                unoptimized
+                className="object-cover rounded"
               />
               <div className="text-center">
                 <p className="font-medium text-sm">{cat.name}</p>
@@ -136,10 +140,12 @@ export default function CarGallery({ params }: { params: { id: string } }) {
           {/* Main Image */}
           <div className="col-span-2">
             <div className="bg-gray-100 aspect-[4/3] rounded-lg overflow-hidden">
-              <img
+              <Image
                 src={currentImage.src}
                 alt={currentImage.alt}
-                className="w-full h-full object-cover"
+                fill
+                unoptimized
+                className="object-cover"
               />
             </div>
           </div>
@@ -152,10 +158,12 @@ export default function CarGallery({ params }: { params: { id: string } }) {
                 onClick={() => setActiveImageIndex(activeImageIndex + idx + 1)}
                 className="bg-gray-100 aspect-square rounded-lg overflow-hidden hover:ring-2 hover:ring-black transition-all"
               >
-                <img
+                <Image
                   src={img.src}
                   alt={img.alt}
-                  className="w-full h-full object-cover"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
               </button>
             ))}

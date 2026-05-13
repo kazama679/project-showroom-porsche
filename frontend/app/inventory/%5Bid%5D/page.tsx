@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Menu, User, Heart, ChevronDown, ChevronUp, Copy, Info } from 'lucide-react'
 import Link from 'next/link'
 
@@ -128,11 +129,13 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
           <div className="col-span-2">
             <div className="mb-8">
               {/* Main image */}
-              <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden mb-4 flex items-center justify-center">
-                <img
+              <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden mb-4 relative">
+                <Image
                   src={car.images[0]}
                   alt={car.model}
-                  className="w-full h-full object-cover"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
               </div>
 
@@ -145,8 +148,8 @@ export default function CarDetailPage({ params }: { params: { id: string } }) {
               {/* Thumbnail grid */}
               <div className="grid grid-cols-5 gap-2 mb-6">
                 {car.images.map((img, i) => (
-                  <div key={i} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                    <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
+                  <div key={i} className="aspect-square bg-gray-200 rounded-lg overflow-hidden relative">
+                    <Image src={img} alt={`View ${i + 1}`} fill unoptimized className="object-cover" />
                   </div>
                 ))}
               </div>

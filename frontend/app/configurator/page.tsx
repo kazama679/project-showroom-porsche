@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronLeft, Heart, Share2, ChevronRight, Info, Search, MapPin, Toggle2 } from 'lucide-react'
+import Image from 'next/image'
+import { ChevronLeft, Heart, Share2, ChevronRight, Info, Search, MapPin, ToggleLeft } from 'lucide-react'
 
 export default function ConfiguratorPage() {
   const [activeTab, setActiveTab] = useState<'summary' | 'details'>('summary')
@@ -15,7 +16,7 @@ export default function ConfiguratorPage() {
       <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button className="p-2 hover:bg-gray-100 rounded-[2px]">
+            <button aria-label="Back" className="p-2 hover:bg-gray-100 rounded-[2px]">
               <ChevronLeft size={20} />
             </button>
             <button className="flex items-center gap-2 text-sm font-light hover:opacity-75">
@@ -70,36 +71,38 @@ export default function ConfiguratorPage() {
         <div className="flex-1">
           {/* Main Image */}
           <div className="bg-gradient-to-b from-gray-50 to-white rounded-lg overflow-hidden mb-6 relative">
-            <img
+            <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
               alt="Taycan Turbo S"
-              className="w-full h-96 object-cover"
+              fill
+              unoptimized
+              className="object-cover"
             />
             {/* Image Controls */}
             <div className="absolute bottom-6 left-6 flex gap-3">
-              <button className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
+              <button aria-label="Gallery" className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </button>
-              <button className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
+              <button aria-label="Refresh view" className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 015.646 5.646L3 7.293M21 12a9 9 0 01-9 9m0 0l2.293-2.293M3 12a9 9 0 019-9m0 0l-2.293 2.293m11.414 4.414l1.414 1.414" />
                 </svg>
               </button>
-              <button className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
+              <button aria-label="Camera" className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                 </svg>
               </button>
-              <button className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
+              <button aria-label="Previous image" className="bg-white p-3 rounded-[2px] hover:bg-gray-100">
                 <ChevronLeft size={20} />
               </button>
             </div>
             <button className="absolute bottom-6 right-6 bg-white px-4 py-2 rounded-[2px] font-light text-sm hover:bg-gray-100">
               Open 360° View
             </button>
-            <button className="absolute top-6 right-6 bg-white p-3 rounded-[2px] hover:bg-gray-100">
+            <button aria-label="Next image" className="absolute top-6 right-6 bg-white p-3 rounded-[2px] hover:bg-gray-100">
               <ChevronRight size={20} />
             </button>
           </div>
@@ -113,10 +116,12 @@ export default function ConfiguratorPage() {
                   i === 0 ? 'border-black' : 'border-gray-300'
                 } cursor-pointer hover:border-black transition-colors`}
               >
-                <img
+                <Image
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
                   alt={`Gallery ${i}`}
-                  className="w-full h-full object-cover"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
               </div>
             ))}
@@ -135,7 +140,7 @@ export default function ConfiguratorPage() {
 
           {/* Configuration Recommendation */}
           <div className="bg-gray-50 p-4 rounded-[2px] mb-8 flex items-start gap-3">
-            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png" alt="Config" className="w-16 h-16 rounded-[2px]" />
+            <Image src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png" alt="Config" width={64} height={64} unoptimized className="rounded-[2px]" />
             <div>
               <p className="font-light text-sm">Discover configuration recommendations</p>
               <button className="flex items-center gap-1 text-blue-600 text-xs font-light mt-1 hover:opacity-75">
@@ -169,11 +174,10 @@ export default function ConfiguratorPage() {
               <div className="mt-6">
                 <p className="text-sm font-light mb-3">Shades <span className="text-gray-400">$0</span></p>
                 <div className="flex gap-2">
-                  {[0.3, 0.5, 0.7, 0.9].map((opacity) => (
+                  {(['opacity-30', 'opacity-50', 'opacity-70', 'opacity-90'] as const).map((opacityClass) => (
                     <div
-                      key={opacity}
-                      className="w-10 h-10 bg-gray-400 border-2 border-gray-300 rounded-[2px] cursor-pointer hover:border-black transition-colors"
-                      style={{ opacity }}
+                      key={opacityClass}
+                      className={`w-10 h-10 bg-gray-400 ${opacityClass} border-2 border-gray-300 rounded-[2px] cursor-pointer hover:border-black transition-colors`}
                     />
                   ))}
                 </div>
@@ -222,7 +226,7 @@ export default function ConfiguratorPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gray-800 border border-gray-300 rounded-[2px] flex items-center justify-center text-white text-xs">⚙</div>
                         <div>
-                          <p className="font-light">21" Aero Design Wheels</p>
+                          <p className="font-light">21&quot; Aero Design Wheels</p>
                           <p className="text-xs text-gray-400">65K</p>
                         </div>
                       </div>
@@ -314,6 +318,7 @@ export default function ConfiguratorPage() {
             <select
               value={searchRadius}
               onChange={(e) => setSearchRadius(e.target.value)}
+              aria-label="Search radius"
               className="px-6 py-3 border border-gray-400 rounded-[2px] font-light text-sm focus:outline-none focus:border-black"
             >
               <option>Nationwide</option>
@@ -354,7 +359,7 @@ export default function ConfiguratorPage() {
               },
             ].map((car, idx) => (
               <div key={idx} className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-                <img src={car.image} alt={car.name} className="w-full h-64 object-cover" />
+                <Image src={car.image} alt={car.name} fill unoptimized className="object-cover" />
                 <div className="p-6">
                   <h4 className="text-lg font-light mb-2">{car.name}</h4>
                   <p className="text-sm text-gray-600 font-light mb-2">{car.condition} · {car.year} · {car.mileage}</p>

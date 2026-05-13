@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Menu, User, X, ChevronDown, ChevronUp, ToggleLeft } from 'lucide-react'
 
 const CompareModelsPage = () => {
@@ -52,7 +53,9 @@ const CompareModelsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           {/* First Model */}
           <div className="bg-white rounded-[4px] p-8">
-            <img src={models[0].image} alt={models[0].name} className="w-full h-64 object-contain mb-8" />
+            <div className="relative w-full h-64 mb-8">
+              <Image src={models[0].image} alt={models[0].name} fill unoptimized className="object-contain" />
+            </div>
             <h2 className="text-3xl font-light mb-2">{models[0].name}</h2>
             <p className="text-gray-600 mb-4">From {models[0].price}</p>
             <p className="text-gray-600 text-sm mb-6">Gear type</p>
@@ -72,7 +75,9 @@ const CompareModelsPage = () => {
           <div className="bg-white rounded-[4px] p-8">
             {selectedModels[1] ? (
               <>
-                <img src={models[1].image} alt={models[1].name} className="w-full h-64 object-contain mb-8" />
+                <div className="relative w-full h-64 mb-8">
+                  <Image src={models[1].image} alt={models[1].name} fill unoptimized className="object-contain" />
+                </div>
                 <h2 className="text-3xl font-light mb-2">{models[1].name}</h2>
                 <p className="text-gray-600 mb-4">From {models[1].price}</p>
                 <p className="text-gray-600 text-sm mb-6">Gear type</p>

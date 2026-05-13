@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { ChevronRight, Info } from 'lucide-react'
 
 export default function RequestDetailsPage() {
@@ -222,7 +223,7 @@ export default function RequestDetailsPage() {
                 <h3 className="text-lg font-light text-gray-900">Privacy Notice</h3>
                 <p className="text-sm text-gray-700 font-light leading-relaxed">
                   By providing your contact information, we assume that you are consenting to be contacted by Porsche Cars North America, Inc. (PCNA), its affiliate companies and our Porsche Centers. To the extent permitted by law, your permission supersedes any prior opt-outs given to PCNA as well as any government registries of Do Not Call Lists. Your information may be used to inform you about Porsche products, services, news and events in accordance with our Privacy Notice which can be located{' '}
-                  <button className="text-blue-600 hover:underline font-light">here</button>. You may opt out at any time by clicking the "Unsubscribe" link available in our newsletter, by calling 1-800-PORSCHE, or by sending an email to{' '}
+                  <button className="text-blue-600 hover:underline font-light">here</button>. You may opt out at any time by clicking the &quot;Unsubscribe&quot; link available in our newsletter, by calling 1-800-PORSCHE, or by sending an email to{' '}
                   <button className="text-blue-600 hover:underline font-light">privacy@porsche.us</button>. California residents may view our California Privacy Notice{' '}
                   <button className="text-blue-600 hover:underline font-light">here</button>.
                 </p>
@@ -253,10 +254,12 @@ export default function RequestDetailsPage() {
             <div className="sticky top-8 bg-white p-6 rounded-[2px]">
               {/* Car Image */}
               <div className="bg-gray-300 rounded-[2px] h-48 mb-6 flex items-center justify-center">
-                <img
+                <Image
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
                   alt="Taycan Turbo S"
-                  className="w-full h-full object-cover rounded-[2px]"
+                  fill
+                  unoptimized
+                  className="object-cover rounded-[2px]"
                 />
               </div>
 

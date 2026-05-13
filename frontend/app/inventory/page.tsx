@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Menu, User, Heart, Search, ChevronDown, Plus, Info } from 'lucide-react'
 
 interface Car {
@@ -294,10 +295,12 @@ export default function InventoryPage() {
               <div key={car.id} className="flex gap-6 bg-white border border-gray-200 p-4 rounded-lg hover:shadow-lg transition-shadow">
                 {/* Image */}
                 <div className="relative w-96 h-80 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                  <img
+                  <Image
                     src={car.image}
                     alt={car.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    unoptimized
+                    className="object-cover"
                   />
                   {car.video && (
                     <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded text-xs font-semibold">

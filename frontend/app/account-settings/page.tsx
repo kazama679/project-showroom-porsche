@@ -14,7 +14,7 @@ export default function AccountSettings() {
     country: false,
   })
 
-  const toggleSection = (section: string) => {
+  const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
@@ -26,11 +26,11 @@ export default function AccountSettings() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 md:px-12 py-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <button className="md:hidden">
+          <button aria-label="Menu" className="md:hidden">
             <Menu size={24} />
           </button>
           <h1 className="text-base font-medium tracking-[0.15em]">PORSCHE</h1>
-          <button>
+          <button aria-label="Account">
             <User size={24} />
           </button>
         </div>

@@ -11,6 +11,9 @@ export interface CarSeries {
   brandName: string | null;
   imageUrl?: string;
   videoUrl?: string;
+  // Optional fields used by some pages/components
+  price?: number | null;
+  models?: Array<{ id: number }> | null;
 }
 
 export interface CarSeriesFormData {

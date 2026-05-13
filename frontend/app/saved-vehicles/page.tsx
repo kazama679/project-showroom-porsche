@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Copy, ArrowLeftRight, Trash2 } from 'lucide-react'
+import Image from 'next/image'
 
 export default function SavedVehiclesPage() {
   const [activeTab, setActiveTab] = useState('configurations')
@@ -60,34 +61,42 @@ export default function SavedVehiclesPage() {
                 <div className="md:col-span-2">
                   {/* Main Image */}
                   <div className="mb-3 rounded-[2px] overflow-hidden bg-gray-200 h-64">
-                    <img
+                    <Image
                       src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
                       alt="Porsche Taycan Turbo S"
-                      className="w-full h-full object-cover"
+                      fill
+                      unoptimized
+                      className="object-cover"
                     />
                   </div>
 
                   {/* Thumbnails */}
                   <div className="grid grid-cols-3 gap-2">
                     <div className="rounded-[2px] overflow-hidden bg-gray-200 h-24">
-                      <img
+                      <Image
                         src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
                         alt="Thumbnail 1"
-                        className="w-full h-full object-cover"
+                        fill
+                        unoptimized
+                        className="object-cover"
                       />
                     </div>
                     <div className="rounded-[2px] overflow-hidden bg-gray-200 h-24">
-                      <img
+                      <Image
                         src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
                         alt="Thumbnail 2"
-                        className="w-full h-full object-cover"
+                        fill
+                        unoptimized
+                        className="object-cover"
                       />
                     </div>
                     <div className="rounded-[2px] overflow-hidden bg-gray-200 h-24">
-                      <img
+                      <Image
                         src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
                         alt="Thumbnail 3"
-                        className="w-full h-full object-cover"
+                        fill
+                        unoptimized
+                        className="object-cover"
                       />
                     </div>
                   </div>

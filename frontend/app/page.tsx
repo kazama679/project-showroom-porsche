@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Menu,
   Globe,
@@ -98,10 +99,12 @@ const CardsSection = () => {
               key={i}
               className="relative h-72 overflow-hidden group cursor-pointer"
             >
-              <img
+              <Image
                 src={item.img}
                 alt={item.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                fill
+                unoptimized
+                className="object-cover group-hover:scale-105 transition duration-700"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -161,11 +164,13 @@ const ModelCard = ({
       className="relative h-[600px] w-full block overflow-hidden cursor-pointer"
     >
       {/* image */}
-      <img
+      <Image
         src={imageSrc}
         alt={title}
+        fill
+        unoptimized
         className={`
-          absolute inset-0 w-full h-full object-cover
+          object-cover
           transition-all duration-700 ease-out
           ${active ? 'scale-105 opacity-0' : 'scale-100 opacity-100'}
         `}
@@ -319,10 +324,12 @@ const DealershipSection = () => (
       </div>
 
       <div className="md:w-1/2 h-[500px]">
-        <img
+        <Image
           src="https://a.storyblok.com/f/338913/1920x1080/1378ad4037/contentinfo_wide-16-9.jpg/m/1584x891/filters:format(webp):quality(45)"
           alt="dealership"
-          className="w-full h-full object-cover"
+          fill
+          unoptimized
+          className="object-cover"
         />
       </div>
     </div>

@@ -76,7 +76,7 @@ export default function UsersPage() {
     email: '',
     phone: '',
     role: 'customer',
-    status: 'active' as const,
+    status: 'active' as 'active' | 'inactive',
   })
 
   const handleOpenModal = (user?: User) => {
@@ -269,6 +269,7 @@ export default function UsersPage() {
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                aria-label="Close"
               >
                 <X size={20} />
               </button>
@@ -323,6 +324,7 @@ export default function UsersPage() {
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  aria-label={t('admin.role')}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
                 >
                   <option value="customer">{t('admin.customer')}</option>
@@ -338,6 +340,7 @@ export default function UsersPage() {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
+                  aria-label={t('admin.status')}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
                 >
                   <option value="active">{t('admin.active')}</option>

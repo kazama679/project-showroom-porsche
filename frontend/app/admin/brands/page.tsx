@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import {
   Plus,
   Edit2,
@@ -286,10 +287,13 @@ export default function BrandsPage() {
                 render: (value, row) => (
                   <div className="flex items-center gap-3">
                     {(row as Brand).logoUrl && (
-                      <img
+                      <Image
                         src={(row as Brand).logoUrl!}
                         alt={value}
-                        className="w-8 h-8 object-contain rounded"
+                        width={32}
+                        height={32}
+                        unoptimized
+                        className="object-contain rounded"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = "none";
                         }}
@@ -397,7 +401,7 @@ export default function BrandsPage() {
             <label className="block text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">Logo (Cloudinary)</label>
             {editingBrand?.logoUrl && !formData.logo && (
               <div className="mb-2">
-                <img src={editingBrand.logoUrl} alt="Current Brand" className="h-20 object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded p-2" />
+                <Image src={editingBrand.logoUrl} alt="Current Brand" width={80} height={80} unoptimized className="object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded p-2" />
               </div>
             )}
             <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, logo: e.target.files?.[0] || null })}
