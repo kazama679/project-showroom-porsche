@@ -10,14 +10,14 @@ import { Alert } from '@/components/admin/alert'
 import { useLanguage } from '@/lib/language-context'
 import { carModelOptionService, CarModelOption, CarModelOptionFormData } from '@/lib/car-model-option'
 import { optionItemService, OptionItem } from '@/lib/option-item'
-import { carModelService, CarModel } from '@/lib/car-model'
+import { carModelService, CarModelItem } from '@/lib/car-model'
 import { authService, getErrorMessage } from '@/lib/auth'
 
 export default function CarModelOptionsPage() {
   const { t } = useLanguage()
 
   const [assignments, setAssignments] = useState<CarModelOption[]>([])
-  const [carModels, setCarModels] = useState<CarModel[]>([])
+  const [carModels, setCarModels] = useState<CarModelItem[]>([])
   const [optionItems, setOptionItems] = useState<OptionItem[]>([])
   const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
