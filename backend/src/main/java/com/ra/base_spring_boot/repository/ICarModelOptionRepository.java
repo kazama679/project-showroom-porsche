@@ -1,0 +1,14 @@
+package com.ra.base_spring_boot.repository;
+
+import com.ra.base_spring_boot.model.CarModelOption;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface ICarModelOptionRepository extends JpaRepository<CarModelOption, Long>
+{
+    @Query("SELECT cmo FROM CarModelOption cmo JOIN FETCH cmo.carModel JOIN FETCH cmo.optionItem WHERE LOWER(cmo.carModel.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(cmo.optionItem.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<CarModelOption> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+}
