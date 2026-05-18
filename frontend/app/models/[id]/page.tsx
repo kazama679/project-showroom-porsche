@@ -283,7 +283,7 @@ export default function ModelDetailPage() {
             <button className="px-8 py-3 bg-black text-white font-medium text-sm rounded-[2px] hover:bg-gray-900 transition-colors duration-300">
               Change model variant
             </button>
-            <button className="px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
+            <button onClick={() => router.push(`/configurator`)} className="px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
               Build Your Porsche
             </button>
             <button className="px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">

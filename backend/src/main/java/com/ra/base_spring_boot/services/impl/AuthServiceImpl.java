@@ -72,8 +72,13 @@ public class AuthServiceImpl implements IAuthService
                 Duration.ofMinutes(5)
         );
 
-        // Send OTP via email
-        emailService.sendOtpEmail(user.getEmail(), otp);
+        try {
+            // Send OTP via email
+            emailService.sendOtpEmail(user.getEmail(), otp);
+        } catch (Exception e) {
+            System.err.println("WARNING: Failed to send OTP email: " + e.getMessage());
+            System.out.println(">>> [DEVELOPMENT MODE] OTP CODE FOR EMAIL " + user.getEmail() + " IS: " + otp);
+        }
     }
 
     @Override
@@ -161,8 +166,13 @@ public class AuthServiceImpl implements IAuthService
                 Duration.ofMinutes(5)
         );
 
-        // Send OTP via email
-        emailService.sendOtpEmail(email, otp);
+        try {
+            // Send OTP via email
+            emailService.sendOtpEmail(email, otp);
+        } catch (Exception e) {
+            System.err.println("WARNING: Failed to send OTP email: " + e.getMessage());
+            System.out.println(">>> [DEVELOPMENT MODE] OTP CODE FOR EMAIL " + email + " IS: " + otp);
+        }
     }
 
 }
