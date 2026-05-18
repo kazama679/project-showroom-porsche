@@ -28,7 +28,7 @@ export default function BrandsPage() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10)
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(true);
 

@@ -23,7 +23,7 @@ export default function SeriesPage() {
   const [brands, setBrands] = useState<Brand[]>([])
   const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [searchKeyword, setSearchKeyword] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -222,7 +222,13 @@ export default function SeriesPage() {
             ]}
             data={seriesList}
             loading={loading}
-            pagination={{ pageSize, currentPage, total: totalElements, onPageChange: setCurrentPage }}
+            pagination={{
+              pageSize,
+              currentPage,
+              total: totalElements,
+              onPageChange: setCurrentPage,
+              onPageSizeChange: setPageSize
+            }}
           />
         </div>
       </div>

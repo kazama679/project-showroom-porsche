@@ -20,7 +20,7 @@ export default function OptionGroupsPage() {
   const [categories, setCategories] = useState<OptionCategory[]>([])
   const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [searchKeyword, setSearchKeyword] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -181,7 +181,13 @@ export default function OptionGroupsPage() {
               }] : []),
             ]}
             data={groups} loading={loading}
-            pagination={{ pageSize, currentPage, total: totalElements, onPageChange: setCurrentPage }}
+            pagination={{
+              pageSize,
+              currentPage,
+              total: totalElements,
+              onPageChange: setCurrentPage,
+              onPageSizeChange: setPageSize
+            }}
           />
         </div>
       </div>

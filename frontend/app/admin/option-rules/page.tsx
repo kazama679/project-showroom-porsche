@@ -19,7 +19,7 @@ export default function OptionRulesPage() {
   const [optionItems, setOptionItems] = useState<OptionItem[]>([])
   const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [searchKeyword, setSearchKeyword] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -187,7 +187,13 @@ export default function OptionRulesPage() {
               }] : []),
             ]}
             data={rules} loading={loading}
-            pagination={{ pageSize, currentPage, total: totalElements, onPageChange: setCurrentPage }}
+            pagination={{
+              pageSize,
+              currentPage,
+              total: totalElements,
+              onPageChange: setCurrentPage,
+              onPageSizeChange: setPageSize
+            }}
           />
         </div>
       </div>

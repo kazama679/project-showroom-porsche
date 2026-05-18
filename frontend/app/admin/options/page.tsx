@@ -18,7 +18,7 @@ export default function OptionsPage() {
   const [options, setOptions] = useState<OptionCategory[]>([])
   const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [searchKeyword, setSearchKeyword] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -167,7 +167,13 @@ export default function OptionsPage() {
               }] : []),
             ]}
             data={options} loading={loading}
-            pagination={{ pageSize, currentPage, total: totalElements, onPageChange: setCurrentPage }}
+            pagination={{
+              pageSize,
+              currentPage,
+              total: totalElements,
+              onPageChange: setCurrentPage,
+              onPageSizeChange: setPageSize
+            }}
           />
         </div>
       </div>
