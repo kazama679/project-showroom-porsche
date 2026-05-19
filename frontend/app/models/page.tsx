@@ -649,7 +649,7 @@ function ModelsContent() {
                         className="relative mt-[80px] pt-[115px] rounded-[32px] bg-white border border-gray-100/80 flex flex-col h-full shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-500 group overflow-visible"
                       >
                         {/* Floating absolute positioned car image with balanced shift */}
-                        <div className="absolute top-[-75px] left-1/2 -translate-x-1/2 w-[90%] max-w-[560px] h-[180px] z-10 pointer-events-none">
+                        <div className="absolute top-[-95px] left-1/2 -translate-x-1/2 w-[90%] max-w-[560px] h-[180px] z-10 pointer-events-none">
                           <div className="w-full h-full relative transform group-hover:scale-[1.04] transition-transform duration-500 ease-out">
                             <Image
                               src={model.imageUrl || 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600&h=400&fit=crop'}
@@ -662,7 +662,7 @@ function ModelsContent() {
                         </div>
 
                         {/* Card Content */}
-                        <div className="px-8 pb-8 pt-4 flex flex-col flex-grow bg-white">
+                        <div className="px-8 pb-8 flex flex-col flex-grow bg-white">
                           
                           {/* Model Name & Price */}
                           <div className="mb-5">
