@@ -25,12 +25,33 @@ public class CarModelOptionController
     @GetMapping
     public ResponseEntity<?> findAll(
             @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(required = false) Long carModelId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     )
     {
         Pageable pageable = PageRequest.of(page, size);
-        Page<CarModelOptionResponseDTO> options = carModelOptionService.findAll(keyword, pageable);
+        Page<CarModelOptionResponseDTO> options = carModelOptionService.findAll(keyword, carModelId, pageable);
+
+        return ResponseEntity.ok().body(
+                ResponseWrapper.builder()
+                        .status(HttpStatus.OK)
+                        .code(200)
+                        .data(options)
+                        .build()
+        );
+    }
+
+    @GetMapping("/car-model/{carModelId}")
+    public ResponseEntity<?> findByCarModelId(
+            @PathVariable Long carModelId,
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    )
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CarModelOptionResponseDTO> options = carModelOptionService.findByCarModelId(carModelId, keyword, pageable);
 
         return ResponseEntity.ok().body(
                 ResponseWrapper.builder()

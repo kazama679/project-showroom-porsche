@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface ICarModelOptionService
 {
-    Page<CarModelOptionResponseDTO> findAll(String keyword, Pageable pageable);
+    Page<CarModelOptionResponseDTO> findAll(String keyword, Long carModelId, Pageable pageable);
+
+    Page<CarModelOptionResponseDTO> findByCarModelId(Long carModelId, String keyword, Pageable pageable);
 
     CarModelOptionResponseDTO findById(Long id);
 

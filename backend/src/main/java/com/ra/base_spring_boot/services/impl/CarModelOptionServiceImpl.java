@@ -26,10 +26,15 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
     private final IOptionItemRepository optionItemRepository;
 
     @Override
-    public Page<CarModelOptionResponseDTO> findAll(String keyword, Pageable pageable)
+    public Page<CarModelOptionResponseDTO> findAll(String keyword, Long carModelId, Pageable pageable)
     {
         Page<CarModelOption> page;
-        if (keyword == null || keyword.trim().isEmpty())
+        if (carModelId != null)
+        {
+            String kw = keyword == null ? "" : keyword.trim();
+            page = carModelOptionRepository.findByCarModelIdAndKeyword(carModelId, kw, pageable);
+        }
+        else if (keyword == null || keyword.trim().isEmpty())
         {
             page = carModelOptionRepository.findAll(pageable);
         }
@@ -37,6 +42,14 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
         {
             page = carModelOptionRepository.findByKeyword(keyword, pageable);
         }
+        return page.map(CarModelOptionResponseDTO::fromEntity);
+    }
+
+    @Override
+    public Page<CarModelOptionResponseDTO> findByCarModelId(Long carModelId, String keyword, Pageable pageable)
+    {
+        String kw = keyword == null ? "" : keyword.trim();
+        Page<CarModelOption> page = carModelOptionRepository.findByCarModelIdAndKeyword(carModelId, kw, pageable);
         return page.map(CarModelOptionResponseDTO::fromEntity);
     }
 

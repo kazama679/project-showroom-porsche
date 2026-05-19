@@ -15,13 +15,39 @@ export interface CarModelOptionFormData {
 }
 
 export const carModelOptionService = {
-  async findAll(keyword: string = '', page: number = 0, size: number = 10): Promise<PageResponse<CarModelOption>> {
+  async findAll(
+    keyword: string = '',
+    page: number = 0,
+    size: number = 10,
+    carModelId?: number
+  ): Promise<PageResponse<CarModelOption>> {
     const params: Record<string, string> = {
       keyword,
       page: page.toString(),
       size: size.toString(),
     };
+    if (carModelId != null) {
+      params.carModelId = carModelId.toString();
+    }
     const res = await apiClient.get<PageResponse<CarModelOption>>("/car-model-options", params);
+    return res.data;
+  },
+
+  async findByCarModelId(
+    carModelId: number,
+    keyword: string = '',
+    page: number = 0,
+    size: number = 10
+  ): Promise<PageResponse<CarModelOption>> {
+    const params: Record<string, string> = {
+      keyword,
+      page: page.toString(),
+      size: size.toString(),
+    };
+    const res = await apiClient.get<PageResponse<CarModelOption>>(
+      `/car-model-options/car-model/${carModelId}`,
+      params
+    );
     return res.data;
   },
 

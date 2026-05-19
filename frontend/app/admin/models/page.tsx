@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, Settings } from 'lucide-react'
+import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, Settings, ListChecks } from 'lucide-react'
 import { DataTable } from '@/components/admin/data-table'
 import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
@@ -15,6 +15,7 @@ import { carSeriesService, CarSeries } from '@/lib/car-series'
 import { carSpecService, CarSpecsDTO } from '@/lib/car-specs'
 import { bodyTypeService, BodyType } from '@/lib/body-type'
 import { authService, getErrorMessage } from '@/lib/auth'
+import { ModelOptionsModal } from '@/components/admin/model-options-modal'
 
 export default function ModelsPage() {
   const { t } = useLanguage()
@@ -36,6 +37,8 @@ export default function ModelsPage() {
 
   const [isSpecsModalOpen, setIsSpecsModalOpen] = useState(false)
   const [currentSpecsModel, setCurrentSpecsModel] = useState<CarModelItem | null>(null)
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false)
+  const [currentOptionsModel, setCurrentOptionsModel] = useState<CarModelItem | null>(null)
   const [specsFormData, setSpecsFormData] = useState<CarSpecsDTO>({ performance: null, engine: null, electric: null })
 
   const [showAlert, setShowAlert] = useState(false)
@@ -151,6 +154,12 @@ export default function ModelsPage() {
     finally { setSaving(false) }
   }
 
+  const handleOpenOptionsModal = (item: CarModelItem) => {
+    if (!isAdmin) { showAlertMessage(t('admin.no_permission'), 'warning'); return }
+    setCurrentOptionsModel(item)
+    setIsOptionsModalOpen(true)
+  }
+
   const handleOpenSpecsModal = async (item: CarModelItem) => {
     if (!isAdmin) { showAlertMessage(t('admin.no_permission'), 'warning'); return }
     setCurrentSpecsModel(item)
@@ -234,6 +243,10 @@ export default function ModelsPage() {
                 key: 'actions' as keyof CarModelItem, label: t('admin.actions'), align: 'center' as const,
                 render: (value: any, row: any) => (
                   <div className="flex gap-2 justify-center">
+                    <button onClick={(e) => { e.stopPropagation(); handleOpenOptionsModal(row) }}
+                      className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors" title={t('admin.manage_model_options')}>
+                      <ListChecks size={16} className="text-[#1a73e8]" />
+                    </button>
                     <button onClick={(e) => { e.stopPropagation(); handleOpenSpecsModal(row) }}
                       className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors" title={t('admin.manage_specs')}>
                       <Settings size={16} className="text-[#188038]" />
@@ -374,6 +387,35 @@ export default function ModelsPage() {
           )}
         </div>
       </Modal>
+
+      <ModelOptionsModal
+        isOpen={isOptionsModalOpen}
+        model={currentOptionsModel}
+        onClose={() => {
+          setIsOptionsModalOpen(false)
+          setCurrentOptionsModel(null)
+        }}
+        onNotify={showAlertMessage}
+        labels={{
+          title: t('admin.model_options_title'),
+          assignedTitle: t('admin.model_options_assigned'),
+          addTitle: t('admin.model_options_add'),
+          searchAssigned: t('admin.model_options_search_assigned'),
+          searchOptions: t('admin.model_options_search_add'),
+          searchHint: t('admin.model_options_search_hint'),
+          noAssigned: t('admin.model_options_no_assigned'),
+          noResults: t('admin.model_options_no_results'),
+          add: t('admin.create'),
+          delete: t('admin.delete'),
+          cancel: t('common.cancel'),
+          confirmDelete: t('admin.model_options_confirm_delete'),
+          confirmDeleteMsg: t('admin.model_options_confirm_delete_msg'),
+          optionAdded: t('admin.model_options_added'),
+          optionDeleted: t('admin.model_options_deleted'),
+          alreadyAssigned: t('admin.model_options_already_assigned'),
+          total: t('admin.total'),
+        }}
+      />
     </PageLayout>
   )
 }

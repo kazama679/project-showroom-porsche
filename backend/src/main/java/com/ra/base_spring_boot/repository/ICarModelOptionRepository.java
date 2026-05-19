@@ -14,6 +14,26 @@ public interface ICarModelOptionRepository extends JpaRepository<CarModelOption,
     @Query("SELECT cmo FROM CarModelOption cmo JOIN FETCH cmo.carModel JOIN FETCH cmo.optionItem WHERE LOWER(cmo.carModel.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(cmo.optionItem.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<CarModelOption> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query(
+            value = """
+                    SELECT cmo FROM CarModelOption cmo
+                    JOIN cmo.optionItem oi
+                    WHERE cmo.carModel.id = :carModelId
+                    AND (:keyword = '' OR LOWER(oi.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                    """,
+            countQuery = """
+                    SELECT COUNT(cmo) FROM CarModelOption cmo
+                    JOIN cmo.optionItem oi
+                    WHERE cmo.carModel.id = :carModelId
+                    AND (:keyword = '' OR LOWER(oi.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                    """
+    )
+    Page<CarModelOption> findByCarModelIdAndKeyword(
+            @Param("carModelId") Long carModelId,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
     @Query("""
             SELECT cmo FROM CarModelOption cmo
             JOIN FETCH cmo.optionItem oi
