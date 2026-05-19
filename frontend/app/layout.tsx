@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { LanguageProvider } from '@/lib/language-context'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-sans',
+})
 
 export const metadata: Metadata = {
   title: 'Porsche - The new 911 GT3 S/C | Official Porsche',
@@ -37,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-white dark:bg-black">
-      <body className="font-sans antialiased bg-white dark:bg-black text-[#181818] dark:text-white">
+      <body className={`${inter.variable} font-sans antialiased bg-white dark:bg-black text-[#181818] dark:text-white`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>

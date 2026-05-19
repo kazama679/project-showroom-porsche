@@ -340,12 +340,12 @@ function ModelsContent() {
                 </button>
                 {expandedFilters.includes('body') && (
                   <div className="space-y-3.5 pb-2">
-                    {bodyDesignOptions.length === 0 ? (
+                    {bodyDesignOptions.filter(opt => opt.count > 0).length === 0 ? (
                       <div className="text-[14px] text-[#8F8F8F] font-normal italic">
                         No body designs available.
                       </div>
                     ) : (
-                      bodyDesignOptions.map((opt) => {
+                      bodyDesignOptions.filter(opt => opt.count > 0).map((opt) => {
                         const checked = selectedBodyTypeIds.includes(opt.id)
                         return (
                           <label key={opt.id} className="flex items-center gap-3 cursor-pointer group select-none">
@@ -405,42 +405,44 @@ function ModelsContent() {
                 </button>
                 {expandedFilters.includes('seats') && (
                   <div className="space-y-3.5 pb-2">
-                    {['2', '4', '4+1', '5'].map(seatOption => {
-                      const count = seatsCounts[seatOption as keyof typeof seatsCounts] || 0
-                      const checked = selectedSeats.includes(seatOption)
-                      return (
-                        <label key={seatOption} className="flex items-center gap-3 cursor-pointer group select-none">
-                          <span className="relative w-5 h-5 shrink-0">
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => {
-                                setSelectedSeats(prev =>
-                                  prev.includes(seatOption) ? prev.filter(x => x !== seatOption) : [...prev, seatOption]
-                                )
-                              }}
-                              className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
-                            />
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="white"
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100"
-                            >
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                          </span>
-                          <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                            {seatOption} <span className="text-[#8F8F8F]">({count})</span>
-                          </span>
-                        </label>
-                      )
-                    })}
+                    {['2', '4', '4+1', '5']
+                      .filter(seatOption => (seatsCounts[seatOption as keyof typeof seatsCounts] || 0) > 0)
+                      .map(seatOption => {
+                        const count = seatsCounts[seatOption as keyof typeof seatsCounts] || 0
+                        const checked = selectedSeats.includes(seatOption)
+                        return (
+                          <label key={seatOption} className="flex items-center gap-3 cursor-pointer group select-none">
+                            <span className="relative w-5 h-5 shrink-0">
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => {
+                                  setSelectedSeats(prev =>
+                                    prev.includes(seatOption) ? prev.filter(x => x !== seatOption) : [...prev, seatOption]
+                                  )
+                                }}
+                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                              />
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="white"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100"
+                              >
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                              </svg>
+                            </span>
+                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                              {seatOption} <span className="text-[#8F8F8F]">({count})</span>
+                            </span>
+                          </label>
+                        )
+                      })}
                   </div>
                 )}
               </div>
@@ -464,42 +466,44 @@ function ModelsContent() {
                 </button>
                 {expandedFilters.includes('drive') && (
                   <div className="space-y-3.5 pb-2">
-                    {['Rear-Wheel Drive', 'All-Wheel Drive'].map(driveOption => {
-                      const count = driveCounts[driveOption as keyof typeof driveCounts] || 0
-                      const checked = selectedDrives.includes(driveOption)
-                      return (
-                        <label key={driveOption} className="flex items-center gap-3 cursor-pointer group select-none">
-                          <span className="relative w-5 h-5 shrink-0">
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => {
-                                setSelectedDrives(prev =>
-                                  prev.includes(driveOption) ? prev.filter(x => x !== driveOption) : [...prev, driveOption]
-                                )
-                              }}
-                              className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
-                            />
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="white"
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100"
-                            >
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                          </span>
-                          <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                            {driveOption} <span className="text-[#8F8F8F]">({count})</span>
-                          </span>
-                        </label>
-                      )
-                    })}
+                    {['Rear-Wheel Drive', 'All-Wheel Drive']
+                      .filter(driveOption => (driveCounts[driveOption as keyof typeof driveCounts] || 0) > 0)
+                      .map(driveOption => {
+                        const count = driveCounts[driveOption as keyof typeof driveCounts] || 0
+                        const checked = selectedDrives.includes(driveOption)
+                        return (
+                          <label key={driveOption} className="flex items-center gap-3 cursor-pointer group select-none">
+                            <span className="relative w-5 h-5 shrink-0">
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => {
+                                  setSelectedDrives(prev =>
+                                    prev.includes(driveOption) ? prev.filter(x => x !== driveOption) : [...prev, driveOption]
+                                  )
+                                }}
+                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                              />
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="white"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100"
+                              >
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                              </svg>
+                            </span>
+                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                              {driveOption} <span className="text-[#8F8F8F]">({count})</span>
+                            </span>
+                          </label>
+                        )
+                      })}
                   </div>
                 )}
               </div>
@@ -523,42 +527,44 @@ function ModelsContent() {
                 </button>
                 {expandedFilters.includes('fuel') && (
                   <div className="space-y-3.5 pb-2">
-                    {['Electric', 'Gasoline', 'Hybrid'].map(fuelOption => {
-                      const count = fuelCounts[fuelOption as keyof typeof fuelCounts] || 0
-                      const checked = selectedFuelTypes.includes(fuelOption)
-                      return (
-                        <label key={fuelOption} className="flex items-center gap-3 cursor-pointer group select-none">
-                          <span className="relative w-5 h-5 shrink-0">
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => {
-                                setSelectedFuelTypes(prev =>
-                                  prev.includes(fuelOption) ? prev.filter(x => x !== fuelOption) : [...prev, fuelOption]
-                                )
-                              }}
-                              className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
-                            />
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="white"
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100"
-                            >
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                          </span>
-                          <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                            {fuelOption} <span className="text-[#8F8F8F]">({count})</span>
-                          </span>
-                        </label>
-                      )
-                    })}
+                    {['Electric', 'Gasoline', 'Hybrid']
+                      .filter(fuelOption => (fuelCounts[fuelOption as keyof typeof fuelCounts] || 0) > 0)
+                      .map(fuelOption => {
+                        const count = fuelCounts[fuelOption as keyof typeof fuelCounts] || 0
+                        const checked = selectedFuelTypes.includes(fuelOption)
+                        return (
+                          <label key={fuelOption} className="flex items-center gap-3 cursor-pointer group select-none">
+                            <span className="relative w-5 h-5 shrink-0">
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => {
+                                  setSelectedFuelTypes(prev =>
+                                    prev.includes(fuelOption) ? prev.filter(x => x !== fuelOption) : [...prev, fuelOption]
+                                  )
+                                }}
+                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                              />
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="white"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100"
+                              >
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                              </svg>
+                            </span>
+                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                              {fuelOption} <span className="text-[#8F8F8F]">({count})</span>
+                            </span>
+                          </label>
+                        )
+                      })}
                   </div>
                 )}
               </div>
@@ -584,7 +590,10 @@ function ModelsContent() {
                 <h3 className="text-[26px] font-bold text-black tracking-tight">
                   {selectedSeriesId ? `${selectedSeriesName} Model variants` : 'All Model variants'}
                 </h3>
-                <button className="cursor-pointer flex items-center gap-2.5 text-black hover:opacity-70 transition-opacity font-semibold text-[14px]">
+                <button 
+                  onClick={() => router.push('/compare-models')}
+                  className="cursor-pointer flex items-center gap-2.5 text-black hover:opacity-70 transition-opacity font-semibold text-[14px]"
+                >
                   <span>↔</span>
                   <span>Compare model variants</span>
                 </button>
@@ -608,11 +617,11 @@ function ModelsContent() {
                     return (
                       <div
                         key={model.id}
-                        className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden flex flex-col h-full shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500 group"
+                        className="relative mt-[90px] pt-[130px] rounded-[32px] bg-white border border-gray-100/80 flex flex-col h-full shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-500 group overflow-visible"
                       >
-                        {/* Car Image with Scale Hover effect */}
-                        <div className="w-full h-[240px] pt-10 px-8 pb-4 flex items-center justify-center bg-white relative overflow-hidden">
-                          <div className="w-full h-full relative transform group-hover:scale-105 transition-transform duration-500 ease-out">
+                        {/* Floating absolute positioned car image */}
+                        <div className="absolute top-[-90px] left-1/2 -translate-x-1/2 w-[90%] max-w-[560px] h-[180px] z-10 pointer-events-none">
+                          <div className="w-full h-full relative transform group-hover:scale-[1.04] transition-transform duration-500 ease-out">
                             <Image
                               src={model.imageUrl || 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600&h=400&fit=crop'}
                               alt={model.name}
