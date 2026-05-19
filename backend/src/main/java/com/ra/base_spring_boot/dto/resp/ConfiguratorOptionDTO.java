@@ -1,0 +1,24 @@
+package com.ra.base_spring_boot.dto.resp;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
+public class ConfiguratorOptionDTO
+{
+    private String id;
+    private String code;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Boolean isStandard;
+    private String imageUrl;
+    private String color;
+}

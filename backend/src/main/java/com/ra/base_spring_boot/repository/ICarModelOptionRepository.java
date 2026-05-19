@@ -7,8 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ICarModelOptionRepository extends JpaRepository<CarModelOption, Long>
 {
     @Query("SELECT cmo FROM CarModelOption cmo JOIN FETCH cmo.carModel JOIN FETCH cmo.optionItem WHERE LOWER(cmo.carModel.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(cmo.optionItem.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<CarModelOption> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("""
+            SELECT cmo FROM CarModelOption cmo
+            JOIN FETCH cmo.optionItem oi
+            JOIN FETCH oi.optionGroup og
+            JOIN FETCH og.category
+            WHERE cmo.carModel.id = :carModelId
+            ORDER BY og.category.displayOrder, og.displayOrder, oi.name
+            """)
+    List<CarModelOption> findByCarModelIdWithDetails(@Param("carModelId") Long carModelId);
 }

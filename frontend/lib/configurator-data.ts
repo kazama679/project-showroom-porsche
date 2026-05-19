@@ -19,6 +19,7 @@ export type ConfigSubGroup = {
 export type ConfigSection = {
   id: string
   title: string
+  variant?: 'color' | 'card' | 'list'
   subGroups: ConfigSubGroup[]
 }
 
@@ -496,17 +497,18 @@ export function getSubGroupPriceLabel(subGroup: ConfigSubGroup): string {
 export function calculateTotal(
   baseMsrp: number,
   deliveryFee: number,
-  selections: Record<string, string>
+  selections: Record<string, string>,
+  sections: ConfigSection[]
 ): { equipmentPrice: number; total: number } {
   let equipmentPrice = 0
 
-  for (const section of CONFIG_SECTIONS) {
-    const selectedId = selections[section.id]
-    if (!selectedId) continue
-
+  for (const section of sections) {
     for (const subGroup of section.subGroups) {
+      const selectedId = selections[subGroup.id]
+      if (!selectedId) continue
+
       const option = subGroup.options.find((o) => o.id === selectedId)
-      if (option?.price && option.price > 0) {
+      if (option?.price && option.price > 0 && !option.isStandard) {
         equipmentPrice += option.price
       }
     }
@@ -518,12 +520,38 @@ export function calculateTotal(
   }
 }
 
-export function findOptionById(optionId: string): ConfigOption | undefined {
-  for (const section of CONFIG_SECTIONS) {
+export function findOptionById(
+  optionId: string,
+  sections: ConfigSection[]
+): ConfigOption | undefined {
+  for (const section of sections) {
     for (const subGroup of section.subGroups) {
       const found = subGroup.options.find((o) => o.id === optionId)
       if (found) return found
     }
   }
   return undefined
+}
+
+export function buildSummaryFromSelections(
+  selections: Record<string, string>,
+  sections: ConfigSection[]
+): SelectedEquipmentGroup[] {
+  return sections
+    .map((section) => {
+      const items: ConfigOption[] = []
+      for (const subGroup of section.subGroups) {
+        const selectedId = selections[subGroup.id]
+        if (!selectedId) continue
+        const option = subGroup.options.find((o) => o.id === selectedId)
+        if (option) items.push(option)
+      }
+      return {
+        id: section.id,
+        title: section.title,
+        count: items.length,
+        items,
+      }
+    })
+    .filter((group) => group.count > 0)
 }

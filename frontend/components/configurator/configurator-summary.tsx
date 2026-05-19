@@ -8,10 +8,11 @@ import {
   formatPrice,
   getOptionPriceLabel,
   MSRP_DISCLAIMER,
-  CONFIGURATOR_MODEL,
+  ConfiguratorModel,
 } from '@/lib/configurator-data'
 
 type ConfiguratorSummaryProps = {
+  model: ConfiguratorModel
   equipmentGroups: SelectedEquipmentGroup[]
   totalPrice: number
   equipmentPrice: number
@@ -30,14 +31,18 @@ function EquipmentRow({
   return (
     <div className="flex items-center justify-between py-3 border-b border-[#f0f0f0] last:border-0">
       <div className="flex items-center gap-3 min-w-0">
-        {option.color ? (
+        {option.image ? (
+          <div className="relative w-12 h-12 rounded-md border border-[#d2d2d2] overflow-hidden flex-shrink-0 bg-[#f5f5f5]">
+            <Image src={option.image} alt={option.name} fill unoptimized className="object-cover" />
+          </div>
+        ) : option.color ? (
           <div
             className="w-12 h-12 rounded-md border border-[#d2d2d2] flex-shrink-0"
             style={{ backgroundColor: option.color }}
           />
         ) : (
           <div className="w-12 h-12 rounded-md border border-[#d2d2d2] bg-[#f5f5f5] flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] text-[#999]">911</span>
+            <span className="text-[10px] text-[#999]">—</span>
           </div>
         )}
         <div className="min-w-0">
@@ -65,6 +70,7 @@ function EquipmentRow({
 }
 
 export function ConfiguratorSummary({
+  model,
   equipmentGroups,
   totalPrice,
   equipmentPrice,
@@ -128,9 +134,9 @@ export function ConfiguratorSummary({
             <div className="sticky top-20">
               <div className="mb-6">
                 <h3 className="text-lg font-light text-[#181818] mb-1">
-                  {CONFIGURATOR_MODEL.name}
+                  {model.name}
                 </h3>
-                <p className="text-sm text-[#666] font-light">{CONFIGURATOR_MODEL.year}</p>
+                <p className="text-sm text-[#666] font-light">{model.year}</p>
                 <button
                   type="button"
                   className="text-sm font-light underline underline-offset-2 mt-2 text-[#181818] hover:opacity-70"
@@ -139,15 +145,17 @@ export function ConfiguratorSummary({
                 </button>
               </div>
 
-              <div className="relative h-48 rounded-xl overflow-hidden mb-8 bg-[#f5f5f5]">
-                <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
-                  alt={CONFIGURATOR_MODEL.name}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                />
-              </div>
+              {model.defaultImage && (
+                <div className="relative h-48 rounded-xl overflow-hidden mb-8 bg-[#f5f5f5]">
+                  <Image
+                    src={model.defaultImage}
+                    alt={model.name}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                </div>
+              )}
 
               <h3 className="text-base font-light text-[#181818] mb-2">Total MSRP*</h3>
               <p className="text-4xl font-light text-[#181818] mb-8">{formatPrice(totalPrice)}</p>
@@ -155,7 +163,7 @@ export function ConfiguratorSummary({
               <div className="space-y-4 text-sm mb-8">
                 <div className="flex justify-between">
                   <span className="text-[#666] font-light">Base MSRP</span>
-                  <span className="font-light">{formatPrice(CONFIGURATOR_MODEL.baseMsrp)}</span>
+                  <span className="font-light">{formatPrice(model.baseMsrp)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#666] font-light">Price for Equipment</span>
@@ -165,7 +173,7 @@ export function ConfiguratorSummary({
                   <span className="text-[#666] font-light">
                     Delivery, Processing and Handling Fee
                   </span>
-                  <span className="font-light">{formatPrice(CONFIGURATOR_MODEL.deliveryFee)}</span>
+                  <span className="font-light">{formatPrice(model.deliveryFee)}</span>
                 </div>
               </div>
 

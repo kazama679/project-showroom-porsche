@@ -16,6 +16,7 @@ type ConfiguratorOptionsPanelProps = {
   selections: Record<string, string>
   expandedSections: Record<string, boolean>
   searchQuery: string
+  modelImageUrl?: string
   onSearchChange: (query: string) => void
   onToggleSection: (sectionId: string) => void
   onSelectOption: (sectionId: string, optionId: string, subGroupId?: string) => void
@@ -36,13 +37,16 @@ function ColorSwatch({
       aria-label={option.name}
       title={option.name}
       onClick={onSelect}
-      className={`relative w-10 h-10 rounded-md border-2 transition-all hover:scale-105 ${
+      className={`relative w-14 h-14 rounded-md border-2 overflow-hidden transition-all hover:scale-105 ${
         selected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-[#d2d2d2]'
       }`}
-      style={{ backgroundColor: option.color ?? '#ccc' }}
+      style={!option.image ? { backgroundColor: option.color ?? '#ccc' } : undefined}
     >
+      {option.image && (
+        <Image src={option.image} alt={option.name} fill unoptimized className="object-cover" />
+      )}
       {selected && (
-        <span className="absolute inset-0 flex items-center justify-center">
+        <span className="absolute inset-0 flex items-center justify-center bg-black/20">
           <svg viewBox="0 0 12 12" className="w-4 h-4" aria-hidden="true">
             <path
               d="M2 6l3 3 5-5"
@@ -80,22 +84,20 @@ function OptionCard({
           : 'border-[#e5e5e5] hover:border-[#999] hover:shadow-sm'
       } ${isPackage ? 'bg-white' : ''}`}
     >
-      {option.image && (
-        <div className="relative h-32 bg-[#f0f4f8]">
-          <Image src={option.image} alt={option.name} fill unoptimized className="object-cover" />
-          <span className="absolute top-3 left-3 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center">
-            <Info size={12} className="text-[#666]" />
-          </span>
-        </div>
-      )}
-      <div className={`p-4 ${!option.image ? 'flex items-center justify-between gap-3' : ''}`}>
+      <div className="relative h-32 bg-[#f0f4f8]">
+        <Image src={option.image!} alt={option.name} fill unoptimized className="object-cover" />
+        <span className="absolute top-3 left-3 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center">
+          <Info size={12} className="text-[#666]" />
+        </span>
+      </div>
+      <div className="p-4">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-light text-[#181818] leading-snug">{option.name}</p>
           {option.description && (
             <p className="text-xs text-[#666] font-light mt-1 line-clamp-2">{option.description}</p>
           )}
         </div>
-        <div className={`flex items-center gap-3 ${option.image ? 'mt-3 justify-between' : ''}`}>
+        <div className="flex items-center gap-3 mt-3 justify-between">
           <span
             className={`text-sm font-light ${
               option.isStandard ? 'text-[#666]' : 'text-[#181818]'
@@ -133,11 +135,7 @@ function SubGroupOptions({
   onSelectOption: (sectionId: string, optionId: string, subGroupId?: string) => void
   variant?: 'color' | 'card' | 'list'
 }) {
-  const selectionKey =
-    sectionId === 'seats' && subGroup.id === 'more-seat-options'
-      ? 'rear-seats'
-      : sectionId
-  const selectedId = selections[selectionKey]
+  const selectedId = selections[subGroup.id]
 
   if (variant === 'color') {
     return (
@@ -191,13 +189,16 @@ function SubGroupOptions({
             key={option.id}
             type="button"
             onClick={() => onSelectOption(sectionId, option.id, subGroup.id)}
-            className={`w-full flex items-center justify-between p-3 rounded-lg border text-left transition-all ${
+            className={`w-full flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${
               selectedId === option.id
                 ? 'border-black bg-[#fafafa]'
                 : 'border-[#e5e5e5] hover:border-[#999]'
             }`}
           >
-            <span className="text-sm font-light">{option.name}</span>
+            <div className="relative w-14 h-14 rounded-md overflow-hidden flex-shrink-0 bg-[#f0f4f8]">
+              <Image src={option.image!} alt={option.name} fill unoptimized className="object-cover" />
+            </div>
+            <span className="text-sm font-light flex-1">{option.name}</span>
             <span className="text-sm font-light text-[#666]">{getOptionPriceLabel(option)}</span>
           </button>
         ))}
@@ -206,17 +207,20 @@ function SubGroupOptions({
   )
 }
 
-function getSectionVariant(sectionId: string): 'color' | 'card' | 'list' {
-  if (sectionId === 'exterior-colors' || sectionId === 'interior-material') return 'color'
-  if (sectionId === 'packages' || sectionId === 'seats' || sectionId === 'wheels') return 'card'
+function getSectionVariant(section: ConfigSection): 'color' | 'card' | 'list' {
+  if (section.variant) return section.variant
   return 'list'
 }
+
+const DEFAULT_RECOMMENDATION_IMAGE =
+  'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png'
 
 export function ConfiguratorOptionsPanel({
   sections,
   selections,
   expandedSections,
   searchQuery,
+  modelImageUrl,
   onSearchChange,
   onToggleSection,
   onSelectOption,
@@ -239,7 +243,7 @@ export function ConfiguratorOptionsPanel({
       <div className="mb-6 p-4 bg-[#f5f5f5] rounded-xl flex items-center gap-3">
         <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white">
           <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"
+            src={modelImageUrl || DEFAULT_RECOMMENDATION_IMAGE}
             alt="Recommendation"
             fill
             unoptimized
@@ -269,7 +273,7 @@ export function ConfiguratorOptionsPanel({
       <div className="flex-1 overflow-y-auto pb-32 space-y-1">
         {filteredSections.map((section) => {
           const isExpanded = expandedSections[section.id] !== false
-          const variant = getSectionVariant(section.id)
+          const variant = getSectionVariant(section)
 
           return (
             <div key={section.id} className="border-b border-[#e5e5e5]">
@@ -308,20 +312,6 @@ export function ConfiguratorOptionsPanel({
           </p>
         )}
 
-        {/* Additional collapsed category placeholders like Porsche */}
-        {['Exterior', 'Interior', 'Technology', 'Vehicle accessories', 'Delivery Experience'].map(
-          (title) => (
-            <div key={title} className="border-b border-[#e5e5e5]">
-              <button
-                type="button"
-                className="w-full flex items-center justify-between py-4 text-left hover:bg-[#fafafa] px-1 transition-colors"
-              >
-                <h2 className="text-base font-light text-[#181818]">{title}</h2>
-                <span className="text-xl text-[#999] font-light">+</span>
-              </button>
-            </div>
-          )
-        )}
       </div>
     </div>
   )

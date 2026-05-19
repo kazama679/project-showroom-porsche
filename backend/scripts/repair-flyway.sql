@@ -1,0 +1,2 @@
+-- Only if backend still fails after restart (FlywayConfig repair should fix checksum automatically):
+-- UPDATE flyway_schema_history SET checksum = 2124421856 WHERE version = '3';

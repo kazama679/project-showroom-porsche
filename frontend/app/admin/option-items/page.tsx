@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-react'
 import { DataTable } from '@/components/admin/data-table'
 import { Button } from '@/components/admin/button'
@@ -178,6 +179,24 @@ export default function OptionItemsPage() {
           <DataTable
             columns={[
               { key: 'id', label: 'ID', align: 'center', sortable: true },
+              {
+                key: 'imageUrl',
+                label: t('admin.media_image_url'),
+                align: 'center',
+                render: (v: string | null) =>
+                  v ? (
+                    <Image
+                      src={v}
+                      alt=""
+                      width={56}
+                      height={40}
+                      unoptimized
+                      className="object-cover rounded"
+                    />
+                  ) : (
+                    '—'
+                  ),
+              },
               { key: 'name', label: t('admin.option_item_name'), sortable: true },
               { key: 'optionGroupName', label: t('admin.option_item_group'), sortable: true },
               { key: 'price', label: t('admin.option_item_price'), render: (v: any) => v ? `$${v.toLocaleString()}` : '—' },
@@ -243,6 +262,17 @@ export default function OptionItemsPage() {
 
           <FormInput label="Image URL" value={formData.imageUrl || ''}
             onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} />
+          {formData.imageUrl?.trim() && (
+            <div className="relative w-full h-32 rounded-[2px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+              <Image
+                src={formData.imageUrl}
+                alt="Option preview"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            </div>
+          )}
 
           <div className="flex items-center gap-2 mt-4">
             <input type="checkbox" id="isDefault" checked={formData.isDefault}
