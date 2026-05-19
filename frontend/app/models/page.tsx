@@ -96,6 +96,33 @@ function ModelsContent() {
     return '3.9 s'
   }
 
+  // Dynamic helper to resolve authentic horsepower specifications
+  const getHorsepower = (name: string): string => {
+    const nameLower = name.toLowerCase()
+    if (nameLower.includes('carrera 4s') || nameLower.includes('carrera s')) return '443 hp'
+    if (nameLower.includes('carrera')) return '388 hp'
+    if (nameLower.includes('boxster') || nameLower.includes('cayman')) return '300 hp'
+    if (nameLower.includes('taycan')) return '402 hp'
+    if (nameLower.includes('panamera')) return '348 hp'
+    if (nameLower.includes('cayenne')) return '348 hp'
+    if (nameLower.includes('macan')) return '261 hp'
+    return '388 hp'
+  }
+
+  // Dynamic helper to resolve authentic top speed specifications
+  const getTopSpeed = (name: string): string => {
+    const nameLower = name.toLowerCase()
+    if (nameLower.includes('carrera 4s')) return '190 mph'
+    if (nameLower.includes('carrera s')) return '191 mph'
+    if (nameLower.includes('carrera')) return '183 mph'
+    if (nameLower.includes('boxster') || nameLower.includes('cayman')) return '170 mph'
+    if (nameLower.includes('taycan')) return '161 mph'
+    if (nameLower.includes('panamera')) return '169 mph'
+    if (nameLower.includes('cayenne')) return '154 mph'
+    if (nameLower.includes('macan')) return '144 mph'
+    return '183 mph'
+  }
+
   // Filter models based on the selected series first (for sidebar context counts)
   const seriesModels = useMemo(() => {
     if (selectedSeriesId === null) return allModels
@@ -599,8 +626,8 @@ function ModelsContent() {
                 </button>
               </div>
 
-              {/* Model Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Model Cards Grid with expanded gap to accommodate floating images */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-[150px]">
                 {loading ? (
                   <div className="col-span-1 md:col-span-2 py-32 text-center text-gray-400 font-normal text-[16px] tracking-wide animate-pulse">
                     Loading models...
@@ -612,15 +639,17 @@ function ModelsContent() {
                 ) : (
                   filteredModels.map(model => {
                     const accelerationValue = getAcceleration(model.name)
+                    const horsepowerValue = getHorsepower(model.name)
+                    const topSpeedValue = getTopSpeed(model.name)
                     const driveValue = getDriveType(model)
                     
                     return (
                       <div
                         key={model.id}
-                        className="relative mt-[90px] pt-[130px] rounded-[32px] bg-white border border-gray-100/80 flex flex-col h-full shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-500 group overflow-visible"
+                        className="relative mt-[80px] pt-[115px] rounded-[32px] bg-white border border-gray-100/80 flex flex-col h-full shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-500 group overflow-visible"
                       >
-                        {/* Floating absolute positioned car image */}
-                        <div className="absolute top-[-90px] left-1/2 -translate-x-1/2 w-[90%] max-w-[560px] h-[180px] z-10 pointer-events-none">
+                        {/* Floating absolute positioned car image with balanced shift */}
+                        <div className="absolute top-[-75px] left-1/2 -translate-x-1/2 w-[90%] max-w-[560px] h-[180px] z-10 pointer-events-none">
                           <div className="w-full h-full relative transform group-hover:scale-[1.04] transition-transform duration-500 ease-out">
                             <Image
                               src={model.imageUrl || 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600&h=400&fit=crop'}
@@ -672,14 +701,37 @@ function ModelsContent() {
                             )}
                           </div>
 
-                          {/* Acceleration Spec - Bold modern layout */}
-                          <div className="mb-8 mt-auto pt-4 border-t border-gray-100 flex items-baseline gap-2">
-                            <span className="text-[32px] font-bold text-black leading-none tracking-tight">
-                              {accelerationValue}
-                            </span>
-                            <span className="text-[13px] text-gray-500 font-semibold tracking-wide uppercase select-none">
-                              0 - 60 mph
-                            </span>
+                          {/* Specs Section - Stacked matching official Porsche layout */}
+                          <div className="mt-auto pt-6 border-t border-gray-100 space-y-5 mb-8">
+                            {/* 1. Acceleration */}
+                            <div className="flex flex-col">
+                              <span className="text-[26px] font-bold text-black leading-none tracking-tight">
+                                {accelerationValue}
+                              </span>
+                              <span className="text-[12px] text-gray-500 font-semibold tracking-wide mt-1 select-none">
+                                0 - 60 mph
+                              </span>
+                            </div>
+
+                            {/* 2. Horsepower */}
+                            <div className="flex flex-col">
+                              <span className="text-[26px] font-bold text-black leading-none tracking-tight">
+                                {horsepowerValue}
+                              </span>
+                              <span className="text-[12px] text-gray-500 font-semibold tracking-wide mt-1 select-none">
+                                Max. engine power
+                              </span>
+                            </div>
+
+                            {/* 3. Top Track Speed */}
+                            <div className="flex flex-col">
+                              <span className="text-[26px] font-bold text-black leading-none tracking-tight">
+                                {topSpeedValue}
+                              </span>
+                              <span className="text-[12px] text-gray-500 font-semibold tracking-wide mt-1 select-none">
+                                {model.name.toLowerCase().includes('taycan') ? 'Top track speed' : 'Top track speed (with summer tires)'}
+                              </span>
+                            </div>
                           </div>
 
                           {/* Footer and Interactive buttons */}
