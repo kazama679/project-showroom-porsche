@@ -4,7 +4,7 @@ export const translations = {
   vi: {
     // Navigation
     nav: {
-      menu: 'Menu',
+      menu: 'Thực đơn',
       models: 'Mô hình',
       models_overview: 'Tổng quan mô hình',
       compare: 'So sánh',
@@ -286,6 +286,27 @@ export const translations = {
       edit_body_design: 'Chỉnh sửa Body Design',
       body_design_name: 'Tên Body Design',
       body_design_description: 'Mô tả',
+
+      // Banners management
+      banners: 'Quản lý Banner',
+      banners_management: 'Quản lý Banner trang chủ',
+      banners_subtitle: 'Cấu hình ảnh banner chính (Ảnh 1) và 3 xe nổi bật (Ảnh 2) trên trang chủ',
+      add_banner: 'Thêm Banner mới',
+      edit_banner: 'Chỉnh sửa Banner',
+      banner_title: 'Tiêu đề Banner',
+      banner_type: 'Loại Banner',
+      banner_video_url: 'URL Video',
+      banner_image_url: 'URL Hình ảnh',
+      banner_display_order: 'Thứ tự hiển thị',
+      banner_car_model: 'Xe liên kết',
+      banner_created: 'Thêm banner thành công',
+      banner_updated: 'Cập nhật banner thành công',
+      banner_deleted: 'Xóa banner thành công',
+      banner_confirm_delete: 'Xác nhận xóa banner',
+      banner_confirm_delete_msg: 'Bạn có chắc chắn muốn xóa banner này không? Hành động này không thể hoàn tác.',
+      banner_total: 'Tổng số Banner',
+      search_banners: 'Tìm kiếm banner...',
+      select_car_model: 'Chọn mẫu xe liên kết',
     },
     // Common
     common: {
@@ -588,6 +609,27 @@ export const translations = {
       edit_body_design: 'Edit Body Design',
       body_design_name: 'Body Design Name',
       body_design_description: 'Description',
+
+      // Banners management
+      banners: 'Banners Management',
+      banners_management: 'Homepage Banners Management',
+      banners_subtitle: 'Configure main hero banner (Image 1) and 3 featured vehicle cards (Image 2) on homepage',
+      add_banner: 'Add New Banner',
+      edit_banner: 'Edit Banner',
+      banner_title: 'Banner Title',
+      banner_type: 'Banner Type',
+      banner_video_url: 'Video URL',
+      banner_image_url: 'Image URL',
+      banner_display_order: 'Display Order',
+      banner_car_model: 'Linked Vehicle',
+      banner_created: 'Banner created successfully',
+      banner_updated: 'Banner updated successfully',
+      banner_deleted: 'Banner deleted successfully',
+      banner_confirm_delete: 'Confirm Delete Banner',
+      banner_confirm_delete_msg: 'Are you sure you want to delete this banner? This action cannot be undone.',
+      banner_total: 'Total Banners',
+      search_banners: 'Search banners...',
+      select_car_model: 'Select linked car model',
     },
     // Common
     common: {

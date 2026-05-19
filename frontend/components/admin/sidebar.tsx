@@ -76,6 +76,7 @@ const menuItemsConfig: MenuItem[] = [
     submenu: [
       { labelKey: "admin.blog", href: "/admin/blog" },
       { labelKey: "admin.showrooms", href: "/admin/showrooms" },
+      { labelKey: "admin.banners", href: "/admin/banners" },
     ],
   },
   {

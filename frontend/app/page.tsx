@@ -14,113 +14,198 @@ import {
   Linkedin,
 } from 'lucide-react'
 import { carSeriesService, CarSeries } from '@/lib/car-series'
+import { homeBannerService, HomeBannerItem } from '@/lib/home-banner'
 
 /* =========================
-   HERO
+   HERO (Ảnh 1 in user text)
+   Matches full screen, Cayenne design
 ========================= */
-const HeroSection = () => (
-  <section className="relative w-full h-screen overflow-hidden bg-black">
-    <video
-      className="w-full h-full object-cover"
-      autoPlay
-      loop
-      muted
-      playsInline
-    >
-      <source src="/home/porsche.mp4" type="video/mp4" />
-    </video>
+interface HeroSectionProps {
+  banner: HomeBannerItem | null
+}
 
-    {/* Header */}
-    <header className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-16 py-8 bg-gradient-to-b from-black/70 to-transparent">
-      <button className="text-white flex items-center gap-2 md:hidden">
-        <Menu size={20} />
-        <span className="text-xs tracking-[0.15em]">MENU</span>
-      </button>
+const HeroSection = ({ banner }: HeroSectionProps) => {
+  const [isPlaying, setIsPlaying] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
-      <div className="flex-1 text-center">
-        <h1 className="text-white text-base tracking-[0.22em] font-medium">
-          PORSCHE
-        </h1>
-      </div>
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!videoRef.current) return
+    if (isPlaying) {
+      videoRef.current.pause()
+    } else {
+      videoRef.current.play()
+    }
+    setIsPlaying(!isPlaying)
+  }
 
-      <div className="flex items-center gap-6">
-        <button className="text-white hidden md:block">
-          <Globe size={18} />
+  // Fallbacks if no banner is seeded yet
+  const title = banner?.title || "Cayenne S E-Hybrid."
+  const videoSrc = banner?.videoUrl || "/home/porsche.mp4"
+  const modelId = banner?.carModelId || 2
+
+  return (
+    <section className="relative w-full h-screen overflow-hidden bg-black flex flex-col justify-between">
+      {/* Background Video */}
+      <video
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+        src={videoSrc}
+      />
+
+      {/* Vignette Overlays for readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 pointer-events-none" />
+
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-6 md:px-16 py-8 bg-transparent">
+        <button className="text-white flex items-center gap-2 hover:opacity-85 transition">
+          <Menu size={18} />
+          <span className="text-xs tracking-[0.2em] font-semibold uppercase">Menu</span>
         </button>
 
-        <button className="text-white">
-          <User size={18} />
+        <div className="absolute left-1/2 -translate-x-1/2 text-center">
+          <Link href="/" className="text-white text-base md:text-lg tracking-[0.28em] font-bold font-mono">
+            PORSCHE
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <button className="text-white hover:opacity-85 transition">
+            <Globe size={18} />
+          </button>
+          <Link href="/account-settings" className="text-white hover:opacity-85 transition">
+            <User size={18} />
+          </Link>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex items-center pl-6 md:pl-20">
+        <div className="text-white max-w-2xl">
+          <h2 className="text-5xl md:text-7xl font-semibold leading-[1.08] mb-8 tracking-tight drop-shadow-md whitespace-pre-line">
+            {title}
+          </h2>
+
+          <Link
+            href={`/models/${modelId}`}
+            className="inline-block px-6 py-3.5 bg-neutral-800/60 backdrop-blur-md text-white text-xs tracking-wider font-semibold rounded hover:bg-neutral-700/80 transition border border-white/5 shadow-xl"
+          >
+            Discover more
+          </Link>
+        </div>
+      </div>
+
+      {/* Bottom Bar Controls */}
+      <div className="relative z-10 flex items-center justify-between px-6 md:px-16 pb-12">
+        <div className="w-12"></div> {/* Left spacer */}
+
+        {/* Center Bounce Arrow */}
+        <div className="animate-bounce text-white/80 hover:text-white cursor-pointer transition">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </div>
+
+        {/* Right Pause/Play button */}
+        <button
+          onClick={togglePlay}
+          className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition shadow-lg"
+        >
+          {isPlaying ? (
+            <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4 fill-white ml-0.5" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
         </button>
       </div>
-    </header>
-
-    {/* Content */}
-    <div className="absolute inset-0 flex items-center pl-6 md:pl-20">
-      <div className="text-white max-w-2xl">
-        <h2 className="text-6xl md:text-7xl font-light leading-[1.08] mb-8">
-          The new 911
-          <br />
-          GT3 S/C.
-        </h2>
-
-        <button className="px-5 py-3 bg-white text-black text-sm tracking-[0.15em] font-medium hover:bg-neutral-200 transition">
-          DISCOVER NOW
-        </button>
-      </div>
-    </div>
-  </section>
-)
+    </section>
+  )
+}
 
 /* =========================
-   CARDS
+   CARDS (Ảnh 2 in user text)
+   Matches rounded card grid, Panamera design
 ========================= */
-const CardsSection = () => {
-  const cards = [
-    {
-      title: 'Cayenne.',
-      img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%202-oUaZMP2zdDN2Sam4Jaqt80Sgs8Hsaw.png',
-    },
-    {
-      title: 'Phụ kiện Porsche cho mùa xuân.',
-      img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%202-oUaZMP2zdDN2Sam4Jaqt80Sgs8Hsaw.png',
-    },
+interface CardsSectionProps {
+  banners: HomeBannerItem[]
+}
+
+const CardsSection = ({ banners }: CardsSectionProps) => {
+  // Fallbacks if banners are empty
+  const defaultCards = [
     {
       title: 'Panamera GTS.',
-      img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%202-oUaZMP2zdDN2Sam4Jaqt80Sgs8Hsaw.png',
+      carModelId: 2,
+      imageUrl: 'https://res.cloudinary.com/dfireq2op/image/upload/v1778648038/porsche/cfa3dfd5-c8d8-4a51-869d-21584728d373.avif',
+    },
+    {
+      title: 'Porsche "There is no substitute" Collection.',
+      carModelId: 4,
+      imageUrl: 'https://res.cloudinary.com/dfireq2op/image/upload/v1778661011/porsche/305482cb-a5b2-48cc-8c64-2826fdc29d3b.avif',
+    },
+    {
+      title: '911 Carrera.',
+      carModelId: 5,
+      imageUrl: 'https://res.cloudinary.com/dfireq2op/image/upload/v1778661051/porsche/7c590c2e-342d-4688-9b32-fef59d3850bc.avif',
     },
   ]
+
+  const displayBanners = banners.length >= 3 ? banners.slice(0, 3) : defaultCards
 
   return (
     <section className="bg-white py-24 px-6 md:px-16">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
-          {cards.map((item, i) => (
-            <div
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+          {displayBanners.map((item, i) => (
+            <Link
               key={i}
-              className="relative h-72 overflow-hidden group cursor-pointer"
+              href={`/models/${item.carModelId || 2}`}
+              className="relative h-[300px] rounded-[2.5rem] overflow-hidden group cursor-pointer block shadow-sm hover:shadow-lg transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
             >
               <Image
-                src={item.img}
+                src={item.imageUrl || 'https://res.cloudinary.com/dfireq2op/image/upload/v1778648038/porsche/cfa3dfd5-c8d8-4a51-869d-21584728d373.avif'}
                 alt={item.title}
                 fill
                 unoptimized
-                className="object-cover group-hover:scale-105 transition duration-700"
+                className="object-cover group-hover:scale-105 transition duration-700 ease-out"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              {/* Dark overlay for typography */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
 
-              <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
-                <h3 className="text-white text-xl font-light">
+              {/* Title & Arrow Button container */}
+              <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end gap-4 z-10">
+                <h3 className="text-white text-lg md:text-xl font-medium tracking-tight leading-tight max-w-[75%]">
                   {item.title}
                 </h3>
 
-                <span className="text-white text-xl">→</span>
+                <div className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/35 transition duration-300 transform group-hover:translate-x-1">
+                  <span className="text-base">→</span>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
-        <h2 className="text-5xl md:text-7xl font-light text-center leading-[1.1] max-w-4xl mx-auto">
+        <h2 className="text-5xl md:text-7xl font-light text-neutral-900 leading-[1.1] max-w-4xl tracking-tight pt-10">
           Your Porsche journey starts now.
         </h2>
       </div>
@@ -233,7 +318,6 @@ const ModelCard = ({
 
 /* =========================
    MODELS SECTION
-   HOVER PHÌNH NGANG
 ========================= */
 const ModelsSection = () => {
   const [active, setActive] = useState<number | null>(null)
@@ -323,7 +407,7 @@ const DealershipSection = () => (
         </button>
       </div>
 
-      <div className="md:w-1/2 h-[500px]">
+      <div className="md:w-1/2 h-[500px] relative">
         <Image
           src="https://a.storyblok.com/f/338913/1920x1080/1378ad4037/contentinfo_wide-16-9.jpg/m/1584x891/filters:format(webp):quality(45)"
           alt="dealership"
@@ -405,10 +489,30 @@ const Footer = () => (
    PAGE
 ========================= */
 export default function Home() {
+  const [heroBanner, setHeroBanner] = useState<HomeBannerItem | null>(null)
+  const [cardBanners, setCardBanners] = useState<HomeBannerItem[]>([])
+
+  useEffect(() => {
+    async function loadBanners() {
+      try {
+        const activeHeroes = await homeBannerService.findActiveByType('HERO')
+        if (activeHeroes && activeHeroes.length > 0) {
+          setHeroBanner(activeHeroes[0])
+        }
+
+        const activeCards = await homeBannerService.findActiveByType('CARD')
+        setCardBanners(activeCards)
+      } catch (error) {
+        console.error('Failed to load active banners from DB', error)
+      }
+    }
+    loadBanners()
+  }, [])
+
   return (
     <main className="w-full overflow-hidden">
-      <HeroSection />
-      <CardsSection />
+      <HeroSection banner={heroBanner} />
+      <CardsSection banners={cardBanners} />
       <ModelsSection />
       <DealershipSection />
       <Footer />

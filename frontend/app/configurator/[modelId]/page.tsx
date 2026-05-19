@@ -1,11 +1,13 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { Heart, Share2, ChevronLeft, Loader2 } from 'lucide-react'
-import { ConfiguratorHeader } from '@/components/configurator/configurator-header'
+import { Loader2 } from 'lucide-react'
+import { SiteHeader } from '@/components/layout/site-header'
+import { ConfiguratorToolbar } from '@/components/configurator/configurator-toolbar'
 import { ConfiguratorViewer } from '@/components/configurator/configurator-viewer'
+import { useSiteHeaderVisible } from '@/hooks/use-site-header-visible'
+import { cn } from '@/lib/utils'
 import { ConfiguratorOptionsPanel } from '@/components/configurator/configurator-options-panel'
 import { ConfiguratorBottomBar } from '@/components/configurator/configurator-bottom-bar'
 import { ConfiguratorSummary } from '@/components/configurator/configurator-summary'
@@ -45,6 +47,13 @@ export default function ConfiguratorPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [show360, setShow360] = useState(false)
   const [saved, setSaved] = useState(false)
+  const siteHeaderVisible = useSiteHeaderVisible(56)
+
+  const focusOptionSearch = useCallback(() => {
+    const el = document.getElementById('configurator-option-search') as HTMLInputElement | null
+    el?.focus()
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [])
 
   useEffect(() => {
     if (!modelId || Number.isNaN(modelId)) {
@@ -164,68 +173,29 @@ export default function ConfiguratorPage() {
 
   return (
     <div className="bg-white min-h-screen text-[#181818]">
-      <ConfiguratorHeader />
+      {/* Header 1: global nav — scrolls away with page */}
+      <SiteHeader logoHref="/" />
 
-      <div className="fixed top-14 left-0 right-0 z-40 bg-white border-b border-[#e5e5e5]">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 md:gap-5">
-            <Link
-              href={`/models/${modelId}`}
-              className="p-1.5 hover:bg-[#f5f5f5] rounded-full transition-colors"
-              aria-label="Back"
-            >
-              <ChevronLeft size={20} strokeWidth={1.5} />
-            </Link>
-            <Link
-              href="/models"
-              className="text-sm font-light hover:opacity-70 hidden sm:inline"
-            >
-              Change model
-            </Link>
-            <button
-              type="button"
-              onClick={() => setSaved((s) => !s)}
-              className="flex items-center gap-1.5 text-sm font-light hover:opacity-70"
-            >
-              <Heart size={16} strokeWidth={1.5} fill={saved ? 'currentColor' : 'none'} />
-              <span className="hidden sm:inline">{saved ? 'Saved' : 'Save'}</span>
-            </button>
-            <button
-              type="button"
-              className="flex items-center gap-1.5 text-sm font-light hover:opacity-70"
-            >
-              <Share2 size={16} strokeWidth={1.5} />
-              <span className="hidden md:inline">Create Porsche Code</span>
-            </button>
-          </div>
+      {/* Header 2: configurator toolbar — sticky at top after header 1 is scrolled past */}
+      <ConfiguratorToolbar
+        modelId={modelId}
+        modelName={model.name}
+        totalPrice={total}
+        saved={saved}
+        onToggleSave={() => setSaved((s) => !s)}
+        onSummary={scrollToSummary}
+        onSelectDealer={scrollToSummary}
+        onSearch={focusOptionSearch}
+      />
 
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={scrollToSummary}
-              className="px-4 py-2 text-sm font-light border border-[#d2d2d2] rounded-full hover:border-black transition-colors hidden sm:block"
-            >
-              Summary
-            </button>
-            <button
-              type="button"
-              onClick={scrollToSummary}
-              className="px-4 py-2 text-sm font-light bg-black text-white rounded-full hover:bg-[#303030] transition-colors"
-            >
-              Request details
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <main className="pt-[7.5rem] pb-28">
+      <main className="pb-28">
         <div className="max-w-[1600px] mx-auto px-4 md:px-8">
           {sections.length === 0 ? (
             <p className="text-center text-[#666] font-light py-24">
               No options configured for this model yet. Assign options in Admin → Car Model Options.
             </p>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_440px] gap-6 lg:gap-10 min-h-[calc(100vh-12rem)]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-6 lg:gap-10 min-h-[calc(100vh-12rem)]">
               <ConfiguratorViewer
                 images={galleryImages}
                 activeIndex={activeImageIndex}
@@ -235,7 +205,12 @@ export default function ConfiguratorPage() {
                 onOpen360={() => setShow360(true)}
               />
 
-              <div className="lg:sticky lg:top-32 lg:self-start lg:max-h-[calc(100vh-10rem)] lg:overflow-hidden flex flex-col">
+              <div
+                className={cn(
+                  'lg:sticky lg:self-start lg:max-h-[calc(100vh-10rem)] lg:overflow-hidden flex flex-col transition-[top] duration-200',
+                  siteHeaderVisible ? 'lg:top-[7.25rem]' : 'lg:top-[4.5rem]'
+                )}
+              >
                 <ConfiguratorOptionsPanel
                   sections={sections}
                   selections={selections}
@@ -268,7 +243,7 @@ export default function ConfiguratorPage() {
             totalPrice={total}
             modelName={model.name}
             onSelectDealer={scrollToSummary}
-            onShowSearch={scrollToSummary}
+            onShowSearch={focusOptionSearch}
           />
         </>
       )}

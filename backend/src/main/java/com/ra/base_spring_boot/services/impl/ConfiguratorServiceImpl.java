@@ -225,12 +225,7 @@ public class ConfiguratorServiceImpl implements IConfiguratorService
         {
             return "color";
         }
-        if (combined.contains("mâm") || combined.contains("ghế") || combined.contains("package")
-                || combined.contains("gói"))
-        {
-            return "card";
-        }
-        return "list";
+        return "card";
     }
 
     private String inferColorHex(String name)
