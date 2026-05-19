@@ -9,16 +9,6 @@ import { carSpecService, CarSpecsDTO } from '@/lib/car-specs'
 import { carImageService, CarImage } from '@/lib/car-image'
 import { AnimatedNumber } from '@/components/ui/animated-number'
 
-const variants = [
-  'Coupé',
-  'Cabriolet',
-  'Targa',
-  'GT',
-  'Turbo Coupé',
-  'Turbo Cabriolet',
-  'GT Cabriolet'
-]
-
 function getDriveType(model: CarModelItem, engineDrivetrain?: string | null): string {
   if (engineDrivetrain) return engineDrivetrain
   const nameLower = model.name.toLowerCase()
@@ -54,7 +44,6 @@ export default function ModelDetailPage() {
   const [seriesModels, setSeriesModels] = useState<CarModelItem[]>([])
   const [seriesSpecsMap, setSeriesSpecsMap] = useState<Record<number, CarSpecsDTO>>({})
   const [loading, setLoading] = useState(true)
-  const [selectedVariant, setSelectedVariant] = useState('Coupé')
   const [selectedBodyTypeId, setSelectedBodyTypeId] = useState<number | null>(null)
   const cardsScrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -102,10 +91,6 @@ export default function ModelDetailPage() {
         const res = await carModelService.findAll('', 0, 100, model.seriesId)
         const list = res.content || []
         setSeriesModels(list)
-
-        // default selected body type is the first available for this series
-        const firstBodyTypeId = list.find((m) => m.bodyTypeId)?.bodyTypeId ?? null
-        setSelectedBodyTypeId((prev) => prev ?? firstBodyTypeId)
       } catch (e) {
         console.error('Failed to load series models:', e)
         setSeriesModels([])
@@ -113,6 +98,10 @@ export default function ModelDetailPage() {
     }
     loadSeriesModels()
   }, [model?.seriesId])
+
+  useEffect(() => {
+    if (model?.bodyTypeId) setSelectedBodyTypeId(model.bodyTypeId)
+  }, [id, model?.bodyTypeId])
 
   useEffect(() => {
     async function loadSpecsForCards() {
@@ -190,6 +179,23 @@ export default function ModelDetailPage() {
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
   }, [seriesModels])
 
+  const bodyTypeFirstModelId = useMemo(() => {
+    const map = new Map<number, number>()
+    for (const m of seriesModels) {
+      if (!m.bodyTypeId) continue
+      if (!map.has(m.bodyTypeId)) map.set(m.bodyTypeId, m.id)
+    }
+    return map
+  }, [seriesModels])
+
+  const overviewBodyTypes = useMemo(() => {
+    if (availableBodyTypes.length > 0) return availableBodyTypes
+    if (model?.bodyTypeId && model?.bodyTypeName) {
+      return [{ id: model.bodyTypeId, name: model.bodyTypeName, count: 1 }]
+    }
+    return []
+  }, [availableBodyTypes, model?.bodyTypeId, model?.bodyTypeName])
+
   const filteredSeriesModels = useMemo(() => {
     if (!selectedBodyTypeId) return seriesModels
     return seriesModels.filter((m) => m.bodyTypeId === selectedBodyTypeId)
@@ -229,8 +235,20 @@ export default function ModelDetailPage() {
       </header>
 
       {/* Feedback Button */}
-      <button className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-3 py-8 font-medium text-sm tracking-wider z-40 hover:bg-blue-700 transition-colors writing-vertical-rl">
-        Feedback
+      <button
+        className="
+          fixed right-0 top-1/2 z-40
+          h-[88px] w-[40px]
+          -translate-y-1/2
+          bg-[#1e88f5]
+          text-white
+          flex items-center justify-center
+          transition-colors hover:bg-[#0f7be8]
+        "
+      >
+        <span className="-rotate-90 whitespace-nowrap text-[16px] font-normal leading-none tracking-normal font-sans">
+          Feedback
+        </span>
       </button>
 
       {/* Section 2: Sticky Sub-nav */}
@@ -265,21 +283,32 @@ export default function ModelDetailPage() {
             />
           </div>
 
-          {/* Variant Tabs */}
+          {/* Body Design tabs — series-specific, navigates to first model per body type */}
           <div className="flex justify-center gap-8 mb-12 border-b border-gray-300 pb-4 flex-wrap">
-            {variants.map((variant) => (
-              <button
-                key={variant}
-                onClick={() => setSelectedVariant(variant)}
-                className={`text-sm font-light tracking-wide transition-colors duration-300 pb-2 ${
-                  selectedVariant === variant
-                    ? 'text-black border-b-2 border-black'
-                    : 'text-gray-600 hover:text-black'
-                }`}
-              >
-                {variant}
-              </button>
-            ))}
+            {overviewBodyTypes.length === 0 ? (
+              <span className="text-[14px] text-[#8F8F8F]">No body designs available.</span>
+            ) : (
+              overviewBodyTypes.map((opt) => {
+                const checked = model.bodyTypeId === opt.id
+                const firstModelId = bodyTypeFirstModelId.get(opt.id) ?? (checked ? model.id : null)
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => firstModelId && router.push(`/models/${firstModelId}`)}
+                    disabled={!firstModelId}
+                    aria-label={opt.name}
+                    className={`text-sm cursor-pointer font-light tracking-wide transition-colors duration-300 pb-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                      checked
+                        ? 'text-black border-b-2 border-black'
+                        : 'text-gray-600 hover:text-black'
+                    }`}
+                  >
+                    {opt.name}
+                  </button>
+                )
+              })
+            )}
           </div>
 
           {/* Model Title */}
@@ -306,13 +335,13 @@ export default function ModelDetailPage() {
         <div className="max-w-7xl mx-auto">
           {/* CTA Buttons */}
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-black text-white font-medium text-sm rounded-[2px] hover:bg-gray-900 transition-colors duration-300">
+            <button className="cursor-pointer px-8 py-3 bg-black text-white font-medium text-sm rounded-[2px] hover:bg-gray-900 transition-colors duration-300">
               Change model variant
             </button>
-            <button onClick={() => router.push(`/configurator/${id}`)} className="px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
+            <button onClick={() => router.push(`/configurator/${id}`)} className="cursor-pointer px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
               Build Your Porsche
             </button>
-            <button className="px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
+            <button className="cursor-pointer px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
               New and Used Inventory
             </button>
           </div>
@@ -455,7 +484,8 @@ export default function ModelDetailPage() {
               return (
                 <div
                   key={m.id}
-                  className="relative min-w-[340px] max-w-[340px] pt-[90px] snap-start shrink-0 group"
+                  className="relative min-w-[340px] max-w-[340px] pt-[90px] snap-start shrink-0 group cursor-pointer"
+                  onClick={() => router.push(`/models/${m.id}`)}
                 >
                   {/* Floating car image */}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[92%] h-[140px] z-10 pointer-events-none">
@@ -555,9 +585,9 @@ export default function ModelDetailPage() {
       </section>
 
       {/* Section 7: Detail image order 2 (Image 6) */}
-      <section className="bg-white py-24 px-6 md:px-16">
+      <section className="bg-white px-6 md:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px]">
+          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px] mr-30">
             <Image
               src={detailImageByOrder.order2 || model.imageUrl || ''}
               alt={`${model.name} detail 2`}
@@ -570,7 +600,7 @@ export default function ModelDetailPage() {
       </section>
 
       {/* Section 8: Detail image order 3 (Image 7) */}
-      <section className="bg-white py-24 px-6 md:px-16">
+      <section className="bg-white px-6 md:px-16 relative z-20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
             <h3 className="text-4xl md:text-5xl font-light text-black mb-6">The one and always.</h3>
@@ -578,7 +608,7 @@ export default function ModelDetailPage() {
               {model.shortDescription || 'A timeless silhouette refined through engineering, with performance and day-to-day usability in perfect balance.'}
             </p>
           </div>
-          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px]">
+          <div className="rounded-[28px] my-[-80px] overflow-hidden bg-[#F5F5F5] relative h-[720px] w-[600px]">
             <Image
               src={detailImageByOrder.order3 || model.imageUrl || ''}
               alt={`${model.name} detail 3`}
@@ -591,9 +621,9 @@ export default function ModelDetailPage() {
       </section>
 
       {/* Section 9: Detail image order 4 (Image 8) */}
-      <section className="bg-white py-24 px-6 md:px-16">
+      <section className="bg-white px-6 md:px-16 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px]">
+          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px] w-[700px] ml-50">
             <Image
               src={detailImageByOrder.order4 || model.imageUrl || ''}
               alt={`${model.name} detail 4`}
