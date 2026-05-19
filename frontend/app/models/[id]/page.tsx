@@ -386,10 +386,9 @@ export default function ModelDetailPage() {
       </section>
 
       {/* Section 6: Which model is right for you? (911-style horizontal carousel) */}
-      <section className="bg-white">
-        <div className="max-w-full mx-auto">
-          {/* Top filter bar + carousel controls */}
-          <div className="flex items-center justify-between gap-6 mb-10 p-4 px-50 border-b border-gray-100">
+      <section className="bg-white py-24">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between gap-6 mb-10 pb-4 border-b border-gray-100">
             <div className="flex items-center gap-1 md:gap-2 flex-wrap">
               {availableBodyTypes.length === 0 ? (
                 <span className="text-[14px] text-[#8F8F8F]">No body designs available.</span>
@@ -402,7 +401,7 @@ export default function ModelDetailPage() {
                       type="button"
                       onClick={() => setSelectedBodyTypeId(opt.id)}
                       aria-label={opt.name}
-                      className={`px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
+                      className={`px-4 cursor-pointer py-2 rounded-full text-[14px] font-semibold transition-colors ${
                         checked
                           ? 'bg-black text-white'
                           : 'text-black hover:bg-gray-100'
@@ -418,25 +417,31 @@ export default function ModelDetailPage() {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 aria-label="Scroll left"
-                className="w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
+                className="cursor-pointer w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
                 onClick={() => cardsScrollRef.current?.scrollBy({ left: -420, behavior: 'smooth' })}
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 aria-label="Scroll right"
-                className="w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
+                className="cursor-pointer w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
                 onClick={() => cardsScrollRef.current?.scrollBy({ left: 420, behavior: 'smooth' })}
               >
                 <ChevronRight size={16} />
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Horizontal model cards */}
+        {/*
+          Full-bleed carousel: scroll track spans the viewport so cards can scroll
+          into the side margins. pl/pr match the content inset so the first card
+          lines up with the filter bar until the user scrolls (Porsche-style).
+        */}
+        <div className="relative left-1/2 -translate-x-1/2 w-screen max-w-[100vw]">
           <div
             ref={cardsScrollRef}
-            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth pl-[max(1.5rem,calc((100vw-90rem)/2+1.5rem))] md:pl-[max(3rem,calc((100vw-90rem)/2+3rem))] pr-[max(1.5rem,calc((100vw-90rem)/2+1.5rem))] md:pr-[max(3rem,calc((100vw-90rem)/2+3rem))] scroll-pl-[max(1.5rem,calc((100vw-90rem)/2+1.5rem))] md:scroll-pl-[max(3rem,calc((100vw-90rem)/2+3rem))] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             {filteredSeriesModels.map((m) => {
               const cardSpecs = seriesSpecsMap[m.id]
@@ -545,7 +550,6 @@ export default function ModelDetailPage() {
                 </div>
               )
             })}
-            <div className="min-w-[24px] shrink-0" aria-hidden="true" />
           </div>
         </div>
       </section>
