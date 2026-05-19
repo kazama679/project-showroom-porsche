@@ -19,6 +19,30 @@ const variants = [
   'GT Cabriolet'
 ]
 
+function getDriveType(model: CarModelItem, engineDrivetrain?: string | null): string {
+  if (engineDrivetrain) return engineDrivetrain
+  const nameLower = model.name.toLowerCase()
+  if (
+    nameLower.includes(' 4') ||
+    nameLower.includes(' 4s') ||
+    nameLower.includes('all-wheel') ||
+    nameLower.includes('awd') ||
+    nameLower.includes('4 e-hybrid')
+  ) {
+    return 'All-Wheel Drive'
+  }
+  return 'Rear-Wheel Drive'
+}
+
+function formatTransmission(transmission: string | null): string | null {
+  if (!transmission) return null
+  if (transmission.toLowerCase().includes('manual')) return 'Manual'
+  if (transmission.toLowerCase().includes('pdk') || transmission.toLowerCase().includes('automatic')) {
+    return 'PDK'
+  }
+  return transmission.includes('(') ? transmission.split(' ')[0] : transmission
+}
+
 export default function ModelDetailPage() {
   const params = useParams()
   const router = useRouter()
@@ -28,7 +52,7 @@ export default function ModelDetailPage() {
   const [specs, setSpecs] = useState<CarSpecsDTO | null>(null)
   const [detailImages, setDetailImages] = useState<CarImage[]>([])
   const [seriesModels, setSeriesModels] = useState<CarModelItem[]>([])
-  const [seriesPerfMap, setSeriesPerfMap] = useState<Record<number, CarSpecsDTO['performance']>>({})
+  const [seriesSpecsMap, setSeriesSpecsMap] = useState<Record<number, CarSpecsDTO>>({})
   const [loading, setLoading] = useState(true)
   const [selectedVariant, setSelectedVariant] = useState('Coupé')
   const [selectedBodyTypeId, setSelectedBodyTypeId] = useState<number | null>(null)
@@ -91,7 +115,7 @@ export default function ModelDetailPage() {
   }, [model?.seriesId])
 
   useEffect(() => {
-    async function loadPerfForCards() {
+    async function loadSpecsForCards() {
       const list = seriesModels.slice(0, 12)
       if (list.length === 0) return
       try {
@@ -99,20 +123,22 @@ export default function ModelDetailPage() {
           list.map(async (m) => {
             try {
               const s = await carSpecService.getSpecsByCarModelId(m.id)
-              return [m.id, s.performance] as const
+              return [m.id, s] as const
             } catch {
               return [m.id, null] as const
             }
           })
         )
-        const next: Record<number, CarSpecsDTO['performance']> = {}
-        for (const [modelId, perf] of results) next[modelId] = perf
-        setSeriesPerfMap(next)
+        const next: Record<number, CarSpecsDTO> = {}
+        for (const [modelId, specsData] of results) {
+          if (specsData) next[modelId] = specsData
+        }
+        setSeriesSpecsMap(next)
       } catch (e) {
         console.error('Failed to load series specs:', e)
       }
     }
-    loadPerfForCards()
+    loadSpecsForCards()
   }, [seriesModels])
 
   const perf = specs?.performance
@@ -359,138 +385,167 @@ export default function ModelDetailPage() {
         </div>
       </section>
 
-      {/* Section 6: Which model is right for you? (Images 3-5 style) */}
-      <section className="bg-white py-24 px-6 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <h3 className="text-4xl md:text-5xl font-light text-black text-center mb-10">
-            Which {model.seriesName || 'model'} is the right one for you?
-          </h3>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Filters */}
-            <aside className="lg:col-span-3">
-              <div className="border border-[#EBEBEB] rounded-[16px] p-6 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-                <h4 className="text-black font-semibold text-[15px] mb-4">Body Design</h4>
-
-                {availableBodyTypes.length === 0 ? (
-                  <div className="text-[14px] text-[#8F8F8F]">No body designs available.</div>
-                ) : (
-                  <div className="inline-flex flex-wrap gap-2 rounded-[999px] bg-[#F5F5F5] p-1" aria-label="Body Design">
-                    {availableBodyTypes.map((opt) => {
-                      const checked = selectedBodyTypeId === opt.id
-                      return (
-                        <button
-                          key={opt.id}
-                          type="button"
-                          onClick={() => setSelectedBodyTypeId(opt.id)}
-                          aria-label={opt.name}
-                          className={`px-4 py-2 rounded-[999px] text-[13px] font-medium transition-colors ${
-                            checked ? 'bg-black text-white' : 'text-black hover:bg-white'
-                          }`}
-                        >
-                          {opt.name} <span className={checked ? 'text-white/80' : 'text-[#8F8F8F]'}>({opt.count})</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            </aside>
-
-            {/* Cards */}
-            <div className="lg:col-span-9">
-              <div className="flex items-center justify-end gap-3 mb-4">
-                <button
-                  aria-label="Scroll left"
-                  className="w-10 h-10 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
-                  onClick={() => cardsScrollRef.current?.scrollBy({ left: -520, behavior: 'smooth' })}
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <button
-                  aria-label="Scroll right"
-                  className="w-10 h-10 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
-                  onClick={() => cardsScrollRef.current?.scrollBy({ left: 520, behavior: 'smooth' })}
-                >
-                  <ChevronRight size={18} />
-                </button>
-              </div>
-
-              <div
-                ref={cardsScrollRef}
-                className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth"
-              >
-                {filteredSeriesModels.map((m) => {
-                  const perf = seriesPerfMap[m.id]
-                  const accel = perf?.acceleration0100 ?? null
-                  const hp = perf?.horsepower ?? null
-                  const top = perf?.topSpeed ?? null
+      {/* Section 6: Which model is right for you? (911-style horizontal carousel) */}
+      <section className="bg-white">
+        <div className="max-w-full mx-auto">
+          {/* Top filter bar + carousel controls */}
+          <div className="flex items-center justify-between gap-6 mb-10 p-4 px-50 border-b border-gray-100">
+            <div className="flex items-center gap-1 md:gap-2 flex-wrap">
+              {availableBodyTypes.length === 0 ? (
+                <span className="text-[14px] text-[#8F8F8F]">No body designs available.</span>
+              ) : (
+                availableBodyTypes.map((opt) => {
+                  const checked = selectedBodyTypeId === opt.id
                   return (
-                    <div
-                      key={m.id}
-                      className="min-w-[320px] max-w-[320px] bg-[#F5F5F5] rounded-[24px] p-6 snap-start"
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setSelectedBodyTypeId(opt.id)}
+                      aria-label={opt.name}
+                      className={`px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
+                        checked
+                          ? 'bg-black text-white'
+                          : 'text-black hover:bg-gray-100'
+                      }`}
                     >
-                      <div className="flex justify-center mb-3 relative w-full h-24">
-                        <Image
-                          src={m.imageUrl || model.imageUrl || ''}
-                          alt={m.name}
-                          fill
-                          unoptimized
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="text-[20px] font-normal text-black mb-1">{m.name}</div>
-                      <div className="text-[#8F8F8F] text-[12px] mb-4">
-                        From $ {m.basePrice?.toLocaleString()}<sup>¹</sup>
-                      </div>
+                      {opt.name}
+                    </button>
+                  )
+                })
+              )}
+            </div>
 
-                      <div className="space-y-5">
-                        <div>
-                          <div className="text-[20px] font-normal text-black tabular-nums">
-                            <AnimatedNumber value={accel} decimals={1} durationMs={900} /> <span className="text-[14px]">s</span>
-                          </div>
-                          <div className="text-[#8F8F8F] text-[11px]">0 - 100 km/h</div>
-                        </div>
-                        <div>
-                          <div className="text-[20px] font-normal text-black tabular-nums">
-                            <AnimatedNumber value={hp} decimals={0} durationMs={900} /> <span className="text-[14px]">hp</span>
-                          </div>
-                          <div className="text-[#8F8F8F] text-[11px]">Max. engine power</div>
-                        </div>
-                        <div>
-                          <div className="text-[20px] font-normal text-black tabular-nums">
-                            <AnimatedNumber value={top} decimals={0} durationMs={900} /> <span className="text-[14px]">km/h</span>
-                          </div>
-                          <div className="text-[#8F8F8F] text-[11px]">Top track speed</div>
-                        </div>
-                      </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                aria-label="Scroll left"
+                className="w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
+                onClick={() => cardsScrollRef.current?.scrollBy({ left: -420, behavior: 'smooth' })}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                aria-label="Scroll right"
+                className="w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
+                onClick={() => cardsScrollRef.current?.scrollBy({ left: 420, behavior: 'smooth' })}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
 
-                      <div className="mt-6 flex gap-3">
-                        <button
-                          onClick={() => router.push(`/models/${m.id}`)}
-                          className="flex-1 bg-black text-white py-3 rounded-[8px] text-[13px] font-medium hover:bg-gray-900 transition-colors"
-                        >
-                          Explore in Detail
-                        </button>
-                        <button className="flex-1 bg-white border border-black text-black py-3 rounded-[8px] text-[13px] font-medium hover:bg-gray-50 transition-colors">
-                          Configure
-                        </button>
+          {/* Horizontal model cards */}
+          <div
+            ref={cardsScrollRef}
+            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {filteredSeriesModels.map((m) => {
+              const cardSpecs = seriesSpecsMap[m.id]
+              const perf = cardSpecs?.performance
+              const accel = perf?.acceleration0100 ?? null
+              const hp = perf?.horsepower ?? null
+              const top = perf?.topSpeed ?? null
+              const driveValue = getDriveType(m, cardSpecs?.engine?.drivetrain)
+              const transmissionLabel = formatTransmission(m.transmission)
+
+              return (
+                <div
+                  key={m.id}
+                  className="relative min-w-[340px] max-w-[340px] pt-[90px] snap-start shrink-0 group"
+                >
+                  {/* Floating car image */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[92%] h-[140px] z-10 pointer-events-none">
+                    <div className="relative w-full h-full transform group-hover:scale-[1.03] transition-transform duration-500">
+                      <Image
+                        src={m.imageUrl || model.imageUrl || ''}
+                        alt={m.name}
+                        fill
+                        unoptimized
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Card body */}
+                  <div className="bg-[#F5F5F5] rounded-t-[20px] rounded-b-[16px] px-6 pt-6 pb-5 flex flex-col min-h-[520px]">
+                    <h4 className="text-[22px] font-bold text-black leading-tight mb-1">{m.name}</h4>
+                    <p className="text-[15px] text-gray-800 font-medium mb-4">
+                      From $ {m.basePrice?.toLocaleString()}<sup className="text-[11px]">¹</sup>
+                    </p>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      <span className="px-3 py-1 bg-black text-white text-[12px] font-semibold rounded-full">
+                        {m.year || '2026'}
+                      </span>
+                      {m.fuelType && (
+                        <span className="px-3 py-1 bg-[#EBEBEB] text-gray-800 text-[12px] font-semibold rounded-full">
+                          {m.fuelType}
+                        </span>
+                      )}
+                      <span className="px-3 py-1 bg-[#EBEBEB] text-gray-800 text-[12px] font-semibold rounded-full">
+                        {driveValue}
+                      </span>
+                      {transmissionLabel && (
+                        <span className="px-3 py-1 bg-[#EBEBEB] text-gray-800 text-[12px] font-semibold rounded-full">
+                          {transmissionLabel}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Specs */}
+                    <div className="space-y-5 flex-grow">
+                      <div>
+                        <div className="text-[26px] font-bold text-black leading-none tabular-nums">
+                          <AnimatedNumber value={accel} decimals={1} durationMs={900} />
+                          {accel != null && <span className="text-[20px] font-bold"> s</span>}
+                        </div>
+                        <div className="text-[12px] text-gray-500 font-semibold mt-1">0 - 60 mph</div>
+                      </div>
+                      <div>
+                        <div className="text-[26px] font-bold text-black leading-none tabular-nums">
+                          <AnimatedNumber
+                            value={hp}
+                            decimals={0}
+                            durationMs={900}
+                            format={(v) => Math.round(v).toLocaleString()}
+                          />
+                          {hp != null && <span className="text-[20px] font-bold"> hp</span>}
+                        </div>
+                        <div className="text-[12px] text-gray-500 font-semibold mt-1">Max. engine power</div>
+                      </div>
+                      <div>
+                        <div className="text-[26px] font-bold text-black leading-none tabular-nums">
+                          <AnimatedNumber
+                            value={top}
+                            decimals={0}
+                            durationMs={900}
+                            format={(v) => Math.round(v).toLocaleString()}
+                          />
+                          {top != null && <span className="text-[20px] font-bold"> mph</span>}
+                        </div>
+                        <div className="text-[12px] text-gray-500 font-semibold mt-1">
+                          Top track speed (with summer tires)
+                        </div>
                       </div>
                     </div>
-                  )
-                })}
-              </div>
 
-              <div className="mt-10 text-center">
-                <button
-                  onClick={() => router.push('/compare-models')}
-                  className="inline-flex items-center gap-3 px-8 py-3.5 bg-[#EBEBEB] text-black font-medium text-[14px] rounded-[999px] hover:bg-[#D2D2D2] transition-colors"
-                >
-                  <span>→</span>
-                  <span>Compare details</span>
-                </button>
-              </div>
-            </div>
+                    {/* Disclaimer */}
+                    <p className="text-[11px] text-gray-400 leading-relaxed mt-6">
+                      ¹ Manufacturer&apos;s Suggested Retail Price. Excludes options; taxes; title; registration; delivery, processing and handling fee; dealer charges; potential tariffs. Dealer sets actual selling price.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/models/${m.id}`)}
+                      className="mt-4 text-left text-[13px] font-bold text-black underline underline-offset-4 hover:text-gray-600 transition-colors"
+                    >
+                      Technical data and standard equipment
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+            <div className="min-w-[24px] shrink-0" aria-hidden="true" />
           </div>
         </div>
       </section>
