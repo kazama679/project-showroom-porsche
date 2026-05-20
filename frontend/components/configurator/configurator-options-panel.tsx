@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import { ChevronRight, Info, Search } from 'lucide-react'
 import {
@@ -79,6 +80,8 @@ function OptionCard({
   selected: boolean
   onSelect: () => void
 }) {
+  const [aspect, setAspect] = useState<number | null>(null)
+
   return (
     <button
       type="button"
@@ -89,13 +92,19 @@ function OptionCard({
           : 'border-[#e5e5e5] hover:border-[#b0b0b0] hover:shadow-sm'
       }`}
     >
-      <div className="relative aspect-[4/3] w-full bg-[#eef1f5]">
+      <div className="relative aspect-[4/3] w-full bg-white border-b border-[#f0f0f0]">
         <Image 
           src={option.image || 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'} 
           alt={option.name} 
           fill 
           unoptimized 
-          className="object-cover" 
+          className={aspect && aspect > 1.35 ? "object-cover" : "object-contain p-2"} 
+          onLoad={(e) => {
+            const img = e.target as HTMLImageElement
+            if (img.naturalWidth && img.naturalHeight) {
+              setAspect(img.naturalWidth / img.naturalHeight)
+            }
+          }}
         />
         <span
           className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow-sm"

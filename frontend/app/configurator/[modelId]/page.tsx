@@ -47,6 +47,7 @@ export default function ConfiguratorPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [show360, setShow360] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [showBottomBar, setShowBottomBar] = useState(false)
   const siteHeaderVisible = useSiteHeaderVisible(56)
 
   const focusOptionSearch = useCallback(() => {
@@ -115,6 +116,19 @@ export default function ConfiguratorPage() {
       document.getElementById('section-summary')?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [loading])
+
+  useEffect(() => {
+    if (loading || sections.length === 0) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowBottomBar(entry.isIntersecting)
+      },
+      { rootMargin: '0px', threshold: 0 }
+    )
+    const summary = document.getElementById('section-summary')
+    if (summary) observer.observe(summary)
+    return () => observer.disconnect()
+  }, [loading, sections.length])
 
   const handleSelectOption = useCallback(
     (_sectionId: string, optionId: string, subGroupId?: string) => {
@@ -238,8 +252,10 @@ export default function ConfiguratorPage() {
 
               <div
                 className={cn(
-                  'lg:sticky lg:self-start lg:max-h-[calc(100vh-10rem)] lg:overflow-hidden flex flex-col transition-[top] duration-200',
-                  siteHeaderVisible ? 'lg:top-[7.25rem]' : 'lg:top-[4.5rem]'
+                  'lg:sticky lg:overflow-hidden flex flex-col transition-all duration-200',
+                  siteHeaderVisible 
+                    ? 'lg:top-[7.25rem] lg:h-[calc(100vh-7.25rem)]' 
+                    : 'lg:top-[4.5rem] lg:h-[calc(100vh-4.5rem)]'
                 )}
               >
                 <ConfiguratorOptionsPanel
@@ -270,12 +286,14 @@ export default function ConfiguratorPage() {
             onChangeOption={handleChangeEquipment}
           />
 
-          <ConfiguratorBottomBar
-            totalPrice={total}
-            modelName={model.name}
-            onSelectDealer={scrollToSummary}
-            onShowSearch={focusOptionSearch}
-          />
+          {showBottomBar && (
+            <ConfiguratorBottomBar
+              totalPrice={total}
+              modelName={model.name}
+              onSelectDealer={scrollToSummary}
+              onShowSearch={focusOptionSearch}
+            />
+          )}
         </>
       )}
 
