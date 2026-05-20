@@ -47,7 +47,7 @@ export function ConfiguratorViewer({
         </button>
       </div>
 
-      <div className="relative flex-1 min-h-[280px] md:min-h-[420px] bg-[#f5f5f5] rounded-xl overflow-hidden group">
+      <div className="relative flex-1 min-h-[280px] md:min-h-[420px] bg-[#f5f5f5] rounded-xl overflow-hidden group mt-[-1px]">
         <Image
           src={activeImage.src}
           alt={activeImage.alt}

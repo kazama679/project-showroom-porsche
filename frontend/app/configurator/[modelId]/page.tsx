@@ -226,7 +226,7 @@ export default function ConfiguratorPage() {
               No options configured for this model yet. Assign options in Admin → Car Model Options.
             </p>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-6 lg:gap-10 min-h-[calc(100vh-12rem)]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-6 lg:gap-10 min-h-[calc(100vh-12rem)] mt-6">
               <ConfiguratorViewer
                 images={galleryImages}
                 activeIndex={activeImageIndex}

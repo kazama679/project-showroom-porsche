@@ -235,28 +235,8 @@ export function ConfiguratorOptionsPanel({
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      <div className="mb-6 p-4 bg-[#f5f5f5] rounded-xl flex items-center gap-3">
-        <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white">
-          <Image
-            src={modelImageUrl || DEFAULT_RECOMMENDATION_IMAGE}
-            alt="Recommendation"
-            fill
-            unoptimized
-            className="object-cover"
-          />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-light text-[#181818]">Discover configuration recommendations</p>
-          <button
-            type="button"
-            className="flex items-center gap-1 text-sm font-light text-[#3860BE] mt-1 hover:underline"
-          >
-            See all <ChevronRight size={14} />
-          </button>
-        </div>
-      </div>
-
-      <div className="relative mb-6">
+      
+      <div className="relative mb-7">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666]" />
         <input
           type="search"
