@@ -40,7 +40,7 @@ export default function ConfiguratorPage() {
   const [model, setModel] = useState<ConfiguratorModel | null>(null)
   const [sections, setSections] = useState<ConfigSection[]>([])
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(FALLBACK_GALLERY)
-  const [selections, setSelections] = useState<Record<string, string>>({})
+  const [selections, setSelections] = useState<Record<string, string[]>>({})
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({})
   const [expandedSummaryGroups, setExpandedSummaryGroups] = useState<Record<string, boolean>>({})
   const [activeImageIndex, setActiveImageIndex] = useState(0)
@@ -119,10 +119,41 @@ export default function ConfiguratorPage() {
   const handleSelectOption = useCallback(
     (_sectionId: string, optionId: string, subGroupId?: string) => {
       const key = subGroupId ?? _sectionId
-      setSelections((prev) => ({ ...prev, [key]: optionId }))
+      setSelections((prev) => {
+        const section = sections.find((s) => s.id === _sectionId)
+        const subGroup = section?.subGroups.find((sg) => sg.id === key)
+        const selectionType = subGroup?.selectionType ?? 'SINGLE'
+        const current = prev[key] ?? []
+
+        if (selectionType === 'MULTIPLE') {
+          const exists = current.includes(optionId)
+          return {
+            ...prev,
+            [key]: exists ? current.filter((id) => id !== optionId) : [...current, optionId],
+          }
+        }
+
+        const newSelections = { ...prev }
+
+        // Allow only 1 option to be selected across all SubGroups within Exterior Colors
+        if (
+          section &&
+          (section.title.toLowerCase().includes('màu sắc ngoại thất') ||
+            section.title.toLowerCase().includes('exterior color') ||
+            section.title.toLowerCase().includes('exterior colors'))
+        ) {
+          for (const sg of section.subGroups) {
+            delete newSelections[sg.id]
+          }
+        }
+
+        newSelections[key] = [optionId]
+
+        return newSelections
+      })
       setActiveImageIndex(0)
     },
-    []
+    [sections]
   )
 
   const handleToggleSection = useCallback((sectionId: string) => {

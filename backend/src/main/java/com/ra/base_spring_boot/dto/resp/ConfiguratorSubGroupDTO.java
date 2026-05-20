@@ -15,5 +15,6 @@ public class ConfiguratorSubGroupDTO
 {
     private String id;
     private String title;
+    private String selectionType;
     private List<ConfiguratorOptionDTO> options;
 }

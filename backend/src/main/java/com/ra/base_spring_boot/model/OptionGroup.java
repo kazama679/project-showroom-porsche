@@ -25,4 +25,7 @@ public class OptionGroup
 
     @Column(name = "display_order")
     private Integer displayOrder;
+
+    @Column(name = "selection_type", nullable = false, length = 20)
+    private String selectionType;
 }

@@ -97,6 +97,7 @@ public class ConfiguratorServiceImpl implements IConfiguratorService {
                                 return ConfiguratorSubGroupDTO.builder()
                                         .id("group-" + group.getId())
                                         .title(group.getName())
+                                        .selectionType(group.getSelectionType() == null ? "SINGLE" : group.getSelectionType())
                                         .options(options)
                                         .build();
                             })

@@ -12,7 +12,7 @@ import {
 
 type ConfiguratorOptionsPanelProps = {
   sections: ConfigSection[]
-  selections: Record<string, string>
+  selections: Record<string, string[]>
   expandedSections: Record<string, boolean>
   searchQuery: string
   modelImageUrl?: string
@@ -90,7 +90,13 @@ function OptionCard({
       }`}
     >
       <div className="relative aspect-[4/3] w-full bg-[#eef1f5]">
-        <Image src={option.image!} alt={option.name} fill unoptimized className="object-cover" />
+        <Image 
+          src={option.image || 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'} 
+          alt={option.name} 
+          fill 
+          unoptimized 
+          className="object-cover" 
+        />
         <span
           className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow-sm"
           aria-hidden="true"
@@ -140,10 +146,10 @@ function SubGroupOptions({
 }: {
   subGroup: ConfigSubGroup
   section: ConfigSection
-  selections: Record<string, string>
+  selections: Record<string, string[]>
   onSelectOption: (sectionId: string, optionId: string, subGroupId?: string) => void
 }) {
-  const selectedId = selections[subGroup.id]
+  const selectedIds = selections[subGroup.id] ?? []
   const isColor = isColorSubGroup(section, subGroup)
 
   if (isColor) {
@@ -165,7 +171,7 @@ function SubGroupOptions({
             <ColorSwatch
               key={option.id}
               option={option}
-              selected={selectedId === option.id}
+              selected={selectedIds.includes(option.id)}
               onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
             />
           ))}
@@ -192,7 +198,7 @@ function SubGroupOptions({
           <OptionCard
             key={option.id}
             option={option}
-            selected={selectedId === option.id}
+            selected={selectedIds.includes(option.id)}
             onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
           />
         ))}

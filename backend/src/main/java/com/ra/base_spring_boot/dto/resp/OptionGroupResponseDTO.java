@@ -17,6 +17,7 @@ public class OptionGroupResponseDTO
     private String categoryName;
     private String name;
     private Integer displayOrder;
+    private String selectionType;
 
     public static OptionGroupResponseDTO fromEntity(OptionGroup entity)
     {
@@ -26,6 +27,7 @@ public class OptionGroupResponseDTO
             .categoryName(entity.getCategory() != null ? entity.getCategory().getName() : null)
             .name(entity.getName())
             .displayOrder(entity.getDisplayOrder())
+            .selectionType(entity.getSelectionType())
             .build();
     }
 }

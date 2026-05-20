@@ -12,6 +12,7 @@ export type ConfigOption = {
 export type ConfigSubGroup = {
   id: string
   title: string
+  selectionType?: 'SINGLE' | 'MULTIPLE'
   fromPrice?: number
   options: ConfigOption[]
 }
@@ -497,19 +498,21 @@ export function getSubGroupPriceLabel(subGroup: ConfigSubGroup): string {
 export function calculateTotal(
   baseMsrp: number,
   deliveryFee: number,
-  selections: Record<string, string>,
+  selections: Record<string, string[]>,
   sections: ConfigSection[]
 ): { equipmentPrice: number; total: number } {
   let equipmentPrice = 0
 
   for (const section of sections) {
     for (const subGroup of section.subGroups) {
-      const selectedId = selections[subGroup.id]
-      if (!selectedId) continue
+      const selectedIds = selections[subGroup.id] ?? []
+      if (selectedIds.length === 0) continue
 
-      const option = subGroup.options.find((o) => o.id === selectedId)
-      if (option?.price && option.price > 0 && !option.isStandard) {
-        equipmentPrice += option.price
+      for (const selectedId of selectedIds) {
+        const option = subGroup.options.find((o) => o.id === selectedId)
+        if (option?.price && option.price > 0 && !option.isStandard) {
+          equipmentPrice += option.price
+        }
       }
     }
   }
@@ -534,17 +537,19 @@ export function findOptionById(
 }
 
 export function buildSummaryFromSelections(
-  selections: Record<string, string>,
+  selections: Record<string, string[]>,
   sections: ConfigSection[]
 ): SelectedEquipmentGroup[] {
   return sections
     .map((section) => {
       const items: ConfigOption[] = []
       for (const subGroup of section.subGroups) {
-        const selectedId = selections[subGroup.id]
-        if (!selectedId) continue
-        const option = subGroup.options.find((o) => o.id === selectedId)
-        if (option) items.push(option)
+        const selectedIds = selections[subGroup.id] ?? []
+        if (selectedIds.length === 0) continue
+        for (const selectedId of selectedIds) {
+          const option = subGroup.options.find((o) => o.id === selectedId)
+          if (option) items.push(option)
+        }
       }
       return {
         id: section.id,

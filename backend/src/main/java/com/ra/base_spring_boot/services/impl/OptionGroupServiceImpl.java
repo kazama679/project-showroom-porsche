@@ -65,6 +65,9 @@ public class OptionGroupServiceImpl implements IOptionGroupService
                 .category(category)
                 .name(form.getName())
                 .displayOrder(form.getDisplayOrder())
+                .selectionType(form.getSelectionType() == null || form.getSelectionType().isBlank()
+                        ? "SINGLE"
+                        : form.getSelectionType().trim().toUpperCase())
                 .build();
 
         return OptionGroupResponseDTO.fromEntity(optionGroupRepository.save(entity));
@@ -94,6 +97,9 @@ public class OptionGroupServiceImpl implements IOptionGroupService
         oldGroup.setCategory(category);
         oldGroup.setName(form.getName());
         oldGroup.setDisplayOrder(form.getDisplayOrder());
+        oldGroup.setSelectionType(form.getSelectionType() == null || form.getSelectionType().isBlank()
+                ? "SINGLE"
+                : form.getSelectionType().trim().toUpperCase());
 
         return OptionGroupResponseDTO.fromEntity(optionGroupRepository.save(oldGroup));
     }

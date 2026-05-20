@@ -30,6 +30,7 @@ export interface ConfiguratorApiSection {
 export interface ConfiguratorApiSubGroup {
   id: string
   title: string
+  selectionType?: 'SINGLE' | 'MULTIPLE'
   options: ConfiguratorApiOption[]
 }
 
@@ -74,6 +75,7 @@ function mapSections(sections: ConfiguratorApiSection[]): ConfigSection[] {
       (sg): ConfigSubGroup => ({
         id: sg.id,
         title: sg.title,
+        selectionType: sg.selectionType ?? 'SINGLE',
         options: sg.options.map((o) => mapOption(o, sg.title)),
       })
     ),
@@ -93,7 +95,7 @@ export function mapConfiguratorResponse(data: ConfiguratorApiResponse): {
   model: ConfiguratorModel
   sections: ConfigSection[]
   galleryImages: GalleryImage[]
-  defaultSelections: Record<string, string>
+  defaultSelections: Record<string, string[]>
 } {
   const model: ConfiguratorModel = {
     id: String(data.id),
@@ -104,11 +106,42 @@ export function mapConfiguratorResponse(data: ConfiguratorApiResponse): {
     defaultImage: data.imageUrl ?? '',
   }
 
+  const parsedSections = mapSections(data.sections)
+  
+  const defaultSelections = Object.entries(data.defaultSelections ?? {}).reduce<Record<string, string[]>>(
+    (acc, [key, value]) => {
+      if (value) acc[key] = [value]
+      return acc
+    },
+    {}
+  )
+
+  // Enforce single selection rule for Exterior Colors on initial load
+  const exteriorColorSection = parsedSections.find(
+    (s) =>
+      s.title.toLowerCase().includes('màu sắc ngoại thất') ||
+      s.title.toLowerCase().includes('exterior color') ||
+      s.title.toLowerCase().includes('exterior colors')
+  )
+
+  if (exteriorColorSection) {
+    let colorFound = false
+    for (const sg of exteriorColorSection.subGroups) {
+      if (defaultSelections[sg.id]) {
+        if (!colorFound) {
+          colorFound = true
+        } else {
+          delete defaultSelections[sg.id]
+        }
+      }
+    }
+  }
+
   return {
     model,
-    sections: mapSections(data.sections),
+    sections: parsedSections,
     galleryImages: mapGallery(data.galleryImages),
-    defaultSelections: data.defaultSelections,
+    defaultSelections,
   }
 }
 

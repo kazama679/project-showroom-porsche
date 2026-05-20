@@ -14,4 +14,5 @@ public class FormOptionGroup
     private Long categoryId;
     private String name;
     private Integer displayOrder;
+    private String selectionType;
 }
