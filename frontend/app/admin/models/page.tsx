@@ -406,6 +406,7 @@ export default function ModelsPage() {
           noAssigned: t('admin.model_options_no_assigned'),
           noResults: t('admin.model_options_no_results'),
           add: t('admin.create'),
+          addAsDefault: t('admin.model_options_add_as_default'),
           delete: t('admin.delete'),
           cancel: t('common.cancel'),
           confirmDelete: t('admin.model_options_confirm_delete'),
@@ -414,6 +415,9 @@ export default function ModelsPage() {
           optionDeleted: t('admin.model_options_deleted'),
           alreadyAssigned: t('admin.model_options_already_assigned'),
           total: t('admin.total'),
+          setDefault: t('admin.model_options_set_default'),
+          defaultLabel: t('admin.model_options_default'),
+          defaultUpdated: t('admin.model_options_default_updated'),
         }}
       />
     </PageLayout>

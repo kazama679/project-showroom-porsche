@@ -7,11 +7,13 @@ export interface CarModelOption {
   carModelName: string;
   optionItemId: number;
   optionItemName: string;
+  isDefault: boolean;
 }
 
 export interface CarModelOptionFormData {
   carModelId: number;
   optionItemId: number;
+  isDefault: boolean;
 }
 
 export const carModelOptionService = {

@@ -24,6 +24,7 @@ interface ModelOptionsModalProps {
     noAssigned: string
     noResults: string
     add: string
+    addAsDefault: string
     delete: string
     cancel: string
     confirmDelete: string
@@ -32,6 +33,9 @@ interface ModelOptionsModalProps {
     optionDeleted: string
     alreadyAssigned: string
     total: string
+    setDefault: string
+    defaultLabel: string
+    defaultUpdated: string
   }
 }
 
@@ -140,7 +144,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
     return () => clearTimeout(t)
   }, [isOpen, model, fetchAddResults])
 
-  const handleAddOption = async (optionItem: OptionItem) => {
+  const handleAddOption = async (optionItem: OptionItem, isDefault: boolean = false) => {
     if (!model) return
     if (assignedOptionIds.has(optionItem.id)) {
       onNotify(labels.alreadyAssigned, 'warning')
@@ -148,7 +152,11 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
     }
     setSaving(true)
     try {
-      await carModelOptionService.create({ carModelId: model.id, optionItemId: optionItem.id })
+      await carModelOptionService.create({ 
+        carModelId: model.id, 
+        optionItemId: optionItem.id, 
+        isDefault 
+      })
       onNotify(labels.optionAdded, 'success')
       await fetchAssigned()
       await refreshAssignedIds()
@@ -168,6 +176,24 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
       setDeletingOption(null)
       await fetchAssigned()
       await refreshAssignedIds()
+    } catch (error) {
+      onNotify(getErrorMessage(error), 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleToggleDefault = async (row: CarModelOption) => {
+    if (!model) return
+    setSaving(true)
+    try {
+      await carModelOptionService.update(row.id, {
+        carModelId: model.id,
+        optionItemId: row.optionItemId,
+        isDefault: !row.isDefault,
+      })
+      onNotify(labels.defaultUpdated, 'success')
+      await fetchAssigned()
     } catch (error) {
       onNotify(getErrorMessage(error), 'error')
     } finally {
@@ -223,10 +249,25 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                       key={row.id}
                       className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] dark:hover:bg-[#404040]/50"
                     >
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium text-[#181818] dark:text-white truncate">{row.optionItemName}</p>
                         <p className="text-xs text-[#8F8F8F]">ID: {row.optionItemId}</p>
                       </div>
+                      {/* isDefault toggle */}
+                      <button
+                        type="button"
+                        disabled={saving}
+                        onClick={() => handleToggleDefault(row)}
+                        title={labels.setDefault}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors border shrink-0 ${
+                          row.isDefault
+                            ? 'bg-[#DA291C] border-[#DA291C] text-white'
+                            : 'bg-white dark:bg-[#303030] border-[#D2D2D2] dark:border-[#404040] text-[#8F8F8F] hover:border-[#DA291C] hover:text-[#DA291C]'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        <span className={`w-2 h-2 rounded-full ${row.isDefault ? 'bg-white' : 'bg-[#D2D2D2]'}`} />
+                        {row.isDefault ? labels.defaultLabel : labels.setDefault}
+                      </button>
                       <button
                         type="button"
                         onClick={() => setDeletingOption(row)}
@@ -360,15 +401,28 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                             {opt.optionGroupName} · {formatPrice(opt.price)} · ID: {opt.id}
                           </p>
                         </div>
-                        <Button
-                          variant="primary"
-                          size="sm"
-                          icon={<Plus size={14} />}
-                          onClick={() => handleAddOption(opt)}
-                          disabled={saving || isAssigned}
-                        >
-                          {isAssigned ? '✓' : labels.add}
-                        </Button>
+                        <div className="flex gap-2 shrink-0">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            icon={<Plus size={14} />}
+                            onClick={() => handleAddOption(opt, false)}
+                            disabled={saving || isAssigned}
+                          >
+                            {isAssigned ? '✓' : labels.add}
+                          </Button>
+                          {!isAssigned && (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleAddOption(opt, true)}
+                              disabled={saving}
+                              className="!bg-[#DA291C]/5 !text-[#DA291C] !border-[#DA291C]/20 hover:!bg-[#DA291C] hover:!text-white"
+                            >
+                              {labels.addAsDefault}
+                            </Button>
+                          )}
+                        </div>
                       </li>
                     )
                   })}

@@ -37,7 +37,8 @@ export default function CarModelOptionsPage() {
 
   const [formData, setFormData] = useState<CarModelOptionFormData>({
     carModelId: 0,
-    optionItemId: 0
+    optionItemId: 0,
+    isDefault: false
   })
 
   const isAdmin = authService.isAdmin()
@@ -86,12 +87,13 @@ export default function CarModelOptionsPage() {
     if (!isAdmin) { showAlertMessage(t('admin.no_permission'), 'warning'); return }
     if (item) {
       setEditingAssignment(item)
-      setFormData({ carModelId: item.carModelId, optionItemId: item.optionItemId })
+      setFormData({ carModelId: item.carModelId, optionItemId: item.optionItemId, isDefault: item.isDefault || false })
     } else {
       setEditingAssignment(null)
       setFormData({ 
         carModelId: carModels.length > 0 ? carModels[0].id : 0, 
-        optionItemId: optionItems.length > 0 ? optionItems[0].id : 0 
+        optionItemId: optionItems.length > 0 ? optionItems[0].id : 0,
+        isDefault: false
       })
     }
     setIsModalOpen(true)
@@ -173,6 +175,7 @@ export default function CarModelOptionsPage() {
               { key: 'id', label: 'ID', align: 'center', sortable: true },
               { key: 'carModelName', label: t('admin.model_name'), sortable: true },
               { key: 'optionItemName', label: t('admin.option_item_name'), sortable: true },
+              { key: 'isDefault', label: 'Default', align: 'center', render: (v: any) => v ? t('admin.yes') : t('admin.no') },
               ...(isAdmin ? [{
                 key: 'actions' as keyof CarModelOption, label: t('admin.actions'), align: 'center' as const,
                 render: (value: any, row: any) => (
@@ -242,6 +245,15 @@ export default function CarModelOptionsPage() {
                 <option key={opt.id} value={opt.id}>{opt.name}</option>
               ))}
             </select>
+          </div>
+
+          <div className="flex items-center gap-2 mt-4">
+            <input type="checkbox" id="isDefault" checked={formData.isDefault}
+              onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
+              className="w-4 h-4 text-[#DA291C] rounded-[2px] border-[#D2D2D2] focus:ring-[#DA291C]" />
+            <label htmlFor="isDefault" className="text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">
+              Set as Default Option
+            </label>
           </div>
 
         </div>

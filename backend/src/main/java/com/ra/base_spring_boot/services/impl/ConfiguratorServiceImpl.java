@@ -102,8 +102,7 @@ public class ConfiguratorServiceImpl implements IConfiguratorService
                                         .getOptionItem().getOptionGroup();
 
                                 List<ConfiguratorOptionDTO> options = groupEntry.getValue().stream()
-                                        .map(CarModelOption::getOptionItem)
-                                        .sorted(Comparator.comparing(OptionItem::getName))
+                                        .sorted(Comparator.comparing(cmo -> cmo.getOptionItem().getName()))
                                         .map(this::toOptionDto)
                                         .toList();
 
@@ -126,10 +125,11 @@ public class ConfiguratorServiceImpl implements IConfiguratorService
         return sections;
     }
 
-    private ConfiguratorOptionDTO toOptionDto(OptionItem item)
+    private ConfiguratorOptionDTO toOptionDto(CarModelOption cmo)
     {
+        OptionItem item = cmo.getOptionItem();
         BigDecimal price = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
-        boolean isStandard = Boolean.TRUE.equals(item.getIsDefault())
+        boolean isStandard = Boolean.TRUE.equals(cmo.getIsDefault())
                 || price.compareTo(BigDecimal.ZERO) == 0;
 
         return ConfiguratorOptionDTO.builder()

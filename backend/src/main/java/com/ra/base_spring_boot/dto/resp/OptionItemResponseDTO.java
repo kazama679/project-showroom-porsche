@@ -21,7 +21,6 @@ public class OptionItemResponseDTO
     private String description;
     private BigDecimal price;
     private String imageUrl;
-    private Boolean isDefault;
 
     public static OptionItemResponseDTO fromEntity(OptionItem entity)
     {
@@ -33,7 +32,6 @@ public class OptionItemResponseDTO
             .description(entity.getDescription())
             .price(entity.getPrice())
             .imageUrl(entity.getImageUrl())
-            .isDefault(entity.getIsDefault())
             .build();
     }
 }

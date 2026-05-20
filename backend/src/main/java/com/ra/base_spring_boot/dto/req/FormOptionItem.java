@@ -18,5 +18,4 @@ public class FormOptionItem
     private String description;
     private BigDecimal price;
     private String imageUrl;
-    private Boolean isDefault;
 }

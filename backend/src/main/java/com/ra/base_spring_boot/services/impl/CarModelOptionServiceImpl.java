@@ -83,6 +83,7 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
         CarModelOption entity = CarModelOption.builder()
                 .carModel(carModel)
                 .optionItem(optionItem)
+                .isDefault(form.getIsDefault() != null ? form.getIsDefault() : false)
                 .build();
 
         return CarModelOptionResponseDTO.fromEntity(carModelOptionRepository.save(entity));
@@ -114,6 +115,7 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
 
         oldEntity.setCarModel(carModel);
         oldEntity.setOptionItem(optionItem);
+        oldEntity.setIsDefault(form.getIsDefault() != null ? form.getIsDefault() : false);
 
         return CarModelOptionResponseDTO.fromEntity(carModelOptionRepository.save(oldEntity));
     }

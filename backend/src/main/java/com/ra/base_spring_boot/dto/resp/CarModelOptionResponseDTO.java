@@ -17,6 +17,7 @@ public class CarModelOptionResponseDTO
     private String carModelName;
     private Long optionItemId;
     private String optionItemName;
+    private Boolean isDefault;
 
     public static CarModelOptionResponseDTO fromEntity(CarModelOption entity)
     {
@@ -26,6 +27,7 @@ public class CarModelOptionResponseDTO
             .carModelName(entity.getCarModel() != null ? entity.getCarModel().getName() : null)
             .optionItemId(entity.getOptionItem() != null ? entity.getOptionItem().getId() : null)
             .optionItemName(entity.getOptionItem() != null ? entity.getOptionItem().getName() : null)
+            .isDefault(entity.getIsDefault())
             .build();
     }
 }

@@ -67,7 +67,6 @@ public class OptionItemServiceImpl implements IOptionItemService
                 .description(form.getDescription())
                 .price(form.getPrice())
                 .imageUrl(form.getImageUrl())
-                .isDefault(form.getIsDefault() != null ? form.getIsDefault() : false)
                 .build();
 
         return OptionItemResponseDTO.fromEntity(optionItemRepository.save(entity));
@@ -99,7 +98,6 @@ public class OptionItemServiceImpl implements IOptionItemService
         oldItem.setDescription(form.getDescription());
         oldItem.setPrice(form.getPrice());
         oldItem.setImageUrl(form.getImageUrl());
-        oldItem.setIsDefault(form.getIsDefault() != null ? form.getIsDefault() : false);
 
         return OptionItemResponseDTO.fromEntity(optionItemRepository.save(oldItem));
     }

@@ -34,6 +34,4 @@ public class OptionItem
     @Column(name = "image_url", length = 500)
     private String imageUrl;
 
-    @Column(name = "is_default")
-    private Boolean isDefault;
 }

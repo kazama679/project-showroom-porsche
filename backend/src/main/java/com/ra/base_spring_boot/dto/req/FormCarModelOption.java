@@ -13,4 +13,5 @@ public class FormCarModelOption
 {
     private Long carModelId;
     private Long optionItemId;
+    private Boolean isDefault;
 }

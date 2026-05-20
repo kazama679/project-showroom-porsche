@@ -9,7 +9,6 @@ export interface OptionItem {
   description: string;
   price: number;
   imageUrl: string;
-  isDefault: boolean;
 }
 
 export interface OptionItemFormData {
@@ -18,7 +17,6 @@ export interface OptionItemFormData {
   description: string;
   price: number;
   imageUrl: string;
-  isDefault: boolean;
 }
 
 export const optionItemService = {

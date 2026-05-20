@@ -40,8 +40,7 @@ export default function OptionItemsPage() {
     name: '',
     description: '',
     price: 0,
-    imageUrl: '',
-    isDefault: false
+    imageUrl: ''
   })
 
   const isAdmin = authService.isAdmin()
@@ -91,8 +90,7 @@ export default function OptionItemsPage() {
         name: item.name, 
         description: item.description || '',
         price: item.price || 0,
-        imageUrl: item.imageUrl || '',
-        isDefault: item.isDefault || false
+        imageUrl: item.imageUrl || ''
       })
     } else {
       setEditingItem(null)
@@ -101,8 +99,7 @@ export default function OptionItemsPage() {
         name: '', 
         description: '',
         price: 0,
-        imageUrl: '',
-        isDefault: false
+        imageUrl: ''
       })
     }
     setIsModalOpen(true)
@@ -200,7 +197,6 @@ export default function OptionItemsPage() {
               { key: 'name', label: t('admin.option_item_name'), sortable: true },
               { key: 'optionGroupName', label: t('admin.option_item_group'), sortable: true },
               { key: 'price', label: t('admin.option_item_price'), render: (v: any) => v ? `$${v.toLocaleString()}` : '—' },
-              { key: 'isDefault', label: 'Default', align: 'center', render: (v: any) => v ? t('admin.yes') : t('admin.no') },
               ...(isAdmin ? [{
                 key: 'actions' as keyof OptionItem, label: t('admin.actions'), align: 'center' as const,
                 render: (value: any, row: any) => (
@@ -273,15 +269,6 @@ export default function OptionItemsPage() {
               />
             </div>
           )}
-
-          <div className="flex items-center gap-2 mt-4">
-            <input type="checkbox" id="isDefault" checked={formData.isDefault}
-              onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-              className="w-4 h-4 text-[#DA291C] rounded-[2px] border-[#D2D2D2] focus:ring-[#DA291C]" />
-            <label htmlFor="isDefault" className="text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">
-              Set as Default Option
-            </label>
-          </div>
         </div>
       </Modal>
 

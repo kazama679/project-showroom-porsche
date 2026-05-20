@@ -25,4 +25,7 @@ public class CarModelOption
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_item_id", nullable = false)
     private OptionItem optionItem;
+
+    @Column(name = "is_default")
+    private Boolean isDefault;
 }
