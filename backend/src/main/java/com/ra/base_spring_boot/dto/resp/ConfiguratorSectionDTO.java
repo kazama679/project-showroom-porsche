@@ -11,8 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ConfiguratorSectionDTO
-{
+public class ConfiguratorSectionDTO {
     private String id;
     private String title;
     private String variant;

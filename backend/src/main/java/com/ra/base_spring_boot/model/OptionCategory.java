@@ -10,8 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class OptionCategory
-{
+public class OptionCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

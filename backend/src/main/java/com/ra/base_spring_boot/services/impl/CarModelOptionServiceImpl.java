@@ -19,43 +19,34 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CarModelOptionServiceImpl implements ICarModelOptionService
-{
+public class CarModelOptionServiceImpl implements ICarModelOptionService {
     private final ICarModelOptionRepository carModelOptionRepository;
     private final ICarModelRepository carModelRepository;
     private final IOptionItemRepository optionItemRepository;
 
     @Override
-    public Page<CarModelOptionResponseDTO> findAll(String keyword, Long carModelId, Pageable pageable)
-    {
+    public Page<CarModelOptionResponseDTO> findAll(String keyword, Long carModelId, Pageable pageable) {
         Page<CarModelOption> page;
-        if (carModelId != null)
-        {
+        if (carModelId != null) {
             String kw = keyword == null ? "" : keyword.trim();
             page = carModelOptionRepository.findByCarModelIdAndKeyword(carModelId, kw, pageable);
-        }
-        else if (keyword == null || keyword.trim().isEmpty())
-        {
+        } else if (keyword == null || keyword.trim().isEmpty()) {
             page = carModelOptionRepository.findAll(pageable);
-        }
-        else
-        {
+        } else {
             page = carModelOptionRepository.findByKeyword(keyword, pageable);
         }
         return page.map(CarModelOptionResponseDTO::fromEntity);
     }
 
     @Override
-    public Page<CarModelOptionResponseDTO> findByCarModelId(Long carModelId, String keyword, Pageable pageable)
-    {
+    public Page<CarModelOptionResponseDTO> findByCarModelId(Long carModelId, String keyword, Pageable pageable) {
         String kw = keyword == null ? "" : keyword.trim();
         Page<CarModelOption> page = carModelOptionRepository.findByCarModelIdAndKeyword(carModelId, kw, pageable);
         return page.map(CarModelOptionResponseDTO::fromEntity);
     }
 
     @Override
-    public CarModelOptionResponseDTO findById(Long id)
-    {
+    public CarModelOptionResponseDTO findById(Long id) {
         CarModelOption entity = carModelOptionRepository.findById(id)
                 .orElseThrow(() -> new HttpNotFound("Car model option not found with id: " + id));
         return CarModelOptionResponseDTO.fromEntity(entity);
@@ -63,8 +54,7 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
 
     @Override
     @Transactional
-    public CarModelOptionResponseDTO create(FormCarModelOption form)
-    {
+    public CarModelOptionResponseDTO create(FormCarModelOption form) {
         CarModel carModel = carModelRepository.findById(form.getCarModelId())
                 .orElseThrow(() -> new HttpNotFound("Car model not found with id: " + form.getCarModelId()));
 
@@ -73,10 +63,10 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
 
         boolean exists = carModelOptionRepository.findAll()
                 .stream()
-                .anyMatch(o -> o.getCarModel().getId().equals(form.getCarModelId()) && o.getOptionItem().getId().equals(form.getOptionItemId()));
+                .anyMatch(o -> o.getCarModel().getId().equals(form.getCarModelId())
+                        && o.getOptionItem().getId().equals(form.getOptionItemId()));
 
-        if (exists)
-        {
+        if (exists) {
             throw new HttpConflict("This option is already assigned to this car model");
         }
 
@@ -91,8 +81,7 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
 
     @Override
     @Transactional
-    public CarModelOptionResponseDTO update(Long id, FormCarModelOption form)
-    {
+    public CarModelOptionResponseDTO update(Long id, FormCarModelOption form) {
         CarModelOption oldEntity = carModelOptionRepository.findById(id)
                 .orElseThrow(() -> new HttpNotFound("Car model option not found with id: " + id));
 
@@ -108,8 +97,7 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
                         && o.getCarModel().getId().equals(form.getCarModelId())
                         && o.getOptionItem().getId().equals(form.getOptionItemId()));
 
-        if (exists)
-        {
+        if (exists) {
             throw new HttpConflict("This option is already assigned to this car model");
         }
 
@@ -122,8 +110,7 @@ public class CarModelOptionServiceImpl implements ICarModelOptionService
 
     @Override
     @Transactional
-    public void delete(Long id)
-    {
+    public void delete(Long id) {
         CarModelOption entity = carModelOptionRepository.findById(id)
                 .orElseThrow(() -> new HttpNotFound("Car model option not found with id: " + id));
 
