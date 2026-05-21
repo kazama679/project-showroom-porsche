@@ -25,6 +25,7 @@ import { configuratorService, mapConfiguratorResponse } from '@/lib/configurator
 import { carBuildApi } from '@/lib/car-build-api'
 import { authService } from '@/lib/auth'
 import { LoginPromptModal } from '@/components/configurator/login-prompt-modal'
+import { PorscheCodeModal } from '@/components/configurator/porsche-code-modal'
 
 const FALLBACK_GALLERY: GalleryImage[] = [
   {
@@ -99,7 +100,10 @@ export default function ConfiguratorPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const modelId = Number(params.modelId)
+  const modelIdParam = params.modelId as string
+  const isPorscheCode = modelIdParam && isNaN(Number(modelIdParam))
+  
+  const [modelId, setModelId] = useState<number>(!isPorscheCode ? Number(modelIdParam) : 0)
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -117,6 +121,9 @@ export default function ConfiguratorPage() {
   const [showSavedModal, setShowSavedModal] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [showPorscheCodeModal, setShowPorscheCodeModal] = useState(false)
+  const [createdPorscheCode, setCreatedPorscheCode] = useState("")
+  const [isCreatingCode, setIsCreatingCode] = useState(false)
   const siteHeaderVisible = useSiteHeaderVisible(56)
 
   const focusOptionSearch = useCallback(() => {
@@ -126,8 +133,8 @@ export default function ConfiguratorPage() {
   }, [])
 
   useEffect(() => {
-    if (!modelId || Number.isNaN(modelId)) {
-      setError('Invalid car model')
+    if (!modelIdParam) {
+      setError('Invalid car model or code')
       setLoading(false)
       return
     }
@@ -138,24 +145,49 @@ export default function ConfiguratorPage() {
       setLoading(true)
       setError(null)
       try {
-        const data = await configuratorService.getByCarModelId(modelId)
+        let resolvedModelId: number
+        let loadedSelections: Record<string, string[]> | null = null
+
+        if (isPorscheCode) {
+          const build = await carBuildApi.getBuildByCode(modelIdParam)
+          if (cancelled) return
+          resolvedModelId = build.modelId
+          loadedSelections = build.selections
+          setModelId(resolvedModelId)
+        } else {
+          resolvedModelId = Number(modelIdParam)
+          setModelId(resolvedModelId)
+        }
+
+        if (Number.isNaN(resolvedModelId) || resolvedModelId === 0) {
+          setError('Invalid car model')
+          setLoading(false)
+          return
+        }
+
+        const data = await configuratorService.getByCarModelId(resolvedModelId)
         if (cancelled) return
 
         const mapped = mapConfiguratorResponse(data)
         setModel(mapped.model)
         setSections(mapped.sections)
 
-        // Check if there are saved selections in URL params
-        const savedSelectionsParam = searchParams.get('selections')
-        if (savedSelectionsParam) {
-          try {
-            const parsedSelections = JSON.parse(decodeURIComponent(savedSelectionsParam))
-            setSelections(parsedSelections)
-          } catch {
+        // Check if there are loaded selections from a code
+        if (loadedSelections) {
+          setSelections(loadedSelections)
+        } else {
+          // Check if there are saved selections in URL params
+          const savedSelectionsParam = searchParams.get('selections')
+          if (savedSelectionsParam) {
+            try {
+              const parsedSelections = JSON.parse(decodeURIComponent(savedSelectionsParam))
+              setSelections(parsedSelections)
+            } catch {
+              setSelections(mapped.defaultSelections)
+            }
+          } else {
             setSelections(mapped.defaultSelections)
           }
-        } else {
-          setSelections(mapped.defaultSelections)
         }
 
         setGalleryImages(
@@ -180,7 +212,7 @@ export default function ConfiguratorPage() {
     return () => {
       cancelled = true
     }
-  }, [modelId, searchParams])
+  }, [isPorscheCode, modelIdParam, searchParams])
 
   // In real implementation we'd check if specific config is saved. Defaulting to false for now.
   useEffect(() => {
@@ -282,6 +314,37 @@ export default function ConfiguratorPage() {
       setIsSaving(false)
     }
   }, [model, modelId, galleryImages, total, equipmentPrice, selections, getDisplayInfo, isSaving])
+
+  const handleCreatePorscheCode = useCallback(async () => {
+    if (!model || !modelId || isCreatingCode) return
+
+    setIsCreatingCode(true)
+    try {
+      const { colorName, interiorName } = getDisplayInfo()
+
+      const build = await carBuildApi.createPorscheCode({
+        modelId,
+        modelName: `Porsche ${model.name}`,
+        modelYear: model.year,
+        imageUrl: model.defaultImage || galleryImages[0]?.src || '',
+        galleryImages: galleryImages.slice(0, 4).map((g) => g.src),
+        totalPrice: total,
+        baseMsrp: model.baseMsrp,
+        equipmentPrice,
+        deliveryFee: model.deliveryFee,
+        selections: JSON.stringify(selections),
+        colorName,
+        interiorName,
+      })
+
+      setCreatedPorscheCode(build.porscheCode)
+      setShowPorscheCodeModal(true)
+    } catch (err) {
+      console.error('Failed to create Porsche Code', err)
+    } finally {
+      setIsCreatingCode(false)
+    }
+  }, [model, modelId, galleryImages, total, equipmentPrice, selections, getDisplayInfo, isCreatingCode])
 
   const handleSelectOption = useCallback(
     (_sectionId: string, optionId: string, subGroupId?: string) => {
@@ -438,6 +501,7 @@ export default function ConfiguratorPage() {
             onToggleGroup={handleToggleSummaryGroup}
             onChangeOption={handleChangeEquipment}
             onSave={handleSave}
+            onCreatePorscheCode={handleCreatePorscheCode}
           />
 
           {showBottomBar && (
@@ -470,10 +534,12 @@ export default function ConfiguratorPage() {
             </button>
             <h3 className="text-xl font-light mb-4">360° View</h3>
             <div className="relative h-64 md:h-96 bg-[#f5f5f5] rounded-xl overflow-hidden mb-4">
-              <img
+              <Image
                 src={galleryImages[activeImageIndex]?.src ?? galleryImages[0].src}
                 alt="360 view"
-                className="w-full h-full object-cover"
+                fill
+                unoptimized
+                className="object-cover"
               />
             </div>
             <p className="text-sm text-[#666] font-light text-center">

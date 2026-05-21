@@ -130,7 +130,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
     setAddResults([])
     setDeletingOption(null)
     refreshAssignedIds()
-  }, [isOpen, model?.id, refreshAssignedIds])
+  }, [isOpen, model, refreshAssignedIds])
 
   useEffect(() => {
     if (!isOpen || !model) return
