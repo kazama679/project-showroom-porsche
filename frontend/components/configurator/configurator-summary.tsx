@@ -19,6 +19,7 @@ type ConfiguratorSummaryProps = {
   expandedGroups: Record<string, boolean>
   onToggleGroup: (groupId: string) => void
   onChangeOption: (groupId: string, optionId: string) => void
+  onSave?: () => void
 }
 
 function EquipmentRow({
@@ -77,6 +78,7 @@ export function ConfiguratorSummary({
   expandedGroups,
   onToggleGroup,
   onChangeOption,
+  onSave,
 }: ConfiguratorSummaryProps) {
   return (
     <section id="section-summary" className="bg-white border-t border-[#e5e5e5] pt-16 pb-32">
@@ -193,6 +195,7 @@ export function ConfiguratorSummary({
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
+                    onClick={onSave}
                     className="flex-1 py-2.5 border border-[#d2d2d2] text-sm font-light rounded-full hover:border-black transition-colors"
                   >
                     Save

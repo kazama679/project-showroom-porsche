@@ -1,8 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { Loader2, Bookmark, X } from 'lucide-react'
+import Image from 'next/image'
 import { SiteHeader } from '@/components/layout/site-header'
 import { ConfiguratorToolbar } from '@/components/configurator/configurator-toolbar'
 import { ConfiguratorViewer } from '@/components/configurator/configurator-viewer'
@@ -18,8 +19,12 @@ import {
   calculateTotal,
   buildSummaryFromSelections,
   MSRP_DISCLAIMER,
+  findOptionById,
 } from '@/lib/configurator-data'
 import { configuratorService, mapConfiguratorResponse } from '@/lib/configurator'
+import { carBuildApi } from '@/lib/car-build-api'
+import { authService } from '@/lib/auth'
+import { LoginPromptModal } from '@/components/configurator/login-prompt-modal'
 
 const FALLBACK_GALLERY: GalleryImage[] = [
   {
@@ -30,9 +35,70 @@ const FALLBACK_GALLERY: GalleryImage[] = [
   },
 ]
 
+/** Modal shown after saving a configuration */
+function SavedModal({
+  modelImage,
+  onClose,
+  onViewSaved,
+}: {
+  modelImage: string
+  onClose: () => void
+  onViewSaved: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Dialog */}
+      <div className="relative bg-white rounded-2xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#f5f5f5] hover:bg-[#e5e5e5] flex items-center justify-center transition-colors z-10"
+          aria-label="Đóng"
+        >
+          <X size={18} strokeWidth={1.5} />
+        </button>
+
+        {/* Car image */}
+        <div className="relative w-full h-56 md:h-64 bg-[#f8f8f8] rounded-t-2xl overflow-hidden">
+          <Image
+            src={modelImage}
+            alt="Porsche"
+            fill
+            unoptimized
+            className="object-contain p-4"
+          />
+        </div>
+
+        {/* Text content */}
+        <div className="px-8 pb-8 pt-6 text-center">
+          <h3 className="text-xl md:text-2xl font-light text-[#181818] mb-2">
+            Bản dựng của bạn đã được lưu.
+          </h3>
+          <p className="text-sm text-[#666] font-light mb-6">
+            Bạn có thể tìm thấy các mô hình xe đã chế tạo trong thư mục xe đã lưu.
+          </p>
+          <button
+            type="button"
+            onClick={onViewSaved}
+            className="w-full py-3.5 bg-[#181818] text-white rounded-lg text-sm font-medium hover:bg-[#303030] transition-colors flex items-center justify-center gap-2"
+          >
+            <Bookmark size={16} strokeWidth={1.5} />
+            Hiển thị các phương tiện đã lưu
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ConfiguratorPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const modelId = Number(params.modelId)
 
   const [loading, setLoading] = useState(true)
@@ -48,6 +114,9 @@ export default function ConfiguratorPage() {
   const [show360, setShow360] = useState(false)
   const [saved, setSaved] = useState(false)
   const [showBottomBar, setShowBottomBar] = useState(false)
+  const [showSavedModal, setShowSavedModal] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const siteHeaderVisible = useSiteHeaderVisible(56)
 
   const focusOptionSearch = useCallback(() => {
@@ -75,7 +144,20 @@ export default function ConfiguratorPage() {
         const mapped = mapConfiguratorResponse(data)
         setModel(mapped.model)
         setSections(mapped.sections)
-        setSelections(mapped.defaultSelections)
+
+        // Check if there are saved selections in URL params
+        const savedSelectionsParam = searchParams.get('selections')
+        if (savedSelectionsParam) {
+          try {
+            const parsedSelections = JSON.parse(decodeURIComponent(savedSelectionsParam))
+            setSelections(parsedSelections)
+          } catch {
+            setSelections(mapped.defaultSelections)
+          }
+        } else {
+          setSelections(mapped.defaultSelections)
+        }
+
         setGalleryImages(
           mapped.galleryImages.length > 0 ? mapped.galleryImages : FALLBACK_GALLERY
         )
@@ -98,7 +180,12 @@ export default function ConfiguratorPage() {
     return () => {
       cancelled = true
     }
-  }, [modelId])
+  }, [modelId, searchParams])
+
+  // In real implementation we'd check if specific config is saved. Defaulting to false for now.
+  useEffect(() => {
+    setSaved(false)
+  }, [model, selections, modelId])
 
   const { equipmentPrice, total } = useMemo(() => {
     if (!model) return { equipmentPrice: 0, total: 0 }
@@ -129,6 +216,72 @@ export default function ConfiguratorPage() {
     if (summary) observer.observe(summary)
     return () => observer.disconnect()
   }, [loading, sections.length])
+
+  /** Extract display info from current selections */
+  const getDisplayInfo = useCallback(() => {
+    let colorName: string | undefined
+    let interiorName: string | undefined
+
+    for (const section of sections) {
+      for (const sg of section.subGroups) {
+        const selectedIds = selections[sg.id] ?? []
+        for (const selectedId of selectedIds) {
+          const option = sg.options.find((o) => o.id === selectedId)
+          if (!option) continue
+
+          const combined = `${section.title} ${sg.title}`.toLowerCase()
+          if (
+            (combined.includes('màu') || combined.includes('color') || combined.includes('sơn') || combined.includes('paint')) &&
+            !combined.includes('nội thất') && !combined.includes('interior')
+          ) {
+            colorName = option.name
+          }
+          if (combined.includes('nội thất') || combined.includes('interior')) {
+            interiorName = option.name
+          }
+        }
+      }
+    }
+
+    return { colorName, interiorName }
+  }, [sections, selections])
+
+  const handleSave = useCallback(async () => {
+    if (!model || isSaving) return
+
+    if (!authService.isAuthenticated()) {
+      setShowLoginModal(true)
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const { colorName, interiorName } = getDisplayInfo()
+
+      await carBuildApi.saveBuild({
+        modelId,
+        modelName: `Porsche ${model.name}`,
+        modelYear: model.year,
+        imageUrl: model.defaultImage || galleryImages[0]?.src || '',
+        galleryImages: galleryImages.slice(0, 4).map((g) => g.src),
+        totalPrice: total,
+        baseMsrp: model.baseMsrp,
+        equipmentPrice,
+        deliveryFee: model.deliveryFee,
+        selections: JSON.stringify(selections),
+        colorName,
+        interiorName,
+      })
+
+      setSaved(true)
+      setShowSavedModal(true)
+    } catch (err) {
+      console.error('Failed to save build', err)
+      // Could add toast here
+    } finally {
+      setIsSaving(false)
+    }
+  }, [model, modelId, galleryImages, total, equipmentPrice, selections, getDisplayInfo, isSaving])
 
   const handleSelectOption = useCallback(
     (_sectionId: string, optionId: string, subGroupId?: string) => {
@@ -227,7 +380,7 @@ export default function ConfiguratorPage() {
         modelName={model.name}
         totalPrice={total}
         saved={saved}
-        onToggleSave={() => setSaved((s) => !s)}
+        onToggleSave={handleSave}
         onSummary={scrollToSummary}
         onSelectDealer={scrollToSummary}
         onSearch={focusOptionSearch}
@@ -284,6 +437,7 @@ export default function ConfiguratorPage() {
             expandedGroups={expandedSummaryGroups}
             onToggleGroup={handleToggleSummaryGroup}
             onChangeOption={handleChangeEquipment}
+            onSave={handleSave}
           />
 
           {showBottomBar && (
@@ -297,6 +451,7 @@ export default function ConfiguratorPage() {
         </>
       )}
 
+      {/* 360 Modal */}
       {show360 && (
         <div
           className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
@@ -339,6 +494,26 @@ export default function ConfiguratorPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Saved Modal (ảnh 3) */}
+      {showSavedModal && (
+        <SavedModal
+          modelImage={model.defaultImage || galleryImages[0]?.src || ''}
+          onClose={() => setShowSavedModal(false)}
+          onViewSaved={() => {
+            setShowSavedModal(false)
+            router.push('/saved-vehicles')
+          }}
+        />
+      )}
+
+      {/* Login Prompt Modal (ảnh 6) */}
+      {showLoginModal && (
+        <LoginPromptModal
+          modelImage={model.defaultImage || galleryImages[0]?.src || ''}
+          onClose={() => setShowLoginModal(false)}
+        />
       )}
     </div>
   )

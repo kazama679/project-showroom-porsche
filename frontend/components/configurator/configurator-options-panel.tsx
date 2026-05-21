@@ -151,67 +151,63 @@ function SubGroupOptions({
   subGroup,
   section,
   selections,
+  isExpanded,
+  onToggle,
   onSelectOption,
 }: {
   subGroup: ConfigSubGroup
   section: ConfigSection
   selections: Record<string, string[]>
+  isExpanded: boolean
+  onToggle: () => void
   onSelectOption: (sectionId: string, optionId: string, subGroupId?: string) => void
 }) {
   const selectedIds = selections[subGroup.id] ?? []
   const isColor = isColorSubGroup(section, subGroup)
 
-  if (isColor) {
-    return (
-      <div className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-sm font-light text-[#181818]">{subGroup.title}</h3>
-          <span className="text-sm text-[#666] font-light">{getSubGroupPriceLabel(subGroup)}</span>
-          <button
-            type="button"
-            aria-label={`Info about ${subGroup.title}`}
-            className="text-[#666] hover:text-black"
-          >
-            <Info size={14} />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2.5">
-          {subGroup.options.map((option) => (
-            <ColorSwatch
-              key={option.id}
-              option={option}
-              selected={selectedIds.includes(option.id)}
-              onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
-            />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <h3 className="text-sm font-light text-[#181818]">{subGroup.title}</h3>
-        <span className="text-sm text-[#666] font-light">{getSubGroupPriceLabel(subGroup)}</span>
-        <button
-          type="button"
-          aria-label={`Info about ${subGroup.title}`}
-          className="text-[#666] hover:text-black"
-        >
-          <Info size={14} />
-        </button>
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        {subGroup.options.map((option) => (
-          <OptionCard
-            key={option.id}
-            option={option}
-            selected={selectedIds.includes(option.id)}
-            onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
-          />
-        ))}
-      </div>
+    <div className="mb-4">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between py-3 text-left hover:bg-[#fafafa] transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-medium text-[#181818]">{subGroup.title}</h3>
+          <span className="text-xs text-[#666] font-light">{getSubGroupPriceLabel(subGroup)}</span>
+        </div>
+        <span className="text-lg text-[#999] font-light leading-none mr-1">
+          {isExpanded ? '−' : '+'}
+        </span>
+      </button>
+
+      {isExpanded && (
+        <div className="pt-2 pb-4">
+          {isColor ? (
+            <div className="flex flex-wrap gap-2.5">
+              {subGroup.options.map((option) => (
+                <ColorSwatch
+                  key={option.id}
+                  option={option}
+                  selected={selectedIds.includes(option.id)}
+                  onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {subGroup.options.map((option) => (
+                <OptionCard
+                  key={option.id}
+                  option={option}
+                  selected={selectedIds.includes(option.id)}
+                  onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -229,6 +225,15 @@ export function ConfiguratorOptionsPanel({
   onToggleSection,
   onSelectOption,
 }: ConfiguratorOptionsPanelProps) {
+  const [expandedSubGroups, setExpandedSubGroups] = useState<Record<string, boolean>>({})
+
+  const handleToggleSubGroup = (subGroupId: string) => {
+    setExpandedSubGroups((prev) => ({
+      ...prev,
+      [subGroupId]: prev[subGroupId] === false,
+    }))
+  }
+
   const filteredSections = sections.filter((section) => {
     if (!searchQuery.trim()) return true
     const q = searchQuery.toLowerCase()
@@ -276,13 +281,15 @@ export function ConfiguratorOptionsPanel({
               </button>
 
               {isExpanded && (
-                <div className="pb-4 px-1">
+                <div className="pb-4 px-1 divide-y divide-[#f0f0f0]">
                   {section.subGroups.map((subGroup) => (
                     <SubGroupOptions
                       key={subGroup.id}
                       subGroup={subGroup}
                       section={section}
                       selections={selections}
+                      isExpanded={expandedSubGroups[subGroup.id] !== false}
+                      onToggle={() => handleToggleSubGroup(subGroup.id)}
                       onSelectOption={onSelectOption}
                     />
                   ))}

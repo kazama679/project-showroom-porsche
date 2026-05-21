@@ -24,6 +24,16 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private async parseResponse(res: Response) {
+    if (res.status === 204) return {};
+    const text = await res.text();
+    try {
+      return text ? JSON.parse(text) : {};
+    } catch {
+      return { data: text };
+    }
+  }
+
   private getHeaders(): Record<string, string> {
     // No longer need Authorization header — JWT is sent automatically via httpOnly cookie
     return {
@@ -45,7 +55,7 @@ class ApiClient {
       body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
     });
 
-    const data = await res.json();
+    const data = await this.parseResponse(res);
 
     if (!res.ok) {
       const error: ApiError = {
@@ -73,7 +83,7 @@ class ApiClient {
       credentials: "include", // sends httpOnly cookie automatically
     });
 
-    const data = await res.json();
+    const data = await this.parseResponse(res);
 
     if (!res.ok) {
       const error: ApiError = {
@@ -101,7 +111,7 @@ class ApiClient {
       body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
     });
 
-    const data = await res.json();
+    const data = await this.parseResponse(res);
 
     if (!res.ok) {
       const error: ApiError = {
@@ -123,7 +133,7 @@ class ApiClient {
       credentials: "include", // sends httpOnly cookie automatically
     });
 
-    const data = await res.json();
+    const data = await this.parseResponse(res);
 
     if (!res.ok) {
       const error: ApiError = {
