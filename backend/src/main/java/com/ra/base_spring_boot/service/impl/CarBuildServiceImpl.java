@@ -68,6 +68,13 @@ public class CarBuildServiceImpl implements ICarBuildService {
         carBuildRepository.delete(build);
     }
     
+    @Override
+    public CarBuildResponse getBuildByCode(String porscheCode) {
+        CarBuild build = carBuildRepository.findByPorscheCode(porscheCode)
+                .orElseThrow(() -> new RuntimeException("Build not found for code: " + porscheCode));
+        return mapToResponse(build, build.getCarModel().getName(), build.getCarModel().getYear(), null, null, null, null, null);
+    }
+    
     private String generatePorscheCode() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder("P");

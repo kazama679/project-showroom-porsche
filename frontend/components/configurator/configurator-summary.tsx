@@ -20,6 +20,7 @@ type ConfiguratorSummaryProps = {
   onToggleGroup: (groupId: string) => void
   onChangeOption: (groupId: string, optionId: string) => void
   onSave?: () => void
+  onCreatePorscheCode?: () => void
 }
 
 function EquipmentRow({
@@ -79,6 +80,7 @@ export function ConfiguratorSummary({
   onToggleGroup,
   onChangeOption,
   onSave,
+  onCreatePorscheCode,
 }: ConfiguratorSummaryProps) {
   return (
     <section id="section-summary" className="bg-white border-t border-[#e5e5e5] pt-16 pb-32">
@@ -202,6 +204,7 @@ export function ConfiguratorSummary({
                   </button>
                   <button
                     type="button"
+                    onClick={onCreatePorscheCode}
                     className="flex-1 py-2.5 border border-[#d2d2d2] text-sm font-light rounded-full hover:border-black transition-colors"
                   >
                     Create Porsche Code

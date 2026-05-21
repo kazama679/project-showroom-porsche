@@ -1,5 +1,5 @@
 // Auth service - handles all authentication-related API calls
-// Token is now stored in httpOnly cookie (set by backend), NOT in localStorage
+// Token is now stored in httpOnly cookie (set by backend), NOT in sessionStorage
 import { apiClient, ApiError } from "./api";
 
 export interface LoginRequest {
@@ -42,10 +42,10 @@ export const authService = {
   async login(data: LoginRequest): Promise<LoginResponse> {
     // Backend sets httpOnly cookie automatically in the response
     const res = await apiClient.post<LoginResponse>("/auth/login", data);
-    // Save user info and roles to localStorage (NOT the token — that's in httpOnly cookie)
+    // Save user info and roles to sessionStorage (NOT the token — that's in httpOnly cookie)
     if (res.data.user) {
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("roles", JSON.stringify(res.data.roles));
+      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("roles", JSON.stringify(res.data.roles));
     }
     return res.data;
   },
@@ -73,8 +73,8 @@ export const authService = {
       // Ignore errors during logout
     }
     // Clear local user info
-    localStorage.removeItem("user");
-    localStorage.removeItem("roles");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("roles");
   },
 
   /**
@@ -84,26 +84,26 @@ export const authService = {
     try {
       const res = await apiClient.get<MeResponse>("/auth/me");
       // Update local cache
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("roles", JSON.stringify(res.data.roles));
+      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("roles", JSON.stringify(res.data.roles));
       return res.data;
     } catch {
       // Not authenticated — clear stale local data
-      localStorage.removeItem("user");
-      localStorage.removeItem("roles");
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("roles");
       return null;
     }
   },
 
   getUser(): AuthUser | null {
     if (typeof window === "undefined") return null;
-    const user = localStorage.getItem("user");
+    const user = sessionStorage.getItem("user");
     return user ? JSON.parse(user) : null;
   },
 
   getRoles(): string[] {
     if (typeof window === "undefined") return [];
-    const roles = localStorage.getItem("roles");
+    const roles = sessionStorage.getItem("roles");
     return roles ? JSON.parse(roles) : [];
   },
 

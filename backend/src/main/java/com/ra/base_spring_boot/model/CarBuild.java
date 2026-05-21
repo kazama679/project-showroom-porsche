@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class CarBuild extends BaseObject
 {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

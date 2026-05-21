@@ -10,4 +10,5 @@ public interface ICarBuildService {
     CarBuildResponse saveBuild(CarBuildRequest request, User user);
     List<CarBuildResponse> getUserBuilds(User user);
     void deleteBuild(Long id, User user);
+    CarBuildResponse getBuildByCode(String porscheCode);
 }

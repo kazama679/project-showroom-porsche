@@ -1,0 +1,1 @@
+ALTER TABLE car_builds MODIFY user_id BIGINT NULL;

@@ -31,6 +31,18 @@ public class CarBuildController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/code")
+    public ResponseEntity<CarBuildResponse> createPorscheCode(@RequestBody CarBuildRequest request) {
+        CarBuildResponse response = carBuildService.saveBuild(request, null);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/code/{porscheCode}")
+    public ResponseEntity<CarBuildResponse> getBuildByCode(@PathVariable String porscheCode) {
+        CarBuildResponse response = carBuildService.getBuildByCode(porscheCode);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/my-builds")
     public ResponseEntity<List<CarBuildResponse>> getMyBuilds(
             @AuthenticationPrincipal MyUserDetails userDetails) {
