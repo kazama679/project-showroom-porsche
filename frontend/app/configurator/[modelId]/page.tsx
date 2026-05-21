@@ -404,6 +404,15 @@ export default function ConfiguratorPage() {
     document.getElementById('section-summary')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const handleSelectDealer = useCallback(() => {
+    if (model) {
+      // Save current configuration to URL or pass modelId at least
+      router.push(`/request-details?modelId=${modelId}`)
+    } else {
+      router.push('/request-details')
+    }
+  }, [router, modelId, model])
+
   const handleChangeEquipment = (groupId: string) => {
     setExpandedSections((prev) => ({ ...prev, [groupId]: true }))
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -445,7 +454,7 @@ export default function ConfiguratorPage() {
         saved={saved}
         onToggleSave={handleSave}
         onSummary={scrollToSummary}
-        onSelectDealer={scrollToSummary}
+        onSelectDealer={handleSelectDealer}
         onSearch={focusOptionSearch}
       />
 
@@ -502,13 +511,14 @@ export default function ConfiguratorPage() {
             onChangeOption={handleChangeEquipment}
             onSave={handleSave}
             onCreatePorscheCode={handleCreatePorscheCode}
+            onSelectDealer={handleSelectDealer}
           />
 
           {showBottomBar && (
             <ConfiguratorBottomBar
               totalPrice={total}
               modelName={model.name}
-              onSelectDealer={scrollToSummary}
+              onSelectDealer={handleSelectDealer}
               onShowSearch={focusOptionSearch}
             />
           )}
