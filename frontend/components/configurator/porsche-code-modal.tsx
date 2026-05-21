@@ -85,65 +85,63 @@ export function PorscheCodeModal({
           </p>
 
           {/* Code display */}
-          <div className="border border-[#e5e5e5] rounded-lg p-4 mb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-0">
-                {codeChars.map((char, idx) => (
-                  <div
-                    key={idx}
-                    className="w-9 h-10 flex items-center justify-center text-lg font-medium text-[#181818] border-r border-[#e5e5e5] last:border-r-0"
-                  >
-                    {char}
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyCode}
-                className="flex items-center gap-1.5 text-sm text-[#666] hover:text-[#181818] transition-colors ml-4"
-              >
-                {codeCopied ? (
-                  <>
-                    <Check size={14} strokeWidth={1.5} className="text-green-600" />
-                    <span className="text-green-600">Đã sao chép</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy size={14} strokeWidth={1.5} />
-                    <span>Sao chép mã</span>
-                  </>
-                )}
-              </button>
+          <div className="bg-[#f5f5f5] rounded p-3 mb-2 flex items-center justify-between">
+            <div className="flex items-center">
+              {codeChars.map((char, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-center text-sm text-[#181818] px-3 ${
+                    idx < codeChars.length - 1 ? 'border-r border-[#d2d2d2]' : ''
+                  }`}
+                >
+                  {char}
+                </div>
+              ))}
             </div>
+            <button
+              type="button"
+              onClick={handleCopyCode}
+              className="flex items-center gap-1.5 text-xs text-[#666] hover:text-[#181818] transition-colors pr-2"
+            >
+              {codeCopied ? (
+                <>
+                  <Check size={14} strokeWidth={1.5} className="text-green-600" />
+                  <span className="text-green-600">Đã sao chép</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={14} strokeWidth={1.5} />
+                  <span>Sao chép mã</span>
+                </>
+              )}
+            </button>
           </div>
 
           {/* Link display */}
-          <div className="border border-[#e5e5e5] rounded-lg p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1 min-w-0">
-                <span className="text-sm text-[#999] font-light truncate">
-                  {typeof window !== 'undefined' ? window.location.origin : ''}/configurator/
-                </span>
-                <span className="text-sm font-medium text-[#181818]">{porscheCode}</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="flex items-center gap-1.5 text-sm text-[#666] hover:text-[#181818] transition-colors ml-4 flex-shrink-0"
-              >
-                {linkCopied ? (
-                  <>
-                    <Check size={14} strokeWidth={1.5} className="text-green-600" />
-                    <span className="text-green-600">Đã sao chép</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy size={14} strokeWidth={1.5} />
-                    <span>Sao chép liên kết</span>
-                  </>
-                )}
-              </button>
+          <div className="bg-[#f5f5f5] rounded p-3 mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-1 min-w-0 pl-3">
+              <span className="text-sm text-[#666] font-light truncate">
+                https://porsche-code.com/
+              </span>
+              <span className="text-sm font-medium text-[#181818]">{porscheCode}</span>
             </div>
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="flex items-center gap-1.5 text-xs text-[#666] hover:text-[#181818] transition-colors pr-2 flex-shrink-0"
+            >
+              {linkCopied ? (
+                <>
+                  <Check size={14} strokeWidth={1.5} className="text-green-600" />
+                  <span className="text-green-600">Đã sao chép</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={14} strokeWidth={1.5} />
+                  <span>Sao chép liên kết</span>
+                </>
+              )}
+            </button>
           </div>
 
           <p className="text-xs text-[#999] font-light leading-relaxed">

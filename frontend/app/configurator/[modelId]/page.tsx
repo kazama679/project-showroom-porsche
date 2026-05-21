@@ -581,6 +581,15 @@ export default function ConfiguratorPage() {
           onClose={() => setShowLoginModal(false)}
         />
       )}
+
+      {showPorscheCodeModal && (
+        <PorscheCodeModal
+          open={showPorscheCodeModal}
+          onClose={() => setShowPorscheCodeModal(false)}
+          porscheCode={createdPorscheCode}
+          modelImage={model.defaultImage || galleryImages[0]?.src || ''}
+        />
+      )}
     </div>
   )
 }
