@@ -1,10 +1,11 @@
 'use client'
 
 import { useMemo, useState, useEffect, Suspense } from 'react'
-import { Menu, Globe, User, ChevronRight, Plus, ChevronUp } from 'lucide-react'
+import { ChevronRight, Plus, ChevronUp } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { SiteHeader } from '@/components/layout/site-header'
 import { carSeriesService, CarSeries } from '@/lib/car-series'
 import { carModelService, CarModelItem } from '@/lib/car-model'
 
@@ -250,29 +251,7 @@ function ModelsContent() {
   return (
     <div className="min-h-screen bg-white font-sans text-black">
       {/* Header */}
-      <header className="bg-white border-b-0 pt-6">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center justify-between">
-          <button className="text-black flex items-center gap-3 hover:opacity-75 transition-opacity">
-            <Menu size={20} strokeWidth={1.5} />
-            <span className="text-[14px] font-normal tracking-wide">Menu</span>
-          </button>
-
-          <div className="flex-1 text-center">
-            <h1 className="text-black text-xl font-medium tracking-[0.25em] ml-[0.25em]">
-              <Link className="cursor-pointer font-semibold" href="/">PORSCHE</Link>
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <button aria-label="Language" className="text-black hidden md:block hover:opacity-75 transition-opacity">
-              <Globe size={20} strokeWidth={1.5} />
-            </button>
-            <button aria-label="Account" className="text-black hover:opacity-75 transition-opacity">
-              <User size={20} strokeWidth={1.5} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader logoHref="/" />
 
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-16">
         {/* Page Title & Load Build */}

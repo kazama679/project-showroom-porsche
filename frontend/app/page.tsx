@@ -4,15 +4,13 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  Menu,
-  Globe,
-  User,
   Facebook,
   Instagram,
   Share2,
   Youtube,
   Linkedin,
 } from 'lucide-react'
+import { SiteHeader } from '@/components/layout/site-header'
 import { carSeriesService, CarSeries } from '@/lib/car-series'
 import { homeBannerService, HomeBannerItem } from '@/lib/home-banner'
 
@@ -60,28 +58,7 @@ const HeroSection = ({ banner }: HeroSectionProps) => {
       {/* Vignette Overlays for readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/75 pointer-events-none" />
 
-      {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-16 py-8 bg-transparent">
-        <button className="text-white flex items-center gap-2 hover:opacity-85 transition">
-          <Menu size={18} />
-          <span className="text-xs tracking-[0.2em] font-semibold uppercase">Menu</span>
-        </button>
 
-        <div className="absolute left-1/2 -translate-x-1/2 text-center">
-          <Link href="/" className="text-white text-base md:text-lg tracking-[0.28em] font-bold font-mono">
-            PORSCHE
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-6">
-          <button className="text-white hover:opacity-85 transition">
-            <Globe size={18} />
-          </button>
-          <Link href="/account-settings" className="text-white hover:opacity-85 transition">
-            <User size={18} />
-          </Link>
-        </div>
-      </header>
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex items-center pl-6 md:pl-20">
@@ -511,6 +488,7 @@ export default function Home() {
 
   return (
     <main className="w-full overflow-hidden">
+      <SiteHeader logoHref="/" variant="transparent" />
       <HeroSection banner={heroBanner} />
       <CardsSection banners={cardBanners} />
       <ModelsSection />

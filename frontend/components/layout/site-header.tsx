@@ -18,6 +18,8 @@ export type SiteHeaderProps = {
   onMenuClick?: () => void
   /** Sticky at top of viewport (default: scrolls with page) */
   sticky?: boolean
+  /** Visual variant (transparent vs default solid) */
+  variant?: 'default' | 'transparent'
 }
 
 /**
@@ -30,6 +32,7 @@ export function SiteHeader({
   showBookmark = false,
   onMenuClick,
   sticky = false,
+  variant = 'default',
 }: SiteHeaderProps) {
   const { t } = useLanguage()
   const [showAccountModal, setShowAccountModal] = useState(false)
@@ -47,7 +50,8 @@ export function SiteHeader({
     <>
       <header
         className={cn(
-          'bg-white border-b border-[#e5e5e5] z-50',
+          'z-50',
+          variant === 'transparent' ? 'bg-transparent absolute top-0 w-full' : 'bg-white border-b border-[#e5e5e5]',
           sticky && 'sticky top-0',
           className
         )}
@@ -56,7 +60,10 @@ export function SiteHeader({
           <button
             type="button"
             onClick={handleMenuClick}
-            className="flex items-center gap-2.5 text-[#181818] hover:opacity-70 transition-opacity min-w-[88px]"
+            className={cn(
+              "flex items-center gap-2.5 hover:opacity-70 transition-opacity min-w-[88px]",
+              variant === 'transparent' ? 'text-white' : 'text-[#181818]'
+            )}
             aria-label={t('nav.menu')}
           >
             <Menu size={20} strokeWidth={1.5} />
@@ -66,18 +73,24 @@ export function SiteHeader({
           <div className="flex-1 flex justify-center">
             <Link
               href={logoHref}
-              className="text-[#181818] text-lg md:text-xl font-medium tracking-[0.28em] hover:opacity-80 transition-opacity"
+              className={cn(
+                "text-lg md:text-xl font-medium tracking-[0.28em] hover:opacity-80 transition-opacity",
+                variant === 'transparent' ? 'text-white' : 'text-[#181818]'
+              )}
             >
               PORSCHE
             </Link>
           </div>
 
-          <div className="flex items-center justify-end gap-4 md:gap-5 min-w-[88px]">
+          <div className={cn(
+            "flex items-center justify-end gap-4 md:gap-5 min-w-[88px]",
+            variant === 'transparent' ? 'text-white' : 'text-[#181818]'
+          )}>
             {showBookmark && (
               <button
                 type="button"
                 aria-label={t('nav.saved_vehicles')}
-                className="text-[#181818] hover:opacity-70 transition-opacity hidden md:block"
+                className="hover:opacity-70 transition-opacity hidden md:block"
               >
                 <Bookmark size={20} strokeWidth={1.5} />
               </button>
@@ -85,7 +98,7 @@ export function SiteHeader({
             <button
               type="button"
               aria-label="Language"
-              className="text-[#181818] hover:opacity-70 transition-opacity hidden md:block"
+              className="hover:opacity-70 transition-opacity hidden md:block"
             >
               <Globe size={20} strokeWidth={1.5} />
             </button>
@@ -93,7 +106,7 @@ export function SiteHeader({
               type="button"
               onClick={() => setShowAccountModal(true)}
               aria-label="Account"
-              className="text-[#181818] hover:opacity-70 transition-opacity"
+              className="hover:opacity-70 transition-opacity"
             >
               <User size={20} strokeWidth={1.5} />
             </button>

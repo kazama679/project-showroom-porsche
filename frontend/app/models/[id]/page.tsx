@@ -2,7 +2,8 @@
 
 import { useRef, useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
-import { Menu, Globe, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { SiteHeader } from '@/components/layout/site-header'
 import { useParams, useRouter } from 'next/navigation'
 import { carModelService, CarModelItem } from '@/lib/car-model'
 import { carSpecService, CarSpecsDTO } from '@/lib/car-specs'
@@ -212,27 +213,7 @@ export default function ModelDetailPage() {
   return (
     <div className="min-h-screen bg-white relative">
       {/* Header */}
-      <header className="bg-gray-100 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-16 py-6">
-          <button className="text-black flex items-center gap-2 md:hidden hover:opacity-75 transition-opacity">
-            <Menu size={20} />
-            <span className="text-xs font-medium">Menu</span>
-          </button>
-          
-          <div className="flex-1 text-center">
-            <h1 className="text-black text-base font-medium tracking-[0.15em]">PORSCHE</h1>
-          </div>
-          
-          <div className="flex items-center gap-8">
-            <button aria-label="Language" className="text-black hidden md:block hover:opacity-75 transition-opacity">
-              <Globe size={18} />
-            </button>
-            <button aria-label="Account" className="text-black hover:opacity-75 transition-opacity">
-              <User size={18} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader logoHref="/" />
 
       {/* Feedback Button */}
       <button
