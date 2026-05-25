@@ -14,7 +14,7 @@ import { testDriveApi, TestDriveBookingRequest } from '@/lib/test-drive-api'
 
 export default function TestDrivePage() {
   const searchParams = useSearchParams()
-  const modelIdParam = searchParams.get('modelId')
+  const modelIdParam = searchParams?.get('modelId')
 
   const [formData, setFormData] = useState({
     salutation: 'Ông',

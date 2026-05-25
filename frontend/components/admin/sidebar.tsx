@@ -107,7 +107,7 @@ export function Sidebar() {
 
   const isActive = (href: string, exact?: boolean) => {
     if (exact) return pathname === href;
-    return pathname.startsWith(href);
+    return pathname?.startsWith(href);
   };
 
   const NavItem = ({ item }: { item: MenuItem }) => {

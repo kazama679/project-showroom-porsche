@@ -21,7 +21,7 @@ export function LoginPromptModal({ modelImage, onClose }: LoginPromptModalProps)
   ]
 
   // Add the returnUrl so that after login, they come back to the configurator
-  const loginUrl = `/auth/login?returnUrl=${encodeURIComponent(pathname)}`
+  const loginUrl = `/auth/login?returnUrl=${encodeURIComponent(pathname || '/')}`
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">

@@ -13,7 +13,7 @@ function ModelsContent() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const seriesIdParam = searchParams.get('seriesId')
+  const seriesIdParam = searchParams?.get('seriesId')
 
   const [seriesList, setSeriesList] = useState<CarSeries[]>([])
   const [allModels, setAllModels] = useState<CarModelItem[]>([])
@@ -230,7 +230,7 @@ function ModelsContent() {
 
   // Series selection parameter router pusher
   const handleSeriesChange = (id: number | null) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams?.toString() || '')
     if (id) {
       params.set('seriesId', id.toString())
     } else {

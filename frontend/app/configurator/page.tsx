@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react'
 function ConfiguratorRedirect() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const modelId = searchParams.get('modelId')
+  const modelId = searchParams?.get('modelId')
 
   useEffect(() => {
     if (modelId) {

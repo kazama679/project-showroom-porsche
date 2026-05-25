@@ -100,7 +100,7 @@ export default function ConfiguratorPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const modelIdParam = params.modelId as string
+  const modelIdParam = params?.modelId as string
   const isPorscheCode = modelIdParam && isNaN(Number(modelIdParam))
   
   const [modelId, setModelId] = useState<number>(!isPorscheCode ? Number(modelIdParam) : 0)
@@ -177,7 +177,7 @@ export default function ConfiguratorPage() {
           setSelections(loadedSelections)
         } else {
           // Check if there are saved selections in URL params
-          const savedSelectionsParam = searchParams.get('selections')
+          const savedSelectionsParam = searchParams?.get('selections')
           if (savedSelectionsParam) {
             try {
               const parsedSelections = JSON.parse(decodeURIComponent(savedSelectionsParam))

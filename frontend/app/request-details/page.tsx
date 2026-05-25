@@ -84,7 +84,7 @@ export default function RequestDetailsPage() {
   }
   
   const searchParams = useSearchParams()
-  const modelIdParam = searchParams.get('modelId')
+  const modelIdParam = searchParams?.get('modelId')
   
   const [modelData, setModelData] = useState<ConfiguratorModel | null>(null)
   const [loading, setLoading] = useState(true)

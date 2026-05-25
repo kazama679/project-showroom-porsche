@@ -18,8 +18,10 @@ function VerifyForm() {
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    const emailParam = searchParams.get('email')
-    if (emailParam) setEmail(emailParam)
+    if (searchParams) {
+      const emailParam = searchParams.get('email')
+      if (emailParam) setEmail(emailParam)
+    }
   }, [searchParams])
 
   const handleInputChange = (index: number, value: string) => {
