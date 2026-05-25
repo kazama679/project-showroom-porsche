@@ -8,6 +8,7 @@ type ConfiguratorBottomBarProps = {
   modelName: string
   onSelectDealer: () => void
   onShowSearch: () => void
+  onTestDrive?: () => void
 }
 
 export function ConfiguratorBottomBar({
@@ -15,6 +16,7 @@ export function ConfiguratorBottomBar({
   modelName,
   onSelectDealer,
   onShowSearch,
+  onTestDrive,
 }: ConfiguratorBottomBarProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e5e5e5] shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
@@ -42,6 +44,13 @@ export function ConfiguratorBottomBar({
               className="px-6 md:px-8 py-3 bg-black text-white text-sm font-light rounded-full hover:bg-[#303030] transition-colors whitespace-nowrap"
             >
               Select a dealer
+            </button>
+            <button
+              type="button"
+              onClick={onTestDrive}
+              className="px-6 md:px-8 py-3 bg-[#D5001C] text-white text-sm font-light rounded-full hover:bg-[#B00017] transition-colors whitespace-nowrap"
+            >
+              Đăng ký lái thử
             </button>
             <button
               type="button"

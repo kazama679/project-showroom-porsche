@@ -22,6 +22,7 @@ type ConfiguratorSummaryProps = {
   onSave?: () => void
   onCreatePorscheCode?: () => void
   onSelectDealer?: () => void
+  onTestDrive?: () => void
 }
 
 function EquipmentRow({
@@ -83,6 +84,7 @@ export function ConfiguratorSummary({
   onSave,
   onCreatePorscheCode,
   onSelectDealer,
+  onTestDrive,
 }: ConfiguratorSummaryProps) {
   return (
     <section id="section-summary" className="bg-white border-t border-[#e5e5e5] pt-16 pb-32">
@@ -190,6 +192,13 @@ export function ConfiguratorSummary({
                   className="w-full py-3 bg-black text-white text-sm font-light rounded-full hover:bg-[#303030] transition-colors"
                 >
                   Select a dealer
+                </button>
+                <button
+                  type="button"
+                  onClick={onTestDrive}
+                  className="w-full py-3 bg-[#D5001C] text-white text-sm font-light rounded-full hover:bg-[#B00017] transition-colors"
+                >
+                  Đăng ký lái thử
                 </button>
                 <button
                   type="button"

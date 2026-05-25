@@ -413,6 +413,14 @@ export default function ConfiguratorPage() {
     }
   }, [router, modelId, model])
 
+  const handleTestDrive = useCallback(() => {
+    if (model) {
+      router.push(`/test-drive?modelId=${modelId}`)
+    } else {
+      router.push('/test-drive')
+    }
+  }, [router, modelId, model])
+
   const handleChangeEquipment = (groupId: string) => {
     setExpandedSections((prev) => ({ ...prev, [groupId]: true }))
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -512,6 +520,7 @@ export default function ConfiguratorPage() {
             onSave={handleSave}
             onCreatePorscheCode={handleCreatePorscheCode}
             onSelectDealer={handleSelectDealer}
+            onTestDrive={handleTestDrive}
           />
 
           {showBottomBar && (
@@ -520,6 +529,7 @@ export default function ConfiguratorPage() {
               modelName={model.name}
               onSelectDealer={handleSelectDealer}
               onShowSearch={focusOptionSearch}
+              onTestDrive={handleTestDrive}
             />
           )}
         </>
