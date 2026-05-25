@@ -1,6 +1,6 @@
 package com.ra.base_spring_boot.repository;
 
-import com.ra.base_spring_boot.model.TestDriveBooking;
+import com.ra.base_spring_boot.entity.TestDriveBooking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

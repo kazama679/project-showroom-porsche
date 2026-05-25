@@ -1,6 +1,6 @@
 package com.ra.base_spring_boot.repository;
 
-import com.ra.base_spring_boot.model.CarBuild;
+import com.ra.base_spring_boot.entity.CarBuild;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

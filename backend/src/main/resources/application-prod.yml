@@ -1,0 +1,9 @@
+# Production profile: activate with spring.profiles.active=prod
+# Cookie rules:
+#   - secure MUST be true when SameSite=None (browser requirement).
+#   - Use same-site: Lax when frontend and API share the same site (recommended).
+#   - Use same-site: None only for cross-site deployments (requires secure: true).
+app:
+  cookie:
+    secure: true
+    same-site: Lax

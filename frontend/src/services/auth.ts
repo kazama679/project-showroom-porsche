@@ -39,6 +39,12 @@ export interface MeResponse {
   roles: string[];
 }
 
+export function clearAuthCache(): void {
+  if (typeof window === "undefined") return;
+  sessionStorage.removeItem("user");
+  sessionStorage.removeItem("roles");
+}
+
 export const authService = {
   async login(data: LoginRequest): Promise<LoginResponse> {
     // Backend sets httpOnly cookie automatically in the response
@@ -73,9 +79,7 @@ export const authService = {
     } catch {
       // Ignore errors during logout
     }
-    // Clear local user info
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("roles");
+    clearAuthCache();
   },
 
   /**
@@ -89,9 +93,7 @@ export const authService = {
       sessionStorage.setItem("roles", JSON.stringify(res.data.roles));
       return res.data;
     } catch {
-      // Not authenticated — clear stale local data
-      sessionStorage.removeItem("user");
-      sessionStorage.removeItem("roles");
+      clearAuthCache();
       return null;
     }
   },

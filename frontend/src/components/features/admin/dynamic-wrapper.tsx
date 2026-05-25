@@ -13,12 +13,8 @@ export function DynamicAdminWrapper({ children }: { children: React.ReactNode })
   useEffect(() => {
     setMounted(true)
     const checkAuth = async () => {
-      // In a real scenario, this could also verify the session with the backend via getMe()
-      // For now, if there's no auth info at all, or not admin, redirect.
-      // We will allow users with role staff or admin to view the admin UI, but
-      // the prompt says "bất kì source nào là /admin/ đều bị đẩy nếu chưa đăng nhập"
-      const authenticated = authService.isAuthenticated()
-      if (!authenticated) {
+      const me = await authService.getMe()
+      if (!me) {
         router.push('/auth/login')
       } else {
         setIsAuthorized(true)

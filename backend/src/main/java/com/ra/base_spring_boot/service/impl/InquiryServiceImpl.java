@@ -1,10 +1,10 @@
 package com.ra.base_spring_boot.service.impl;
 
-import com.ra.base_spring_boot.dto.req.InquiryRequest;
-import com.ra.base_spring_boot.model.ContactInquiry;
+import com.ra.base_spring_boot.dto.request.InquiryRequest;
+import com.ra.base_spring_boot.entity.ContactInquiry;
 import com.ra.base_spring_boot.repository.IContactInquiryRepository;
 import com.ra.base_spring_boot.service.IInquiryService;
-import com.ra.base_spring_boot.service.MailService;
+import com.ra.base_spring_boot.service.impl.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

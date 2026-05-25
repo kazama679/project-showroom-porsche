@@ -1,6 +1,6 @@
 package com.ra.base_spring_boot.security;
 
-import com.ra.base_spring_boot.model.constants.RoleName;
+import com.ra.base_spring_boot.common.constants.RoleName;
 import com.ra.base_spring_boot.security.exception.AccessDenied;
 import com.ra.base_spring_boot.security.exception.JwtEntryPoint;
 import com.ra.base_spring_boot.security.jwt.JwtTokenFilter;

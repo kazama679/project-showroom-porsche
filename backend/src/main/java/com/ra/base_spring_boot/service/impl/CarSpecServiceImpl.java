@@ -1,7 +1,7 @@
 package com.ra.base_spring_boot.service.impl;
 
-import com.ra.base_spring_boot.dto.req.*;
-import com.ra.base_spring_boot.model.*;
+import com.ra.base_spring_boot.dto.request.*;
+import com.ra.base_spring_boot.entity.*;
 import com.ra.base_spring_boot.repository.*;
 import com.ra.base_spring_boot.service.CarSpecService;
 import lombok.RequiredArgsConstructor;

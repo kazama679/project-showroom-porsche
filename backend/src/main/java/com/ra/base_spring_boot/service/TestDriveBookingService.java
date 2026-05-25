@@ -1,9 +1,9 @@
 package com.ra.base_spring_boot.service;
 
-import com.ra.base_spring_boot.dto.req.TestDriveBookingRequest;
-import com.ra.base_spring_boot.dto.req.TestDriveBookingAdminActionRequest;
-import com.ra.base_spring_boot.dto.resp.TestDriveBookingResponse;
-import com.ra.base_spring_boot.model.User;
+import com.ra.base_spring_boot.dto.request.TestDriveBookingRequest;
+import com.ra.base_spring_boot.dto.request.TestDriveBookingAdminActionRequest;
+import com.ra.base_spring_boot.dto.response.TestDriveBookingResponse;
+import com.ra.base_spring_boot.entity.User;
 import java.util.List;
 
 public interface TestDriveBookingService {

@@ -1,6 +1,6 @@
 package com.ra.base_spring_boot.security.principle;
 
-import com.ra.base_spring_boot.model.User;
+import com.ra.base_spring_boot.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -50,5 +50,16 @@ jwt:
   secret:
     key: Ascmkkqdnmsdfrtgsyuhidj21ue120938219321ndsad
   expired:
-    access: 2592000000
+    access: 900000
+    refresh: 604800000
+
+# Auth cookie defaults (local/dev). Production overrides in application-prod.yml.
+# - secure: false locally (HTTP). prod profile sets secure: true (HTTPS required).
+# - same-site: Lax is fine when frontend and API are same-site (e.g. reverse proxy).
+# - If prod uses same-site: None for cross-origin cookies, secure MUST be true.
+app:
+  cookie:
+    secure: false
+    same-site: Lax
+    path: /
 

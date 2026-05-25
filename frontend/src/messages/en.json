@@ -388,7 +388,21 @@
     "title": "Porsche",
     "models_section": "Models",
     "explore": "Explore",
-    "from": "From"
+    "from": "From",
+    "discover_more": "Discover more",
+    "journey_starts": "Your Porsche journey starts here.",
+    "find_dealer_title": "Find a Porsche Center",
+    "find_dealer_desc": "Locate your nearest authorized Porsche dealer.",
+    "search_now": "Search now",
+    "scroll_up": "Scroll up",
+    "locations": "Locations",
+    "get_in_touch": "Get in touch",
+    "newsletter": "Newsletter",
+    "company": "Company",
+    "career": "Career",
+    "compliance": "Compliance",
+    "sustainability": "Sustainability",
+    "follow_us": "Follow us"
   },
   "models": {
     "title": "Model Overview",
@@ -396,7 +410,10 @@
     "reset": "Reset Filter",
     "cayman": "Cayman",
     "boxster": "Boxster",
-    "select_model": "Select model"
+    "select_model": "Select model",
+    "gasoline": "Gasoline",
+    "unavailable": "Unavailable",
+    "price_tbd": "Price on request"
   },
   "compare": {
     "title": "Model Comparison",

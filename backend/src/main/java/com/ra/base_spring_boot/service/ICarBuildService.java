@@ -1,8 +1,8 @@
 package com.ra.base_spring_boot.service;
 
-import com.ra.base_spring_boot.dto.req.CarBuildRequest;
-import com.ra.base_spring_boot.dto.resp.CarBuildResponse;
-import com.ra.base_spring_boot.model.User;
+import com.ra.base_spring_boot.dto.request.CarBuildRequest;
+import com.ra.base_spring_boot.dto.response.CarBuildResponse;
+import com.ra.base_spring_boot.entity.User;
 
 import java.util.List;
 

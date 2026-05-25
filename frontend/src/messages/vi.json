@@ -388,7 +388,21 @@
     "title": "Porsche",
     "models_section": "Mô hình",
     "explore": "Khám phá",
-    "from": "Từ"
+    "from": "Từ",
+    "discover_more": "Khám phá thêm",
+    "journey_starts": "Hành trình Porsche của bạn bắt đầu tại đây.",
+    "find_dealer_title": "Tìm Trung tâm Porsche",
+    "find_dealer_desc": "Tìm đại lý ủy quyền Porsche gần bạn nhất.",
+    "search_now": "Tìm kiếm ngay",
+    "scroll_up": "Cuộn lên",
+    "locations": "Địa điểm",
+    "get_in_touch": "Liên hệ",
+    "newsletter": "Bản tin",
+    "company": "Công ty",
+    "career": "Tuyển dụng",
+    "compliance": "Tuân thủ",
+    "sustainability": "Phát triển bền vững",
+    "follow_us": "Theo dõi chúng tôi"
   },
   "models": {
     "title": "Tổng quan mô hình",
@@ -396,7 +410,10 @@
     "reset": "Đặt lại",
     "cayman": "Cayman",
     "boxster": "Boxster",
-    "select_model": "Chọn mô hình"
+    "select_model": "Chọn mô hình",
+    "gasoline": "Xăng",
+    "unavailable": "Không khả dụng",
+    "price_tbd": "Giá liên hệ"
   },
   "compare": {
     "title": "So sánh mô hình",
