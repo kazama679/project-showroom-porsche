@@ -170,7 +170,7 @@ export default function UsersPage() {
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 bg-[#DA291C] hover:bg-[#C02015] text-white px-4 py-2 rounded-[2px] font-medium transition-colors"
+          className="flex items-center gap-2 bg-brand-red hover:bg-red-700 text-white px-4 py-2 rounded-sm font-medium transition-colors"
         >
           <Plus size={20} />
           {t('admin.add_user')}
@@ -179,15 +179,15 @@ export default function UsersPage() {
 
       {/* Success Alert */}
       {showAlert && (
-        <div className="p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-[2px] border border-green-200 dark:border-green-900/50">
+        <div className="p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-sm border border-green-200 dark:border-green-900/50">
           {alertMessage}
         </div>
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white dark:bg-[#1A1A1A] rounded-[2px] border border-gray-200 dark:border-[#303030]">
+      <div className="overflow-x-auto bg-white dark:bg-neutral-900 rounded-sm border border-gray-200 dark:border-dark-surface">
         <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-[#252525] border-b border-gray-200 dark:border-[#303030]">
+          <thead className="bg-gray-50 dark:bg-neutral-800 border-b border-gray-200 dark:border-dark-surface">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 {t('admin.name')}
@@ -212,9 +212,9 @@ export default function UsersPage() {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-[#303030]">
+          <tbody className="divide-y divide-gray-200 dark:divide-dark-surface">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-[#252525] transition-colors">
+              <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
                 <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">{user.name}</td>
                 <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{user.email}</td>
                 <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{user.phone}</td>
@@ -256,8 +256,8 @@ export default function UsersPage() {
       {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-[#1A1A1A] rounded-[2px] w-full max-w-md shadow-lg max-h-96 overflow-y-auto hide-scrollbar">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#303030]">
+          <div className="bg-white dark:bg-neutral-900 rounded-sm w-full max-w-md shadow-lg max-h-96 overflow-y-auto hide-scrollbar">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-dark-surface">
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   {editingUser ? t('admin.edit_user') : t('admin.add_new_user')}
@@ -286,7 +286,7 @@ export default function UsersPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
                 />
               </div>
 
@@ -300,7 +300,7 @@ export default function UsersPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
                 />
               </div>
 
@@ -313,7 +313,7 @@ export default function UsersPage() {
                   placeholder={t('admin.placeholder_phone')}
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
                 />
               </div>
 
@@ -325,7 +325,7 @@ export default function UsersPage() {
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   aria-label={t('admin.role')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
                 >
                   <option value="customer">{t('admin.customer')}</option>
                   <option value="staff">{t('admin.staff')}</option>
@@ -341,24 +341,24 @@ export default function UsersPage() {
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
                   aria-label={t('admin.status')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#252525] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#DA291C]"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
                 >
                   <option value="active">{t('admin.active')}</option>
                   <option value="inactive">{t('admin.inactive')}</option>
                 </select>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-[#303030]">
+              <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-dark-surface">
                 <button
                   type="submit"
-                  className="flex-1 bg-[#DA291C] hover:bg-[#C02015] text-white font-medium py-2 rounded-[2px] transition-colors"
+                  className="flex-1 bg-brand-red hover:bg-red-700 text-white font-medium py-2 rounded-sm transition-colors"
                 >
                   {t('common.save')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 bg-gray-200 dark:bg-[#303030] hover:bg-gray-300 dark:hover:bg-[#404040] text-gray-900 dark:text-white font-medium py-2 rounded-[2px] transition-colors"
+                  className="flex-1 bg-gray-200 dark:bg-dark-surface hover:bg-gray-300 dark:hover:bg-neutral-700 text-gray-900 dark:text-white font-medium py-2 rounded-sm transition-colors"
                 >
                   {t('common.cancel')}
                 </button>
@@ -371,19 +371,19 @@ export default function UsersPage() {
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-[#1A1A1A] rounded-[2px] w-full max-w-sm shadow-lg p-6">
+          <div className="bg-white dark:bg-neutral-900 rounded-sm w-full max-w-sm shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('admin.confirm_delete')}</h2>
             <p className="text-gray-600 dark:text-gray-400 mt-2">{t('admin.are_you_sure')}</p>
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-[2px] transition-colors"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-sm transition-colors"
               >
                 {t('admin.delete')}
               </button>
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 bg-gray-200 dark:bg-[#303030] hover:bg-gray-300 dark:hover:bg-[#404040] text-gray-900 dark:text-white font-medium py-2 rounded-[2px] transition-colors"
+                className="flex-1 bg-gray-200 dark:bg-dark-surface hover:bg-gray-300 dark:hover:bg-neutral-700 text-gray-900 dark:text-white font-medium py-2 rounded-sm transition-colors"
               >
                 {t('common.cancel')}
               </button>

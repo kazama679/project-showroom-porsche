@@ -34,7 +34,7 @@ export function LoginPromptModal({ modelImage, onClose }: LoginPromptModalProps)
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#f5f5f5] hover:bg-[#e5e5e5] flex items-center justify-center transition-colors z-10"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
           aria-label="Đóng"
         >
           <X size={18} strokeWidth={1.5} />
@@ -53,19 +53,19 @@ export function LoginPromptModal({ modelImage, onClose }: LoginPromptModalProps)
 
         {/* Text content */}
         <div className="px-8 pb-8 text-left">
-          <h3 className="text-xl md:text-2xl font-light text-[#181818] mb-4">
+          <h3 className="text-xl md:text-2xl font-light text-near-black mb-4">
             Để lưu cấu hình này, hãy đăng nhập bằng ID Porsche của bạn hoặc đăng ký.
           </h3>
-          <p className="text-sm text-[#444] font-light mb-6">
+          <p className="text-sm text-neutral-700 font-light mb-6">
             Để lưu cấu hình xe của bạn, hãy đăng nhập bằng ID Porsche của bạn. Nếu bạn chưa có ID Porsche, bạn có thể đăng ký dễ dàng và tận hưởng những lợi ích sau:
           </p>
           
           <div className="mb-6">
-            <h4 className="text-sm font-semibold text-[#181818] mb-3">Ưu điểm của Porsche ID</h4>
+            <h4 className="text-sm font-semibold text-near-black mb-3">Ưu điểm của Porsche ID</h4>
             <ul className="space-y-2">
               {benefits.map((benefit, idx) => (
-                <li key={idx} className="flex items-start gap-2 text-sm text-[#444] font-light">
-                  <Check size={16} strokeWidth={2} className="text-[#181818] mt-0.5" />
+                <li key={idx} className="flex items-start gap-2 text-sm text-neutral-700 font-light">
+                  <Check size={16} strokeWidth={2} className="text-near-black mt-0.5" />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -74,7 +74,7 @@ export function LoginPromptModal({ modelImage, onClose }: LoginPromptModalProps)
 
           <Link
             href={loginUrl}
-            className="w-full py-4 bg-black text-white rounded-md text-sm font-medium hover:bg-[#222] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-4 bg-black text-white rounded-md text-sm font-medium hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
           >
             Đăng nhập và lưu bản dựng
           </Link>

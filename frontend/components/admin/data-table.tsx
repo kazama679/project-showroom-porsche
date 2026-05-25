@@ -95,14 +95,14 @@ export function DataTable<T extends { id?: string | number }>({
   return (
     <div className="space-y-4">
       {/* Outer container with exact original styling */}
-      <div className="border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] overflow-hidden">
+      <div className="border border-light-gray-surface dark:border-dark-surface rounded-sm overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#D2D2D2] dark:border-[#303030] bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+            <tr className="border-b border-light-gray-surface dark:border-dark-surface bg-gray-100 dark:bg-neutral-900">
               {columns.map((col) => (
                 <th
                   key={String(col.key)}
-                  className={`px-4 py-3 text-ferrari-label text-[#666666] dark:text-[#D2D2D2] ${
+                  className={`px-4 py-3 text-porsche-label text-dark-gray dark:text-light-gray-surface ${
                     col.align === 'center'
                       ? 'text-center'
                       : col.align === 'right'
@@ -128,16 +128,16 @@ export function DataTable<T extends { id?: string | number }>({
                           size={12}
                           className={
                             sortKey === col.key && !sortDesc
-                              ? 'text-[#DA291C]'
-                              : 'text-[#D2D2D2] dark:text-[#303030]'
+                              ? 'text-brand-red'
+                              : 'text-light-gray-surface dark:text-dark-surface'
                           }
                         />
                         <ChevronDown
                           size={12}
                           className={
                             sortKey === col.key && sortDesc
-                              ? 'text-[#DA291C]'
-                              : 'text-[#D2D2D2] dark:text-[#303030]'
+                              ? 'text-brand-red'
+                              : 'text-light-gray-surface dark:text-dark-surface'
                           }
                         />
                       </div>
@@ -153,11 +153,11 @@ export function DataTable<T extends { id?: string | number }>({
               [...Array(pagination?.pageSize || 10)].map((_, i) => (
                 <tr
                   key={`skeleton-${i}`}
-                  className="border-b border-[#D2D2D2] dark:border-[#303030] last:border-none"
+                  className="border-b border-light-gray-surface dark:border-dark-surface last:border-none"
                 >
                   {columns.map((col, idx) => (
                     <td key={`skeleton-cell-${idx}`} className="px-4 py-3">
-                      <div className="h-4 bg-[#E5E5E5] dark:bg-[#404040] rounded w-24 animate-pulse" />
+                      <div className="h-4 bg-gray-200 dark:bg-neutral-700 rounded w-24 animate-pulse" />
                     </td>
                   ))}
                 </tr>
@@ -166,7 +166,7 @@ export function DataTable<T extends { id?: string | number }>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-4 py-8 text-center text-[#8F8F8F] dark:text-[#D2D2D2]"
+                  className="px-4 py-8 text-center text-mid-gray dark:text-light-gray-surface"
                 >
                   {emptyState || (isVi ? 'Không có dữ liệu' : 'No data available')}
                 </td>
@@ -175,14 +175,14 @@ export function DataTable<T extends { id?: string | number }>({
               paginatedData.map((row, idx) => (
                 <tr
                   key={row.id || idx}
-                  className="border-b border-[#D2D2D2] dark:border-[#303030] last:border-none hover:bg-[#F9F9F9] dark:hover:bg-[#1A1A1A] transition-colors"
+                  className="border-b border-light-gray-surface dark:border-dark-surface last:border-none hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
                   onClick={() => onRowClick?.(row)}
                   style={{ cursor: onRowClick ? 'pointer' : 'default' }}
                 >
                   {columns.map((col) => (
                     <td
                       key={String(col.key)}
-                      className={`px-4 py-3 text-sm text-[#181818] dark:text-white ${
+                      className={`px-4 py-3 text-sm text-near-black dark:text-white ${
                         col.align === 'center'
                           ? 'text-center'
                           : col.align === 'right'
@@ -203,9 +203,9 @@ export function DataTable<T extends { id?: string | number }>({
       </div>
 
       {pagination && (totalPages > 1 || pagination.total > 5) && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-3 border-t border-[#D2D2D2] dark:border-[#303030]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-3 border-t border-light-gray-surface dark:border-dark-surface">
           {/* Quick Page Jump Input and Page Counter with beautiful layout */}
-          <div className="flex items-center gap-4 text-sm text-[#8F8F8F] dark:text-[#D2D2D2]">
+          <div className="flex items-center gap-4 text-sm text-mid-gray dark:text-light-gray-surface">
             <div className="flex items-center gap-1.5">
               <span>{isVi ? 'Trang' : 'Page'}</span>
               <input
@@ -221,7 +221,7 @@ export function DataTable<T extends { id?: string | number }>({
                   }
                 }}
                 disabled={loading}
-                className="w-14 px-2 py-0.5 text-center text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white placeholder-[#8F8F8F] outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C] transition-colors disabled:opacity-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-14 px-2 py-0.5 text-center text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors disabled:opacity-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <span>{isVi ? 'trên' : 'of'} {totalPages}</span>
             </div>
@@ -231,7 +231,7 @@ export function DataTable<T extends { id?: string | number }>({
           {/* Right section: Page Size Selector and Navigation Buttons */}
           <div className="flex items-center gap-4">
             {pagination.onPageSizeChange && (
-              <div className="flex items-center gap-1.5 text-sm text-[#8F8F8F] dark:text-[#D2D2D2]">
+              <div className="flex items-center gap-1.5 text-sm text-mid-gray dark:text-light-gray-surface">
                 <span>{isVi ? 'Hiển thị' : 'Show'}</span>
                 <select
                   value={pagination.pageSize}
@@ -240,7 +240,7 @@ export function DataTable<T extends { id?: string | number }>({
                     pagination.onPageSizeChange?.(size)
                   }}
                   disabled={loading}
-                  className="px-1.5 py-0.5 text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C] transition-colors disabled:opacity-50"
+                  className="px-1.5 py-0.5 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors disabled:opacity-50"
                 >
                   {[5, 10, 20, 100].map((size) => (
                     <option key={size} value={size}>
@@ -259,7 +259,7 @@ export function DataTable<T extends { id?: string | number }>({
                   pagination.onPageChange(Math.max(1, pagination.currentPage - 1))
                 }
                 disabled={pagination.currentPage === 1 || loading}
-                className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[#181818] dark:text-white"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-near-black dark:text-white"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -270,7 +270,7 @@ export function DataTable<T extends { id?: string | number }>({
                   )
                 }
                 disabled={pagination.currentPage === totalPages || loading}
-                className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[#181818] dark:text-white"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-near-black dark:text-white"
               >
                 <ChevronRight size={18} />
               </button>

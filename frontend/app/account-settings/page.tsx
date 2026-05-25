@@ -63,7 +63,7 @@ export default function AccountSettings() {
         </div>
 
         {/* Completion Card */}
-        <div className="bg-gray-100 rounded-[2px] p-12 mb-16">
+        <div className="bg-gray-100 rounded-sm p-12 mb-16">
           <div className="flex justify-between items-start mb-8">
             <div>
               <h2 className="text-lg font-light text-gray-600 mb-2">Hoàn thành hộ số</h2>
@@ -143,7 +143,7 @@ export default function AccountSettings() {
             </div>
           </div>
 
-          <button className="mt-12 px-6 py-3 bg-black text-white font-light text-sm tracking-[1.28px] rounded-[2px] hover:bg-opacity-90 transition-all">
+          <button className="mt-12 px-6 py-3 bg-black text-white font-light text-sm tracking-[1.28px] rounded-sm hover:bg-opacity-90 transition-all">
             Hoàn tất hộ số của bạn
           </button>
         </div>
@@ -174,7 +174,7 @@ export default function AccountSettings() {
                 <div className="border-t border-gray-200 pt-6">
                   <p className="text-gray-500 text-sm font-light mb-2">Ngày sinh</p>
                   <p className="text-gray-600 font-light">Không có ngày sinh cụ thể.</p>
-                  <button className="mt-4 px-4 py-2 border border-gray-400 text-sm font-light rounded-[2px] hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <button className="mt-4 px-4 py-2 border border-gray-400 text-sm font-light rounded-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
                     <Plus size={16} />
                     Thêm ngày sinh
                   </button>
@@ -208,7 +208,7 @@ export default function AccountSettings() {
                     Bạn có thể thay đổi ID Porsche của mình trong mục Đăng nhập & Bảo mật.
                   </p>
                 </div>
-                <button className="px-4 py-2 border border-gray-400 text-sm font-light rounded-[2px] hover:bg-gray-50 transition-colors flex items-center gap-2">
+                <button className="px-4 py-2 border border-gray-400 text-sm font-light rounded-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
                   <Plus size={16} />
                   Thêm địa chỉ email
                 </button>
@@ -231,7 +231,7 @@ export default function AccountSettings() {
                   <p className="text-gray-500 text-sm font-light mb-2">Số điện thoại ưu tiên</p>
                   <p className="text-gray-600 font-light">Bạn chưa lưu số điện thoại nào.</p>
                 </div>
-                <button className="px-4 py-2 border border-gray-400 text-sm font-light rounded-[2px] hover:bg-gray-50 transition-colors flex items-center gap-2">
+                <button className="px-4 py-2 border border-gray-400 text-sm font-light rounded-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
                   <Plus size={16} />
                   Thêm số điện thoại
                 </button>

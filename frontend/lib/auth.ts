@@ -1,6 +1,7 @@
 // Auth service - handles all authentication-related API calls
 // Token is now stored in httpOnly cookie (set by backend), NOT in sessionStorage
 import { apiClient, ApiError } from "./api";
+import { UserRole } from "../constants/enums";
 
 export interface LoginRequest {
   email: string;
@@ -112,7 +113,7 @@ export const authService = {
   },
 
   isAdmin(): boolean {
-    return this.getRoles().includes("ROLE_ADMIN");
+    return this.getRoles().includes(UserRole.ADMIN);
   },
 };
 

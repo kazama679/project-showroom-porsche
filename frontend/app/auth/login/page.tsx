@@ -76,7 +76,7 @@ export default function LoginPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[2px] text-sm animate-in fade-in slide-in-from-top-1 duration-300">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-sm text-sm animate-in fade-in slide-in-from-top-1 duration-300">
                 {error}
               </div>
             )}
@@ -98,7 +98,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                   placeholder=""
-                  className="w-full px-4 py-3 border border-gray-400 rounded-[2px] text-base focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 border border-gray-400 rounded-sm text-base focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -118,7 +118,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={loading}
                     placeholder=""
-                    className="w-full px-4 py-3 pr-12 border border-gray-400 rounded-[2px] text-base focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 pr-12 border border-gray-400 rounded-sm text-base focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <button
                     type="button"
@@ -134,7 +134,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading || !email || !password}
-                className="cursor-pointer w-full bg-black text-white py-3 font-medium text-sm tracking-[1.28px] rounded-[2px] hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="cursor-pointer w-full bg-black text-white py-3 font-medium text-sm tracking-[1.28px] rounded-sm hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>

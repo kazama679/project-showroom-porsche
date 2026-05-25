@@ -175,7 +175,7 @@ export default function BlogPage() {
           />
         )}
 
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
           <DataTable
             columns={[
               {
@@ -233,15 +233,15 @@ export default function BlogPage() {
                   <div className="flex gap-2 justify-center">
                     <button
                       onClick={() => handleOpenModal(posts.find((p) => p.id === value))}
-                      className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                     >
-                      <Edit2 size={16} className="text-[#8F8F8F]" />
+                      <Edit2 size={16} className="text-mid-gray" />
                     </button>
                     <button
                       onClick={() => handleDelete(value)}
-                      className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                     >
-                      <Trash2 size={16} className="text-[#DA291C]" />
+                      <Trash2 size={16} className="text-brand-red" />
                     </button>
                   </div>
                 ),
@@ -296,14 +296,14 @@ export default function BlogPage() {
           />
 
           <div>
-            <label className="text-ferrari-label text-[#181818] dark:text-white block mb-2">
+            <label className="text-porsche-label text-near-black dark:text-white block mb-2">
               Content
             </label>
             <textarea
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               placeholder="Write your blog post content here..."
-              className="w-full px-3 py-2 border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] bg-white dark:bg-[#404040] text-black dark:text-white h-48 resize-none"
+              className="w-full px-3 py-2 border border-light-gray-surface dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-700 text-black dark:text-white h-48 resize-none"
             />
           </div>
 

@@ -23,8 +23,8 @@ export default function SettingsPage() {
           />
         )}
 
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6 space-y-4">
-          <h3 className="text-ferrari-subheading text-[#181818] dark:text-white">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6 space-y-4">
+          <h3 className="text-porsche-subheading text-near-black dark:text-white">
             General Settings
           </h3>
           <FormInput
@@ -46,8 +46,8 @@ export default function SettingsPage() {
           />
         </div>
 
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6 space-y-4">
-          <h3 className="text-ferrari-subheading text-[#181818] dark:text-white">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6 space-y-4">
+          <h3 className="text-porsche-subheading text-near-black dark:text-white">
             System Settings
           </h3>
           <FormInput

@@ -37,16 +37,16 @@ function DeleteConfirmDialog({
         <button
           type="button"
           onClick={onCancel}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#f5f5f5] hover:bg-[#e5e5e5] flex items-center justify-center transition-colors"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
           aria-label="Đóng"
         >
           <X size={16} strokeWidth={1.5} />
         </button>
 
-        <h3 className="text-xl font-light text-[#181818] mb-2 pr-8">
+        <h3 className="text-xl font-light text-near-black mb-2 pr-8">
           Bạn có chắc chắn muốn xóa cấu hình này không?
         </h3>
-        <p className="text-sm text-[#b45309] font-light mb-6">
+        <p className="text-sm text-amber-700 font-light mb-6">
           Xin lưu ý rằng thao tác này không thể hoàn tác.
         </p>
 
@@ -54,14 +54,14 @@ function DeleteConfirmDialog({
           <button
             type="button"
             onClick={onConfirm}
-            className="px-6 py-2.5 bg-[#181818] text-white text-sm font-medium rounded-md hover:bg-[#303030] transition-colors"
+            className="px-6 py-2.5 bg-near-black text-white text-sm font-medium rounded-md hover:bg-dark-surface transition-colors"
           >
             Xóa bỏ
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-2.5 text-sm text-[#666] font-light hover:text-[#181818] transition-colors flex items-center gap-1.5"
+            className="px-6 py-2.5 text-sm text-dark-gray font-light hover:text-near-black transition-colors flex items-center gap-1.5"
           >
             <X size={14} />
             Hủy bỏ
@@ -110,7 +110,7 @@ function SavedVehicleCard({
           {/* Left: Images */}
           <div className="p-4 md:p-5">
             {/* Main image */}
-            <div className="relative w-full aspect-[4/3] bg-[#f5f5f5] rounded-lg overflow-hidden mb-3">
+            <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden mb-3">
               <Image
                 src={mainImage}
                 alt={config.modelName}
@@ -120,7 +120,7 @@ function SavedVehicleCard({
               />
               {/* Camera icon / image count */}
               {displayImages.length > 1 && (
-                <div className="absolute bottom-3 left-3 bg-[#2a2a2a]/80 text-white rounded-md px-2.5 py-1.5 flex items-center gap-1.5 text-xs">
+                <div className="absolute bottom-3 left-3 bg-neutral-800/80 text-white rounded-md px-2.5 py-1.5 flex items-center gap-1.5 text-xs">
                   <Camera size={13} />
                 </div>
               )}
@@ -134,9 +134,9 @@ function SavedVehicleCard({
                     key={i}
                     type="button"
                     onClick={() => setActiveThumb(i)}
-                    className={`relative aspect-[4/3] rounded-md overflow-hidden bg-[#f0f0f0] transition-all ${
+                    className={`relative aspect-[4/3] rounded-md overflow-hidden bg-neutral-100 transition-all ${
                       activeThumb === i
-                        ? 'ring-2 ring-[#181818] ring-offset-1'
+                        ? 'ring-2 ring-near-black ring-offset-1'
                         : 'opacity-80 hover:opacity-100'
                     }`}
                   >
@@ -158,15 +158,15 @@ function SavedVehicleCard({
             <div className="space-y-4">
               {/* Title */}
               <div>
-                <h3 className="text-xl md:text-2xl font-light text-[#181818] mb-1.5">
+                <h3 className="text-xl md:text-2xl font-light text-near-black mb-1.5">
                   {config.modelName}
                 </h3>
-                <div className="flex items-center gap-2 text-sm text-[#666] font-light">
+                <div className="flex items-center gap-2 text-sm text-dark-gray font-light">
                   <span>Mã Porsche {config.porscheCode}</span>
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="hover:text-[#181818] transition-colors"
+                    className="hover:text-near-black transition-colors"
                     title={copied ? 'Đã sao chép!' : 'Sao chép mã'}
                   >
                     <Copy size={14} />
@@ -177,11 +177,11 @@ function SavedVehicleCard({
               </div>
 
               {/* Specs */}
-              <div className="space-y-1.5 text-sm text-[#555]">
+              <div className="space-y-1.5 text-sm text-neutral-600">
                 {(config.colorName || config.interiorName) && (
                   <div className="flex items-center gap-2 flex-wrap">
                     {config.colorName && (
-                      <span className="font-medium text-[#181818]">{config.colorName}</span>
+                      <span className="font-medium text-near-black">{config.colorName}</span>
                     )}
                     {config.colorName && config.interiorName && <span>·</span>}
                     {config.interiorName && <span>{config.interiorName}</span>}
@@ -190,7 +190,7 @@ function SavedVehicleCard({
                 <div className="flex items-center gap-2 flex-wrap">
                   {config.engineInfo && (
                     <>
-                      <span className="font-medium text-[#181818]">{config.engineInfo}</span>
+                      <span className="font-medium text-near-black">{config.engineInfo}</span>
                       <span>·</span>
                     </>
                   )}
@@ -216,7 +216,7 @@ function SavedVehicleCard({
               <button
                 type="button"
                 onClick={onViewDetails}
-                className="px-5 py-2.5 bg-[#181818] text-white text-sm font-medium rounded-md hover:bg-[#303030] transition-colors flex items-center gap-2"
+                className="px-5 py-2.5 bg-near-black text-white text-sm font-medium rounded-md hover:bg-dark-surface transition-colors flex items-center gap-2"
               >
                 <ExternalLink size={15} />
                 Hiển thị chi tiết
@@ -224,7 +224,7 @@ function SavedVehicleCard({
               <button
                 type="button"
                 onClick={onCompare}
-                className="px-5 py-2.5 border border-[#c0c0c0] text-[#181818] text-sm font-light rounded-md hover:border-[#181818] transition-colors flex items-center gap-2"
+                className="px-5 py-2.5 border border-neutral-300 text-near-black text-sm font-light rounded-md hover:border-near-black transition-colors flex items-center gap-2"
               >
                 <ArrowLeftRight size={15} />
                 So sánh
@@ -232,7 +232,7 @@ function SavedVehicleCard({
               <button
                 type="button"
                 onClick={() => setShowDeleteDialog(true)}
-                className="px-5 py-2.5 border border-[#c0c0c0] text-[#181818] text-sm font-light rounded-md hover:border-[#181818] transition-colors flex items-center gap-2"
+                className="px-5 py-2.5 border border-neutral-300 text-near-black text-sm font-light rounded-md hover:border-near-black transition-colors flex items-center gap-2"
               >
                 <Trash2 size={15} />
                 Xóa bỏ
@@ -260,15 +260,15 @@ function SavedVehicleCard({
 function EmptyState() {
   return (
     <div className="bg-white rounded-lg p-12 md:p-16 text-center">
-      <h3 className="text-2xl md:text-3xl font-light text-[#181818] mb-3">
+      <h3 className="text-2xl md:text-3xl font-light text-near-black mb-3">
         Bạn chưa lưu cấu hình nào.
       </h3>
-      <p className="text-sm text-[#666] font-light max-w-lg mx-auto mb-8">
+      <p className="text-sm text-dark-gray font-light max-w-lg mx-auto mb-8">
         Để tạo và lưu lại chiếc Porsche trong mơ của bạn, vui lòng sử dụng Công cụ cấu hình xe Porsche.
       </p>
       <Link
         href="/configurator"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-[#181818] text-white text-sm font-medium rounded-md hover:bg-[#303030] transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-near-black text-white text-sm font-medium rounded-md hover:bg-dark-surface transition-colors"
       >
         <ExternalLink size={15} />
         Tạo cấu hình mới
@@ -281,12 +281,12 @@ function EmptyState() {
 function AddMoreCTA() {
   return (
     <div className="bg-white rounded-lg p-10 md:p-12 text-center">
-      <p className="text-base text-[#555] font-light mb-6">
+      <p className="text-base text-neutral-600 font-light mb-6">
         Bạn có muốn cấu hình thêm một chiếc Porsche khác và thêm nó vào danh sách này không?
       </p>
       <Link
         href="/configurator"
-        className="inline-flex items-center gap-2 px-6 py-3 border border-[#181818] text-[#181818] text-sm font-medium rounded-md hover:bg-[#181818] hover:text-white transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-3 border border-near-black text-near-black text-sm font-medium rounded-md hover:bg-near-black hover:text-white transition-colors"
       >
         <ExternalLink size={15} />
         Tạo cấu hình mới
@@ -345,26 +345,26 @@ export default function SavedVehiclesPage() {
 
   if (!loaded) {
     return (
-      <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#ccc] border-t-[#181818] rounded-full animate-spin" />
+      <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-neutral-300 border-t-near-black rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#f2f2f2]">
+    <div className="min-h-screen bg-neutral-100">
       <SiteHeader logoHref="/" showBookmark />
 
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-16">
         {/* Page Title */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-light text-[#181818] mb-6" style={{ fontStyle: 'italic' }}>
+          <h1 className="text-4xl md:text-5xl font-light text-near-black mb-6" style={{ fontStyle: 'italic' }}>
             Các phương tiện đã lưu của bạn.
           </h1>
           <button
             type="button"
             onClick={handleCompare}
-            className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#c0c0c0] text-[#181818] text-sm font-light rounded-md hover:border-[#181818] transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 border border-neutral-300 text-near-black text-sm font-light rounded-md hover:border-near-black transition-colors"
           >
             <ArrowLeftRight size={16} />
             So sánh các loại xe
@@ -378,8 +378,8 @@ export default function SavedVehiclesPage() {
             onClick={() => setActiveTab('configurations')}
             className={`pb-1.5 text-sm font-light transition-colors ${
               activeTab === 'configurations'
-                ? 'border-b-2 border-[#181818] text-[#181818]'
-                : 'text-[#666] hover:text-[#181818]'
+                ? 'border-b-2 border-near-black text-near-black'
+                : 'text-dark-gray hover:text-near-black'
             }`}
           >
             Cấu hình ({configCount})
@@ -389,8 +389,8 @@ export default function SavedVehiclesPage() {
             onClick={() => setActiveTab('listings')}
             className={`pb-1.5 text-sm font-light transition-colors ${
               activeTab === 'listings'
-                ? 'border-b-2 border-[#181818] text-[#181818]'
-                : 'text-[#666] hover:text-[#181818]'
+                ? 'border-b-2 border-near-black text-near-black'
+                : 'text-dark-gray hover:text-near-black'
             }`}
           >
             Danh sách ({listingCount})
@@ -400,7 +400,7 @@ export default function SavedVehiclesPage() {
         {/* Content */}
         {activeTab === 'configurations' && (
           <div className="space-y-6">
-            <h2 className="text-2xl md:text-3xl font-light text-center text-[#181818] mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-center text-near-black mb-6">
               Cấu hình đã lưu
             </h2>
 
@@ -425,20 +425,20 @@ export default function SavedVehiclesPage() {
 
         {activeTab === 'listings' && (
           <div className="space-y-6">
-            <h2 className="text-2xl md:text-3xl font-light text-center text-[#181818] mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-center text-near-black mb-6">
               Danh sách đã lưu
             </h2>
 
             <div className="bg-white rounded-lg p-12 md:p-16 text-center">
-              <h3 className="text-2xl font-light text-[#181818] mb-3">
+              <h3 className="text-2xl font-light text-near-black mb-3">
                 Bạn chưa lưu danh sách nào.
               </h3>
-              <p className="text-sm text-[#666] font-light max-w-md mx-auto mb-8">
+              <p className="text-sm text-dark-gray font-light max-w-md mx-auto mb-8">
                 Có vẻ như bạn chưa lưu bất kỳ Porsche nào. Bạn có thể chọn lưu để thêm Porsche yêu thích vào danh sách này.
               </p>
               <Link
                 href="/models"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-[#181818] text-[#181818] text-sm font-medium rounded-md hover:bg-[#181818] hover:text-white transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-near-black text-near-black text-sm font-medium rounded-md hover:bg-near-black hover:text-white transition-colors"
               >
                 Duyệt và lưu danh sách
               </Link>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, Suspense } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Loader2, Bookmark, X } from 'lucide-react'
 import Image from 'next/image'
@@ -26,6 +26,7 @@ import { carBuildApi } from '@/lib/car-build-api'
 import { authService } from '@/lib/auth'
 import { LoginPromptModal } from '@/components/configurator/login-prompt-modal'
 import { PorscheCodeModal } from '@/components/configurator/porsche-code-modal'
+import { SelectionType } from '@/constants/enums'
 
 const FALLBACK_GALLERY: GalleryImage[] = [
   {
@@ -57,14 +58,14 @@ function SavedModal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#f5f5f5] hover:bg-[#e5e5e5] flex items-center justify-center transition-colors z-10"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
           aria-label="Đóng"
         >
           <X size={18} strokeWidth={1.5} />
         </button>
 
         {/* Car image */}
-        <div className="relative w-full h-56 md:h-64 bg-[#f8f8f8] rounded-t-2xl overflow-hidden">
+        <div className="relative w-full h-56 md:h-64 bg-gray-50 rounded-t-2xl overflow-hidden">
           <Image
             src={modelImage}
             alt="Porsche"
@@ -76,16 +77,16 @@ function SavedModal({
 
         {/* Text content */}
         <div className="px-8 pb-8 pt-6 text-center">
-          <h3 className="text-xl md:text-2xl font-light text-[#181818] mb-2">
+          <h3 className="text-xl md:text-2xl font-light text-near-black mb-2">
             Bản dựng của bạn đã được lưu.
           </h3>
-          <p className="text-sm text-[#666] font-light mb-6">
+          <p className="text-sm text-dark-gray font-light mb-6">
             Bạn có thể tìm thấy các mô hình xe đã chế tạo trong thư mục xe đã lưu.
           </p>
           <button
             type="button"
             onClick={onViewSaved}
-            className="w-full py-3.5 bg-[#181818] text-white rounded-lg text-sm font-medium hover:bg-[#303030] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-near-black text-white rounded-lg text-sm font-medium hover:bg-dark-surface transition-colors flex items-center justify-center gap-2"
           >
             <Bookmark size={16} strokeWidth={1.5} />
             Hiển thị các phương tiện đã lưu
@@ -97,6 +98,14 @@ function SavedModal({
 }
 
 export default function ConfiguratorPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>}>
+      <ConfiguratorContent />
+    </Suspense>
+  )
+}
+
+function ConfiguratorContent() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -352,10 +361,10 @@ export default function ConfiguratorPage() {
       setSelections((prev) => {
         const section = sections.find((s) => s.id === _sectionId)
         const subGroup = section?.subGroups.find((sg) => sg.id === key)
-        const selectionType = subGroup?.selectionType ?? 'SINGLE'
+        const selectionType = subGroup?.selectionType ?? SelectionType.SINGLE
         const current = prev[key] ?? []
 
-        if (selectionType === 'MULTIPLE') {
+        if (selectionType === SelectionType.MULTIPLE) {
           const exists = current.includes(optionId)
           return {
             ...prev,
@@ -429,7 +438,7 @@ export default function ConfiguratorPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#666]" />
+        <Loader2 className="w-8 h-8 animate-spin text-dark-gray" />
       </div>
     )
   }
@@ -437,11 +446,11 @@ export default function ConfiguratorPage() {
   if (error || !model) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4 px-4">
-        <p className="text-[#666] font-light">{error ?? 'Car model not found'}</p>
+        <p className="text-dark-gray font-light">{error ?? 'Car model not found'}</p>
         <button
           type="button"
           onClick={() => router.push('/models')}
-          className="px-6 py-2 border border-black rounded-full text-sm font-light hover:bg-[#fafafa]"
+          className="px-6 py-2 border border-black rounded-full text-sm font-light hover:bg-neutral-50"
         >
           Back to models
         </button>
@@ -450,7 +459,7 @@ export default function ConfiguratorPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen text-[#181818]">
+    <div className="bg-white min-h-screen text-near-black">
       {/* Header 1: global nav — scrolls away with page */}
       <SiteHeader logoHref="/" />
 
@@ -469,7 +478,7 @@ export default function ConfiguratorPage() {
       <main className="pb-28">
         <div className="max-w-[1600px] mx-auto px-4 md:px-8">
           {sections.length === 0 ? (
-            <p className="text-center text-[#666] font-light py-24">
+            <p className="text-center text-dark-gray font-light py-24">
               No options configured for this model yet. Assign options in Admin → Car Model Options.
             </p>
           ) : (
@@ -547,13 +556,13 @@ export default function ConfiguratorPage() {
             <button
               type="button"
               onClick={() => setShow360(false)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#f5f5f5] hover:bg-[#ebebeb] flex items-center justify-center text-lg"
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-neutral-200 flex items-center justify-center text-lg"
               aria-label="Close 360 view"
             >
               ×
             </button>
             <h3 className="text-xl font-light mb-4">360° View</h3>
-            <div className="relative h-64 md:h-96 bg-[#f5f5f5] rounded-xl overflow-hidden mb-4">
+            <div className="relative h-64 md:h-96 bg-gray-100 rounded-xl overflow-hidden mb-4">
               <Image
                 src={galleryImages[activeImageIndex]?.src ?? galleryImages[0].src}
                 alt="360 view"
@@ -562,7 +571,7 @@ export default function ConfiguratorPage() {
                 className="object-cover"
               />
             </div>
-            <p className="text-sm text-[#666] font-light text-center">
+            <p className="text-sm text-dark-gray font-light text-center">
               Drag to rotate · {MSRP_DISCLAIMER.slice(0, 60)}…
             </p>
             <div className="flex justify-center gap-2 mt-4">
@@ -572,7 +581,7 @@ export default function ConfiguratorPage() {
                   type="button"
                   onClick={() => setActiveImageIndex(i)}
                   className={`w-3 h-3 rounded-full transition-colors ${
-                    i === activeImageIndex ? 'bg-black' : 'bg-[#d2d2d2]'
+                    i === activeImageIndex ? 'bg-black' : 'bg-light-gray-surface'
                   }`}
                   aria-label={`Angle ${i + 1}`}
                 />

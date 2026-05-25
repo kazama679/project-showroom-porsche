@@ -175,10 +175,10 @@ export default function ShowroomsPage() {
           {showrooms.map((showroom) => (
             <div
               key={showroom.id}
-              className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6 hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
-                <h3 className="text-ferrari-subheading text-[#181818] dark:text-white">
+                <h3 className="text-porsche-subheading text-near-black dark:text-white">
                   {showroom.name}
                 </h3>
                 <Badge variant={showroom.status === 'active' ? 'success' : 'warning'}>
@@ -188,37 +188,37 @@ export default function ShowroomsPage() {
 
               <div className="space-y-3 mb-4">
                 <div className="flex gap-3 text-sm">
-                  <MapPin size={16} className="text-[#DA291C] flex-shrink-0 mt-0.5" />
+                  <MapPin size={16} className="text-brand-red flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-[#181818] dark:text-white">{showroom.city}</p>
-                    <p className="text-[#8F8F8F] dark:text-[#D2D2D2]">{showroom.address}</p>
+                    <p className="font-medium text-near-black dark:text-white">{showroom.city}</p>
+                    <p className="text-mid-gray dark:text-light-gray-surface">{showroom.address}</p>
                   </div>
                 </div>
                 <div className="flex gap-3 text-sm items-center">
-                  <Phone size={16} className="text-[#DA291C]" />
-                  <a href={`tel:${showroom.phone}`} className="text-[#4C98B9] hover:underline">
+                  <Phone size={16} className="text-brand-red" />
+                  <a href={`tel:${showroom.phone}`} className="text-info-blue hover:underline">
                     {showroom.phone}
                   </a>
                 </div>
                 <div className="flex gap-3 text-sm items-center">
-                  <Mail size={16} className="text-[#DA291C]" />
-                  <a href={`mailto:${showroom.email}`} className="text-[#4C98B9] hover:underline">
+                  <Mail size={16} className="text-brand-red" />
+                  <a href={`mailto:${showroom.email}`} className="text-info-blue hover:underline">
                     {showroom.email}
                   </a>
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-4 border-t border-[#D2D2D2] dark:border-[#404040]">
+              <div className="flex gap-2 pt-4 border-t border-light-gray-surface dark:border-neutral-700">
                 <button
                   onClick={() => handleOpenModal(showroom)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#DA291C] text-white rounded-[2px] hover:bg-[#B01E0A] font-medium text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-brand-red text-white rounded-sm hover:bg-dark-red font-medium text-sm"
                 >
                   <Edit2 size={16} />
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(showroom.id)}
-                  className="px-3 py-2 bg-[#D2D2D2] dark:bg-[#404040] text-black dark:text-white rounded-[2px] hover:bg-[#C0C0C0] dark:hover:bg-[#505050]"
+                  className="px-3 py-2 bg-light-gray-surface dark:bg-neutral-700 text-black dark:text-white rounded-sm hover:bg-neutral-300 dark:hover:bg-[#505050]"
                 >
                   <Trash2 size={18} />
                 </button>

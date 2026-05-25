@@ -24,9 +24,9 @@
 }
 
 :root {
-  /* Ferrari Design System - Light Mode */
+  /* Porsche Design System - Light Mode */
   /* Primary Colors */
-  --ferrari-red: #DA291C;
+  --brand-red: #DA291C;
   --dark-red: #B01E0A;
   --deep-red: #9D2211;
   
@@ -160,6 +160,24 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Porsche Design Tokens */
+  --color-brand-red: var(--brand-red);
+  --color-dark-red: var(--dark-red);
+  --color-deep-red: var(--deep-red);
+  --color-absolute-black: var(--absolute-black);
+  --color-dark-surface: var(--dark-surface);
+  --color-light-gray-surface: var(--light-gray-surface);
+  --color-near-black: var(--near-black);
+  --color-dark-gray: var(--dark-gray);
+  --color-mid-gray: var(--mid-gray);
+  --color-silver-gray: var(--silver-gray);
+  --color-warning-red: var(--warning-red);
+  --color-success-green: var(--success-green);
+  --color-info-blue: var(--info-blue);
+  --color-link-blue: var(--link-blue);
+  --color-racing-yellow: var(--racing-yellow);
+  --color-modena-yellow: var(--modena-yellow);
 }
 
 @layer base {
@@ -171,84 +189,84 @@
   }
 }
 
-/* Ferrari Design System Styles */
+/* Porsche Design System Styles */
 @layer components {
-  .ferrari-btn-primary {
+  .porsche-btn-primary {
     @apply bg-[#DA291C] text-white hover:bg-[#B01E0A] active:bg-[#9D2211] px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
   }
 
-  .ferrari-btn-secondary {
+  .porsche-btn-secondary {
     @apply bg-white text-black border border-black hover:bg-gray-100 px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
   }
 
-  .ferrari-btn-ghost {
+  .porsche-btn-ghost {
     @apply bg-transparent text-white border border-white hover:bg-[#1EAEDB] px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
   }
 
-  .ferrari-card {
+  .porsche-card {
     @apply bg-white rounded-[2px] border border-[#D2D2D2];
   }
 
-  .ferrari-card-dark {
+  .porsche-card-dark {
     @apply bg-[#303030] text-white rounded-[2px] border border-[#303030];
   }
 
-  .ferrari-heading {
+  .porsche-heading {
     @apply text-[1.63rem] font-medium leading-[1.2] tracking-normal;
   }
 
-  .ferrari-subheading {
+  .porsche-subheading {
     @apply text-lg font-bold leading-tight;
   }
 
-  .ferrari-label {
+  .porsche-label {
     @apply text-xs font-medium uppercase tracking-wider;
   }
 
-  .ferrari-stat-label {
+  .porsche-stat-label {
     @apply text-[0.75rem] font-normal uppercase tracking-[1px] text-[#8F8F8F];
   }
 
-  .ferrari-border-subtle {
+  .porsche-border-subtle {
     @apply border-t border-[#D2D2D2];
   }
 
-  .dark .ferrari-border-subtle {
+  .dark .porsche-border-subtle {
     @apply border-[#303030];
   }
 }
 
 /* Typography */
 @layer utilities {
-  .text-ferrari-heading {
+  .text-porsche-heading {
     @apply text-[1.625rem] font-medium leading-[1.2];
   }
 
-  .text-ferrari-subheading {
+  .text-porsche-subheading {
     @apply text-xl font-bold leading-tight;
   }
 
-  .text-ferrari-body {
+  .text-porsche-body {
     @apply text-base font-normal leading-relaxed text-[#181818];
   }
 
-  .text-ferrari-label {
+  .text-porsche-label {
     @apply text-xs uppercase font-medium tracking-wider text-[#666666];
   }
 
-  .text-ferrari-stat {
+  .text-porsche-stat {
     @apply text-3xl font-medium text-[#181818];
   }
 
-  .dark .text-ferrari-body {
+  .dark .text-porsche-body {
     @apply text-white;
   }
 
-  .dark .text-ferrari-stat {
+  .dark .text-porsche-stat {
     @apply text-white;
   }
 
-  .dark .text-ferrari-label {
+  .dark .text-porsche-label {
     @apply text-[#D2D2D2];
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,6 +13,14 @@ import { carBuildApi } from '@/lib/car-build-api'
 import { submitInquiry, InquiryPayload } from '@/lib/inquiry-api'
 
 export default function RequestDetailsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>}>
+      <RequestDetailsContent />
+    </Suspense>
+  )
+}
+
+function RequestDetailsContent() {
   const [formData, setFormData] = useState({
     salutation: 'Ông',
     firstName: 'Quang',
@@ -143,7 +151,7 @@ export default function RequestDetailsPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] text-[#181818]">
+    <div className="min-h-screen bg-gray-100 text-near-black">
       <SiteHeader logoHref="/" />
 
       {/* Main Content */}
@@ -152,7 +160,7 @@ export default function RequestDetailsPage() {
         {/* Back button */}
         <Link 
           href={modelIdParam ? `/configurator/${modelIdParam}` : '/models'}
-          className="inline-flex items-center gap-2 text-sm text-[#181818] hover:opacity-70 font-light mb-12 transition-opacity"
+          className="inline-flex items-center gap-2 text-sm text-near-black hover:opacity-70 font-light mb-12 transition-opacity"
         >
           <ArrowLeft size={16} strokeWidth={1.5} />
           <span>Quay lại Trình cấu hình xe</span>
@@ -163,7 +171,7 @@ export default function RequestDetailsPage() {
           <h1 className="text-[2rem] md:text-[2.5rem] font-light mb-2 leading-[1.2]">
             Hãy cùng thảo luận về cấu hình máy tính của bạn.
           </h1>
-          <p className="text-base text-[#181818] font-light">
+          <p className="text-base text-near-black font-light">
             Hãy liên hệ với chúng tôi để được hỗ trợ, báo giá và tư vấn.
           </p>
         </div>
@@ -174,39 +182,39 @@ export default function RequestDetailsPage() {
           {/* Left Column */}
           {isSubmitted ? (
             <div className="bg-white p-8 rounded-[20px] shadow-sm">
-              <div className="w-20 h-20 bg-[#eefae8] rounded-xl flex items-center justify-center mb-8">
-                <Check size={32} className="text-[#181818]" strokeWidth={1.5} />
+              <div className="w-20 h-20 bg-green-50 rounded-xl flex items-center justify-center mb-8">
+                <Check size={32} className="text-near-black" strokeWidth={1.5} />
               </div>
               
-              <h2 className="text-[1.75rem] font-light mb-6 text-[#181818]">
+              <h2 className="text-[1.75rem] font-light mb-6 text-near-black">
                 Yêu cầu của bạn đã được gửi thành công.
               </h2>
               
-              <p className="text-[15px] font-light text-[#181818] mb-6 leading-relaxed">
+              <p className="text-[15px] font-light text-near-black mb-6 leading-relaxed">
                 Yêu cầu của bạn đã được gửi thành công đến <strong>{dealer?.name}</strong>. Họ sẽ liên hệ lại với bạn trong thời gian sớm nhất.
               </p>
               
-              <p className="text-[15px] font-light text-[#181818] mb-8 leading-relaxed">
+              <p className="text-[15px] font-light text-near-black mb-8 leading-relaxed">
                 Bản tóm tắt cũng đã được gửi đến <strong>{formData.email}</strong>. Có thể mất 2-3 phút để bạn nhận được bản tóm tắt này. Nếu không thấy trong hộp thư đến, có thể nó đã bị chuyển vào thư mục thư rác.
               </p>
               
-              <h3 className="text-[1.125rem] font-light text-[#181818] mb-4">
+              <h3 className="text-[1.125rem] font-light text-near-black mb-4">
                 Cấu hình của bạn
               </h3>
               
-              <div className="border border-[#181818] rounded-xl p-6 mb-12 w-full max-w-[320px]">
-                <p className="text-[11px] text-[#181818] font-medium tracking-wide mb-1">Mã Porsche</p>
+              <div className="border border-near-black rounded-xl p-6 mb-12 w-full max-w-[320px]">
+                <p className="text-[11px] text-near-black font-medium tracking-wide mb-1">Mã Porsche</p>
                 <div className="flex items-center gap-2 mb-6">
-                  <span className="text-[1.375rem] font-medium text-[#181818]">{modelIdParam || 'PTGYLZZ2'}</span>
-                  <button className="text-[#181818] hover:opacity-70 transition-opacity" onClick={() => navigator.clipboard.writeText(modelIdParam || 'PTGYLZZ2')}>
+                  <span className="text-[1.375rem] font-medium text-near-black">{modelIdParam || 'PTGYLZZ2'}</span>
+                  <button className="text-near-black hover:opacity-70 transition-opacity" onClick={() => navigator.clipboard.writeText(modelIdParam || 'PTGYLZZ2')}>
                     <Copy size={20} strokeWidth={1.5} />
                   </button>
                 </div>
                 
-                <p className="text-[13px] font-light text-[#181818] leading-relaxed mb-4">
+                <p className="text-[13px] font-light text-near-black leading-relaxed mb-4">
                   Bạn có thể truy cập cấu hình xe của mình trong Trình cấu hình xe Porsche bằng Mã Porsche này.
                 </p>
-                <p className="text-[13px] font-light text-[#181818] leading-relaxed">
+                <p className="text-[13px] font-light text-near-black leading-relaxed">
                   Vui lòng lưu ý rằng Mã Porsche sẽ thay đổi nếu bạn chỉnh sửa cấu hình.
                 </p>
               </div>
@@ -229,39 +237,39 @@ export default function RequestDetailsPage() {
               
               {!dealer ? (
                 <div className="space-y-1">
-                  <label className={cn("block text-sm font-medium mb-1.5", errors.dealer ? "text-red-500" : "text-[#181818]")}>
+                  <label className={cn("block text-sm font-medium mb-1.5", errors.dealer ? "text-red-500" : "text-near-black")}>
                     Tìm đại lý Porsche gần bạn <span className="text-red-500">*</span>
                   </label>
-                  <p className="text-xs text-[#666] font-light pb-1">
+                  <p className="text-xs text-dark-gray font-light pb-1">
                     Nhập mã bưu chính, thành phố hoặc đường phố
                   </p>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666]" size={18} strokeWidth={1.5} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-gray" size={18} strokeWidth={1.5} />
                     <input
                       type="text"
                       placeholder="ví dụ New York"
                       onClick={() => setShowDealerModal(true)}
                       readOnly
-                      className="w-full pl-11 pr-4 py-3.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded-xl font-light text-[#181818] focus:outline-none cursor-pointer"
+                      className="w-full pl-11 pr-4 py-3.5 bg-gray-100 border border-gray-200 rounded-xl font-light text-near-black focus:outline-none cursor-pointer"
                     />
                   </div>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-xs text-[#181818] font-light">Trung tâm Porsche bạn đã chọn</p>
-                  <div className="relative bg-[#e5e5e5] p-5 rounded-xl border border-transparent">
+                  <p className="text-xs text-near-black font-light">Trung tâm Porsche bạn đã chọn</p>
+                  <div className="relative bg-gray-200 p-5 rounded-xl border border-transparent">
                     <button 
                       type="button"
                       onClick={() => setShowDealerModal(true)}
-                      className="absolute top-4 right-4 text-[#666] hover:text-[#181818] transition-colors"
+                      className="absolute top-4 right-4 text-dark-gray hover:text-near-black transition-colors"
                       aria-label="Edit dealer"
                     >
                       <Edit2 size={16} strokeWidth={1.5} />
                     </button>
-                    <h3 className="text-base font-light text-[#181818] mb-1 pr-8">{dealer.name}</h3>
+                    <h3 className="text-base font-light text-near-black mb-1 pr-8">{dealer.name}</h3>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <p className="text-sm font-light text-[#181818] mr-2">{dealer.address}</p>
-                      <span className="inline-flex rounded-full bg-[#d2d2d2] px-3 py-1 text-xs font-light text-[#181818] whitespace-nowrap">
+                      <p className="text-sm font-light text-near-black mr-2">{dealer.address}</p>
+                      <span className="inline-flex rounded-full bg-light-gray-surface px-3 py-1 text-xs font-light text-near-black whitespace-nowrap">
                         {dealer.distance}
                       </span>
                     </div>
@@ -270,7 +278,7 @@ export default function RequestDetailsPage() {
               )}
             </div>
 
-            <hr className="border-[#e5e5e5] mx-8" />
+            <hr className="border-gray-200 mx-8" />
 
             {/* Section 2: Contact Information */}
             <div className="bg-white p-6 md:p-8 rounded-[20px] shadow-sm">
@@ -281,7 +289,7 @@ export default function RequestDetailsPage() {
               <div className="space-y-6">
                 {/* Salutation */}
                 <div>
-                  <label htmlFor="salutation" className="block text-sm font-medium text-[#181818] mb-1.5">
+                  <label htmlFor="salutation" className="block text-sm font-medium text-near-black mb-1.5">
                     Lời chào <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -289,7 +297,7 @@ export default function RequestDetailsPage() {
                     id="salutation"
                     value={formData.salutation}
                     onChange={handleInputChange}
-                    className={cn("w-full md:w-1/3 px-4 py-3.5 bg-[#f5f5f5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999] appearance-none", errors.salutation ? "border-2 border-red-500" : "border border-[#e5e5e5]")}
+                    className={cn("w-full md:w-1/3 px-4 py-3.5 bg-gray-100 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400 appearance-none", errors.salutation ? "border-2 border-red-500" : "border border-gray-200")}
                   >
                     <option value="Ông">Ông</option>
                     <option value="Bà">Bà</option>
@@ -300,7 +308,7 @@ export default function RequestDetailsPage() {
                 {/* Name Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-[#181818] mb-1.5">
+                    <label htmlFor="firstName" className="block text-sm font-medium text-near-black mb-1.5">
                       Tên <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -309,11 +317,11 @@ export default function RequestDetailsPage() {
                       id="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className={cn("w-full px-4 py-3.5 bg-[#f5f5f5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999]", errors.firstName ? "border-2 border-red-500" : "border border-[#e5e5e5]")}
+                      className={cn("w-full px-4 py-3.5 bg-gray-100 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400", errors.firstName ? "border-2 border-red-500" : "border border-gray-200")}
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-[#181818] mb-1.5">
+                    <label htmlFor="lastName" className="block text-sm font-medium text-near-black mb-1.5">
                       Họ <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -322,14 +330,14 @@ export default function RequestDetailsPage() {
                       id="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className={cn("w-full px-4 py-3.5 bg-[#f5f5f5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999]", errors.lastName ? "border-2 border-red-500" : "border border-[#e5e5e5]")}
+                      className={cn("w-full px-4 py-3.5 bg-gray-100 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400", errors.lastName ? "border-2 border-red-500" : "border border-gray-200")}
                     />
                   </div>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-[#181818] mb-1.5">
+                  <label htmlFor="email" className="block text-sm font-medium text-near-black mb-1.5">
                     Email <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -338,36 +346,36 @@ export default function RequestDetailsPage() {
                     id="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={cn("w-full px-4 py-3.5 bg-[#f5f5f5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999]", errors.email ? "border-2 border-red-500" : "border border-[#e5e5e5]")}
+                    className={cn("w-full px-4 py-3.5 bg-gray-100 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400", errors.email ? "border-2 border-red-500" : "border border-gray-200")}
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div>
-                  <h3 className="text-sm font-medium text-[#181818] mb-1.5">
+                  <h3 className="text-sm font-medium text-near-black mb-1.5">
                     Số điện thoại di động
                   </h3>
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="w-full md:w-1/3">
-                      <label className="block text-xs text-[#666] font-light mb-1">Mã quốc gia</label>
+                      <label className="block text-xs text-dark-gray font-light mb-1">Mã quốc gia</label>
                       <select
                         name="countryCode"
                         value={formData.countryCode}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999] appearance-none"
+                        className="w-full px-4 py-3.5 bg-gray-100 border border-gray-200 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400 appearance-none"
                       >
                         <option value="Mỹ +1">Mỹ +1</option>
                         <option value="VN +84">VN +84</option>
                       </select>
                     </div>
                     <div className="flex-1">
-                      <label className="block text-xs text-[#666] font-light mb-1">Số điện thoại ví dụ (201) 555-0123</label>
+                      <label className="block text-xs text-dark-gray font-light mb-1">Số điện thoại ví dụ (201) 555-0123</label>
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999]"
+                        className="w-full px-4 py-3.5 bg-gray-100 border border-gray-200 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400"
                       />
                     </div>
                   </div>
@@ -375,7 +383,7 @@ export default function RequestDetailsPage() {
 
                 {/* Message */}
                 <div>
-                  <h3 className="text-sm font-medium text-[#181818] mb-1.5">
+                  <h3 className="text-sm font-medium text-near-black mb-1.5">
                     Thông điệp của bạn
                   </h3>
                   <textarea
@@ -384,12 +392,12 @@ export default function RequestDetailsPage() {
                     rows={4}
                     value={formData.message}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded-xl font-light text-[#181818] focus:outline-none focus:border-[#999] resize-y"
+                    className="w-full px-4 py-3.5 bg-gray-100 border border-gray-200 rounded-xl font-light text-near-black focus:outline-none focus:border-neutral-400 resize-y"
                   />
                 </div>
 
                 {/* Consent Text */}
-                <div className="text-sm text-[#454545] font-light leading-relaxed mt-8">
+                <div className="text-sm text-neutral-700 font-light leading-relaxed mt-8">
                   Bằng cách cung cấp thông tin liên hệ của bạn, chúng tôi hiểu rằng bạn đồng ý được liên hệ bởi Porsche Cars North America, Inc. (PCNA), các công ty liên kết và các Trung tâm Porsche của chúng tôi. Trong phạm vi pháp luật cho phép, sự đồng ý của bạn sẽ thay thế bất kỳ sự từ chối nào trước đó đã được gửi đến PCNA cũng như bất kỳ danh sách &ldquo;Không gọi&rdquo; nào của chính phủ. Thông tin của bạn có thể được sử dụng để thông báo cho bạn về các sản phẩm, dịch vụ, tin tức và sự kiện của Porsche theo Thông báo về Quyền riêng tư của chúng tôi, có thể tìm thấy <a href="#" className="underline hover:text-black">tại đây</a>. Bạn có thể hủy đăng ký bất cứ lúc nào bằng cách nhấp vào liên kết &ldquo;Hủy đăng ký&rdquo; có trong bản tin của chúng tôi, bằng cách gọi đến số 1-800-PORSCHE hoặc bằng cách gửi email đến <a href="mailto:privacy@porsche.us" className="underline hover:text-black">privacy@porsche.us</a>. Cư dân California có thể xem Thông báo về Quyền riêng tư dành cho California của chúng tôi <a href="#" className="underline hover:text-black">tại đây</a>.
                 </div>
 
@@ -408,10 +416,10 @@ export default function RequestDetailsPage() {
 
                 {/* Footer Disclaimers */}
                 <div className="mt-8 space-y-1">
-                  <p className="text-sm text-[#181818] font-medium">
+                  <p className="text-sm text-near-black font-medium">
                     Các trường có dấu * là bắt buộc
                   </p>
-                  <p className="text-xs text-[#666] font-light">
+                  <p className="text-xs text-dark-gray font-light">
                     Trang web này được bảo vệ bởi reCAPTCHA và Google. <a href="#" className="underline hover:text-black">Chính sách bảo mật</a> và <a href="#" className="underline hover:text-black">Điều khoản dịch vụ</a> áp dụng.
                   </p>
                 </div>
@@ -424,14 +432,14 @@ export default function RequestDetailsPage() {
 
           {/* Right Column - Car Summary */}
           <div className="lg:sticky lg:top-[5.5rem]">
-            <div className="bg-white rounded-[20px] shadow-sm overflow-hidden border border-[#e5e5e5]">
+            <div className="bg-white rounded-[20px] shadow-sm overflow-hidden border border-gray-200">
               {loading ? (
-                <div className="h-48 md:h-[220px] w-full flex items-center justify-center bg-[#f5f5f5]">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#666]" />
+                <div className="h-48 md:h-[220px] w-full flex items-center justify-center bg-gray-100">
+                  <Loader2 className="w-6 h-6 animate-spin text-dark-gray" />
                 </div>
               ) : (
                 <>
-                  <div className="bg-[#f5f5f5] relative h-48 md:h-[220px] w-full">
+                  <div className="bg-gray-100 relative h-48 md:h-[220px] w-full">
                     <Image
                       src={modelData?.defaultImage || "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"}
                       alt={modelData?.name || "Car"}
@@ -442,14 +450,14 @@ export default function RequestDetailsPage() {
                   </div>
     
                   <div className="p-6 md:p-8 min-h-[160px] flex flex-col justify-between">
-                    <h3 className="text-lg md:text-[1.25rem] font-light text-[#181818] mb-3 leading-tight">
+                    <h3 className="text-lg md:text-[1.25rem] font-light text-near-black mb-3 leading-tight">
                       {modelData?.name ? `Porsche ${modelData.name}` : 'Mẫu xe hiện chưa có thông tin'}
                     </h3>
                     <div>
-                      <p className="text-sm md:text-[15px] font-medium text-[#181818] mb-1">
+                      <p className="text-sm md:text-[15px] font-medium text-near-black mb-1">
                         {modelData ? formatPrice(modelData.baseMsrp) : '--'}
                       </p>
-                      <p className="text-[11px] text-[#666] font-light uppercase tracking-wider">Giá cơ bản</p>
+                      <p className="text-[11px] text-dark-gray font-light uppercase tracking-wider">Giá cơ bản</p>
                     </div>
                   </div>
                 </>
@@ -587,7 +595,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 md:top-10 md:right-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#f1f1f3] text-black hover:bg-[#e7e7ea] transition-colors z-10"
+          className="absolute top-6 right-6 md:top-10 md:right-10 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-black hover:bg-neutral-200 transition-colors z-10"
         >
           <X size={20} strokeWidth={1.5} />
         </button>
@@ -619,7 +627,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   }
                 }}
                 placeholder="Ví dụ New York"
-                className="w-full h-[52px] px-4 bg-white border border-[#d9d9de] rounded-xl text-[14px] text-black focus:outline-none focus:border-black placeholder-neutral-500"
+                className="w-full h-[52px] px-4 bg-white border border-neutral-300 rounded-xl text-[14px] text-black focus:outline-none focus:border-black placeholder-neutral-500"
               />
               {query && (
                 <button onClick={handleClearSearch} className="absolute right-4 flex w-8 h-8 items-center justify-center text-neutral-500 hover:text-black transition-colors">
@@ -654,13 +662,13 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   <Loader2 className="w-6 h-6 animate-spin text-neutral-400" />
                 </div>
               ) : suggestions.length > 0 ? (
-                <div className="rounded-2xl border border-[#d9d9de] bg-white overflow-hidden shadow-sm">
+                <div className="rounded-2xl border border-neutral-300 bg-white overflow-hidden shadow-sm">
                   {suggestions.map((item, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => handlePickLocation(item)}
-                      className="w-full flex items-center justify-between px-5 py-4 text-left border-b border-[#d9d9de] last:border-0 hover:bg-[#fafafa] transition-colors"
+                      className="w-full flex items-center justify-between px-5 py-4 text-left border-b border-neutral-300 last:border-0 hover:bg-neutral-50 transition-colors"
                     >
                       <p className="text-[15px] font-medium text-black line-clamp-1 pr-3">
                         {item.display_name}
@@ -685,7 +693,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   key={idx}
                   type="button"
                   onClick={() => onSelect(dealer)}
-                  className="w-full block bg-[#f3f3f5] rounded-[12px] p-6 text-left hover:bg-[#e7e7e9] transition-colors group"
+                  className="w-full block bg-neutral-100 rounded-[12px] p-6 text-left hover:bg-neutral-200 transition-colors group"
                 >
                   <h3 className="text-[20px] font-medium text-black">
                     {dealer.name}
@@ -695,7 +703,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   </p>
                   
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-full bg-[#e0e0e5] group-hover:bg-[#d6d6db] px-4 py-2 text-[15px] font-medium text-neutral-800 transition-colors">
+                    <span className="inline-flex items-center rounded-full bg-neutral-200 group-hover:bg-neutral-300 px-4 py-2 text-[15px] font-medium text-neutral-800 transition-colors">
                       Cách {dealer.distance}
                     </span>
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black shadow-sm group-hover:scale-105 transition-transform">

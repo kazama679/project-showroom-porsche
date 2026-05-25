@@ -168,7 +168,7 @@ export default function AILogsPage() {
           />
         )}
 
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
           <div className="mb-4">
             <Select
               label="Filter by Event Type"
@@ -216,9 +216,9 @@ export default function AILogsPage() {
                 render: (value) => (
                   <button
                     onClick={() => handleDeleteLog(value)}
-                    className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                   >
-                    <Trash2 size={16} className="text-[#DA291C]" />
+                    <Trash2 size={16} className="text-brand-red" />
                   </button>
                 ),
               },

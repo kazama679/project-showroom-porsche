@@ -18,10 +18,10 @@ export function KPICard({
   variant = 'default',
 }: KPICardProps) {
   const variantStyles = {
-    default: 'border-[#D2D2D2] dark:border-[#303030]',
-    success: 'border-[#03904A] bg-[#03904A]/5 dark:bg-[#03904A]/10',
-    warning: 'border-[#F6E500] bg-[#F6E500]/5 dark:bg-[#F6E500]/10',
-    danger: 'border-[#DA291C] bg-[#DA291C]/5 dark:bg-[#DA291C]/10',
+    default: 'border-light-gray-surface dark:border-dark-surface',
+    success: 'border-success-green bg-success-green/5 dark:bg-success-green/10',
+    warning: 'border-modena-yellow bg-modena-yellow/5 dark:bg-modena-yellow/10',
+    danger: 'border-brand-red bg-brand-red/5 dark:bg-brand-red/10',
   }
 
   const trendPositive = trend && trend > 0
@@ -29,21 +29,21 @@ export function KPICard({
 
   return (
     <div
-      className={`border rounded-[2px] p-5 bg-white dark:bg-[#303030] ${variantStyles[variant]} transition-all hover:shadow-sm`}
+      className={`border rounded-sm p-5 bg-white dark:bg-dark-surface ${variantStyles[variant]} transition-all hover:shadow-sm`}
     >
       <div className="flex items-start justify-between mb-3">
-        <span className="text-ferrari-label text-[#666666] dark:text-[#D2D2D2]">
+        <span className="text-porsche-label text-dark-gray dark:text-light-gray-surface">
           {label}
         </span>
-        {icon && <div className="text-[#DA291C]">{icon}</div>}
+        {icon && <div className="text-brand-red">{icon}</div>}
       </div>
 
       <div className="flex items-baseline gap-2 mb-3">
-        <span className="text-ferrari-stat text-[#181818] dark:text-white">
+        <span className="text-porsche-stat text-near-black dark:text-white">
           {value}
         </span>
         {unit && (
-          <span className="text-sm text-[#8F8F8F] dark:text-[#D2D2D2]">
+          <span className="text-sm text-mid-gray dark:text-light-gray-surface">
             {unit}
           </span>
         )}
@@ -53,10 +53,10 @@ export function KPICard({
         <div
           className={`flex items-center gap-1 text-xs font-medium ${
             trendPositive
-              ? 'text-[#03904A]'
+              ? 'text-success-green'
               : trendNegative
-                ? 'text-[#DA291C]'
-                : 'text-[#8F8F8F]'
+                ? 'text-brand-red'
+                : 'text-mid-gray'
           }`}
         >
           {trendPositive && <ArrowUp size={14} />}

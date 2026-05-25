@@ -221,10 +221,10 @@ export default function ModelDetailPage() {
           fixed right-0 top-1/2 z-40
           h-[88px] w-[40px]
           -translate-y-1/2
-          bg-[#1e88f5]
+          bg-blue-500
           text-white
           flex items-center justify-center
-          transition-colors hover:bg-[#0f7be8]
+          transition-colors hover:bg-blue-600
         "
       >
         <span className="-rotate-90 whitespace-nowrap text-[16px] font-normal leading-none tracking-normal font-sans">
@@ -267,7 +267,7 @@ export default function ModelDetailPage() {
           {/* Body Design tabs — series-specific, navigates to first model per body type */}
           <div className="flex justify-center gap-8 mb-12 border-b border-gray-300 pb-4 flex-wrap">
             {overviewBodyTypes.length === 0 ? (
-              <span className="text-[14px] text-[#8F8F8F]">No body designs available.</span>
+              <span className="text-[14px] text-mid-gray">No body designs available.</span>
             ) : (
               overviewBodyTypes.map((opt) => {
                 const checked = model.bodyTypeId === opt.id
@@ -299,7 +299,7 @@ export default function ModelDetailPage() {
 
           {/* Fuel Badge */}
           <div className="flex justify-center mb-6">
-            <span className="px-3 py-1 bg-gray-200 text-gray-800 text-xs font-medium rounded-[2px] uppercase">
+            <span className="px-3 py-1 bg-gray-200 text-gray-800 text-xs font-medium rounded-sm uppercase">
               {model.fuelType || 'Gasoline'}
             </span>
           </div>
@@ -316,13 +316,13 @@ export default function ModelDetailPage() {
         <div className="max-w-7xl mx-auto">
           {/* CTA Buttons */}
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button className="cursor-pointer px-8 py-3 bg-black text-white font-medium text-sm rounded-[2px] hover:bg-gray-900 transition-colors duration-300">
+            <button className="cursor-pointer px-8 py-3 bg-black text-white font-medium text-sm rounded-sm hover:bg-gray-900 transition-colors duration-300">
               Change model variant
             </button>
-            <button onClick={() => router.push(`/configurator/${id}`)} className="cursor-pointer px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
+            <button onClick={() => router.push(`/configurator/${id}`)} className="cursor-pointer px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-sm hover:bg-gray-50 transition-colors duration-300">
               Build Your Porsche
             </button>
-            <button className="cursor-pointer px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors duration-300">
+            <button className="cursor-pointer px-8 py-3 bg-white text-black border border-black font-medium text-sm rounded-sm hover:bg-gray-50 transition-colors duration-300">
               New and Used Inventory
             </button>
           </div>
@@ -371,7 +371,7 @@ export default function ModelDetailPage() {
               </div>
 
               <div className="pt-4">
-                <button className="px-6 py-3 bg-[#E5E5E5] text-black font-medium text-sm rounded hover:bg-[#D2D2D2] transition-colors duration-300">
+                <button className="px-6 py-3 bg-gray-200 text-black font-medium text-sm rounded hover:bg-light-gray-surface transition-colors duration-300">
                   Technical Specs
                 </button>
               </div>
@@ -401,7 +401,7 @@ export default function ModelDetailPage() {
           <div className="flex items-center justify-between gap-6 mb-10 pb-4 border-b border-gray-100">
             <div className="flex items-center gap-1 md:gap-2 flex-wrap">
               {availableBodyTypes.length === 0 ? (
-                <span className="text-[14px] text-[#8F8F8F]">No body designs available.</span>
+                <span className="text-[14px] text-mid-gray">No body designs available.</span>
               ) : (
                 availableBodyTypes.map((opt) => {
                   const checked = selectedBodyTypeId === opt.id
@@ -427,14 +427,14 @@ export default function ModelDetailPage() {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 aria-label="Scroll left"
-                className="cursor-pointer w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
+                className="cursor-pointer w-9 h-9 rounded-full border border-light-gray-surface hover:border-black flex items-center justify-center transition-colors"
                 onClick={() => cardsScrollRef.current?.scrollBy({ left: -420, behavior: 'smooth' })}
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 aria-label="Scroll right"
-                className="cursor-pointer w-9 h-9 rounded-full border border-[#D2D2D2] hover:border-black flex items-center justify-center transition-colors"
+                className="cursor-pointer w-9 h-9 rounded-full border border-light-gray-surface hover:border-black flex items-center justify-center transition-colors"
                 onClick={() => cardsScrollRef.current?.scrollBy({ left: 420, behavior: 'smooth' })}
               >
                 <ChevronRight size={16} />
@@ -482,7 +482,7 @@ export default function ModelDetailPage() {
                   </div>
 
                   {/* Card body */}
-                  <div className="bg-[#F5F5F5] rounded-t-[20px] rounded-b-[16px] px-6 pt-6 pb-5 flex flex-col min-h-[520px]">
+                  <div className="bg-gray-100 rounded-t-[20px] rounded-b-[16px] px-6 pt-6 pb-5 flex flex-col min-h-[520px]">
                     <h4 className="text-[22px] font-bold text-black leading-tight mb-1">{m.name}</h4>
                     <p className="text-[15px] text-gray-800 font-medium mb-4">
                       From $ {m.basePrice?.toLocaleString()}<sup className="text-[11px]">¹</sup>
@@ -494,15 +494,15 @@ export default function ModelDetailPage() {
                         {m.year || '2026'}
                       </span>
                       {m.fuelType && (
-                        <span className="px-3 py-1 bg-[#EBEBEB] text-gray-800 text-[12px] font-semibold rounded-full">
+                        <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-[12px] font-semibold rounded-full">
                           {m.fuelType}
                         </span>
                       )}
-                      <span className="px-3 py-1 bg-[#EBEBEB] text-gray-800 text-[12px] font-semibold rounded-full">
+                      <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-[12px] font-semibold rounded-full">
                         {driveValue}
                       </span>
                       {transmissionLabel && (
-                        <span className="px-3 py-1 bg-[#EBEBEB] text-gray-800 text-[12px] font-semibold rounded-full">
+                        <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-[12px] font-semibold rounded-full">
                           {transmissionLabel}
                         </span>
                       )}
@@ -568,7 +568,7 @@ export default function ModelDetailPage() {
       {/* Section 7: Detail image order 2 (Image 6) */}
       <section className="bg-white px-6 md:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px] mr-30">
+          <div className="rounded-[28px] overflow-hidden bg-gray-100 relative h-[520px] mr-30">
             <Image
               src={detailImageByOrder.order2 || model.imageUrl || ''}
               alt={`${model.name} detail 2`}
@@ -589,7 +589,7 @@ export default function ModelDetailPage() {
               {model.shortDescription || 'A timeless silhouette refined through engineering, with performance and day-to-day usability in perfect balance.'}
             </p>
           </div>
-          <div className="rounded-[28px] my-[-80px] overflow-hidden bg-[#F5F5F5] relative h-[720px] w-[600px]">
+          <div className="rounded-[28px] my-[-80px] overflow-hidden bg-gray-100 relative h-[720px] w-[600px]">
             <Image
               src={detailImageByOrder.order3 || model.imageUrl || ''}
               alt={`${model.name} detail 3`}
@@ -604,7 +604,7 @@ export default function ModelDetailPage() {
       {/* Section 9: Detail image order 4 (Image 8) */}
       <section className="bg-white px-6 md:px-16 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px] w-[700px] ml-50">
+          <div className="rounded-[28px] overflow-hidden bg-gray-100 relative h-[520px] w-[700px] ml-50">
             <Image
               src={detailImageByOrder.order4 || model.imageUrl || ''}
               alt={`${model.name} detail 4`}
@@ -623,7 +623,7 @@ export default function ModelDetailPage() {
             {(detailImageByOrder.order5.length > 0 ? detailImageByOrder.order5 : [model.imageUrl || '']).map((url, idx) => (
               <div
                 key={`${url}-${idx}`}
-                className="min-w-[520px] md:min-w-[720px] snap-start rounded-[28px] overflow-hidden bg-[#F5F5F5] relative h-[520px]"
+                className="min-w-[520px] md:min-w-[720px] snap-start rounded-[28px] overflow-hidden bg-gray-100 relative h-[520px]"
               >
                 <Image src={url} alt={`${model.name} detail 5 ${idx + 1}`} fill unoptimized className="object-cover" />
               </div>

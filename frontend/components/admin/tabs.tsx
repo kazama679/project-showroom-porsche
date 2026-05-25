@@ -27,15 +27,15 @@ export function Tabs({ tabs, defaultValue, onChange }: TabsProps) {
   return (
     <div>
       {/* Tab List */}
-      <div className="flex gap-2 border-b border-[#D2D2D2] dark:border-[#303030] overflow-x-auto">
+      <div className="flex gap-2 border-b border-light-gray-surface dark:border-dark-surface overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.value}
             onClick={() => handleTabChange(tab.value)}
             className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors -mb-px ${
               activeTab === tab.value
-                ? 'border-[#DA291C] text-[#DA291C]'
-                : 'border-transparent text-[#8F8F8F] dark:text-[#D2D2D2] hover:text-[#181818] dark:hover:text-white'
+                ? 'border-brand-red text-brand-red'
+                : 'border-transparent text-mid-gray dark:text-light-gray-surface hover:text-near-black dark:hover:text-white'
             }`}
           >
             {tab.label}

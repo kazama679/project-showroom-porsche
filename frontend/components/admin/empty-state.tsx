@@ -15,16 +15,16 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="rounded-[2px] border border-[#D2D2D2] dark:border-[#303030] p-8 md:p-12 text-center flex flex-col items-center gap-4">
-      <div className="text-[#D2D2D2] dark:text-[#404040]">
+    <div className="rounded-sm border border-light-gray-surface dark:border-dark-surface p-8 md:p-12 text-center flex flex-col items-center gap-4">
+      <div className="text-light-gray-surface dark:text-neutral-700">
         {icon || <FileText size={48} />}
       </div>
       <div>
-        <h3 className="text-ferrari-subheading text-[#181818] dark:text-white mb-2">
+        <h3 className="text-porsche-subheading text-near-black dark:text-white mb-2">
           {title}
         </h3>
         {description && (
-          <p className="text-sm text-[#8F8F8F] dark:text-[#D2D2D2]">
+          <p className="text-sm text-mid-gray dark:text-light-gray-surface">
             {description}
           </p>
         )}

@@ -36,18 +36,18 @@ export function ConfiguratorViewer({
     <div className="flex flex-col h-full min-h-0">
       <div className="flex items-start justify-between mb-4 px-1">
         <div>
-          <h1 className="text-2xl md:text-3xl font-light text-[#181818]">{modelName}</h1>
-          <p className="text-sm text-[#666] font-light mt-0.5">{year}</p>
+          <h1 className="text-2xl md:text-3xl font-light text-near-black">{modelName}</h1>
+          <p className="text-sm text-dark-gray font-light mt-0.5">{year}</p>
         </div>
         <button
           type="button"
-          className="text-sm font-light underline underline-offset-2 hover:opacity-70 text-[#181818]"
+          className="text-sm font-light underline underline-offset-2 hover:opacity-70 text-near-black"
         >
           Technical data and standard equipment
         </button>
       </div>
 
-      <div className="relative flex-1 min-h-[280px] md:min-h-[420px] bg-[#f5f5f5] rounded-xl overflow-hidden group mt-[-1px]">
+      <div className="relative flex-1 min-h-[280px] md:min-h-[420px] bg-gray-100 rounded-xl overflow-hidden group mt-[-1px]">
         <Image
           src={activeImage.src}
           alt={activeImage.alt}

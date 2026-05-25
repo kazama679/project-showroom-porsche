@@ -52,7 +52,7 @@ const CompareModelsPage = () => {
         {/* Model Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           {/* First Model */}
-          <div className="bg-white rounded-[4px] p-8">
+          <div className="bg-white rounded p-8">
             <div className="relative w-full h-64 mb-8">
               <Image src={models[0].image} alt={models[0].name} fill unoptimized className="object-contain" />
             </div>
@@ -61,10 +61,10 @@ const CompareModelsPage = () => {
             <p className="text-gray-600 text-sm mb-6">Gear type</p>
             <p className="text-gray-600 text-sm">8-speed Porsche Doppelkupplung (PDK)</p>
             <div className="flex gap-4 mt-8">
-              <button className="flex-1 bg-black text-white py-3 font-medium text-sm rounded-[2px] hover:bg-gray-900 transition-colors">
+              <button className="flex-1 bg-black text-white py-3 font-medium text-sm rounded-sm hover:bg-gray-900 transition-colors">
                 Build Your Porsche
               </button>
-              <button className="flex-1 border border-gray-800 text-gray-800 py-3 font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors">
+              <button className="flex-1 border border-gray-800 text-gray-800 py-3 font-medium text-sm rounded-sm hover:bg-gray-50 transition-colors">
                 Discover stock vehicles
               </button>
             </div>
@@ -72,7 +72,7 @@ const CompareModelsPage = () => {
           </div>
 
           {/* Second Model or Placeholder */}
-          <div className="bg-white rounded-[4px] p-8">
+          <div className="bg-white rounded p-8">
             {selectedModels[1] ? (
               <>
                 <div className="relative w-full h-64 mb-8">
@@ -83,16 +83,16 @@ const CompareModelsPage = () => {
                 <p className="text-gray-600 text-sm mb-6">Gear type</p>
                 <p className="text-gray-600 text-sm">8-speed Porsche Doppelkupplung (PDK)</p>
                 <div className="flex gap-4 mt-8">
-                  <button className="flex-1 bg-black text-white py-3 font-medium text-sm rounded-[2px] hover:bg-gray-900 transition-colors">
+                  <button className="flex-1 bg-black text-white py-3 font-medium text-sm rounded-sm hover:bg-gray-900 transition-colors">
                     Build Your Porsche
                   </button>
-                  <button className="flex-1 border border-gray-800 text-gray-800 py-3 font-medium text-sm rounded-[2px] hover:bg-gray-50 transition-colors">
+                  <button className="flex-1 border border-gray-800 text-gray-800 py-3 font-medium text-sm rounded-sm hover:bg-gray-50 transition-colors">
                     Discover stock vehicles
                   </button>
                 </div>
               </>
             ) : (
-              <div className="h-64 bg-gray-100 rounded-[4px] flex items-center justify-center">
+              <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
                 <button onClick={() => setShowModal(true)} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors">
                   <span className="text-2xl">+</span>
                   <span className="text-sm font-medium">Select model</span>
@@ -103,7 +103,7 @@ const CompareModelsPage = () => {
         </div>
 
         {/* Comparison Questions */}
-        <div className="bg-white rounded-[4px] p-12 mb-20">
+        <div className="bg-white rounded p-12 mb-20">
           <h2 className="text-4xl font-light mb-12 text-center">Điểm khác biệt giữa các mẫu xe là gì?</h2>
 
           {/* Expandable Sections */}
@@ -159,7 +159,7 @@ const CompareModelsPage = () => {
 
         {/* Specs Comparison Table */}
         {expandedSections.specs && (
-          <div className="bg-white rounded-[4px] p-12 mb-20">
+          <div className="bg-white rounded p-12 mb-20">
             <h3 className="text-2xl font-light mb-12 text-center">Thông số so sánh</h3>
 
             {/* Model Tabs */}
@@ -233,7 +233,7 @@ const CompareModelsPage = () => {
       {/* Model Selection Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-[4px] max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded max-w-6xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-8 border-b border-gray-200 sticky top-0 bg-white">
               <div>
                 <h2 className="text-2xl font-light">Choose two Porsche models</h2>
@@ -299,12 +299,12 @@ const CompareModelsPage = () => {
                     { name: 'Panamera GTS', fuel: 'Gasoline', year: '2026', price: '$169,250.00', power: '363 kW / 493 hp', accel: '3.6 sec' },
                     { name: 'Panamera Turbo E-Hybrid', fuel: 'Hybrid', year: '2026', price: '$210,250.00', power: '493 kW / 670 hp', accel: '3.0 sec' },
                   ].map((model) => (
-                    <div key={model.name} className="bg-gray-50 rounded-[4px] p-6">
+                    <div key={model.name} className="bg-gray-50 rounded p-6">
                       <div className="flex items-center gap-2 mb-4">
                         <span className="text-xs font-light text-gray-600">{model.fuel}</span>
                         <span className="text-xs font-light text-gray-600">{model.year}</span>
                       </div>
-                      <div className="w-full h-40 bg-gray-200 rounded-[2px] mb-4"></div>
+                      <div className="w-full h-40 bg-gray-200 rounded-sm mb-4"></div>
                       <h4 className="text-lg font-light mb-2">{model.name}</h4>
                       <p className="text-sm text-gray-600 mb-4">From {model.price}</p>
                       <p className="text-sm font-light mb-2">{model.power}</p>
@@ -318,14 +318,14 @@ const CompareModelsPage = () => {
             {/* Bottom - Selected Models & Compare Button */}
             <div className="flex items-center justify-between p-8 border-t border-gray-200 bg-gray-50">
               <div className="flex gap-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-[2px]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-sm">
                   <div className="w-5 h-4 bg-blue-600 rounded"></div>
                   <span className="text-sm">911 Carrera</span>
                   <button className="ml-2 text-gray-600 hover:text-gray-800">×</button>
                 </div>
                 <button className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm">Choose a model</button>
               </div>
-              <button className="bg-black text-white px-8 py-3 rounded-[2px] font-light hover:bg-gray-900 transition-colors">
+              <button className="bg-black text-white px-8 py-3 rounded-sm font-light hover:bg-gray-900 transition-colors">
                 Compare Models
               </button>
             </div>

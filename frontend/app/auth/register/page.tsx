@@ -34,7 +34,7 @@ export default function SignupPage() {
     }
   };
 
-  const inputClass = "w-full px-4 py-3 border border-gray-400 rounded-[2px] text-base focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+  const inputClass = "w-full px-4 py-3 border border-gray-400 rounded-sm text-base focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
 
   return (
     <div className="min-h-screen flex">
@@ -53,10 +53,10 @@ export default function SignupPage() {
             <h1 className="text-4xl font-light leading-tight mb-2">Register with your Porsche ID</h1>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[2px] text-sm">{error}</div>
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-sm text-sm">{error}</div>
             )}
             {success && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-[2px] text-sm flex items-center gap-2">
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-sm text-sm flex items-center gap-2">
                 <CheckCircle size={16} />{success}
               </div>
             )}
@@ -85,7 +85,7 @@ export default function SignupPage() {
               </div>
 
               <button type="submit" disabled={loading || !fullName || !username || !email || !password}
-                className="cursor-pointer w-full bg-black text-white py-3 font-medium text-sm tracking-[1.28px] rounded-[2px] hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                className="cursor-pointer w-full bg-black text-white py-3 font-medium text-sm tracking-[1.28px] rounded-sm hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                 {loading ? (<><Loader2 size={18} className="animate-spin" />Registering...</>) : "Continue"}
               </button>
             </form>

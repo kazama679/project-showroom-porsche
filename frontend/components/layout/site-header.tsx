@@ -51,7 +51,7 @@ export function SiteHeader({
       <header
         className={cn(
           'z-50',
-          variant === 'transparent' ? 'bg-transparent absolute top-0 w-full' : 'bg-white border-b border-[#e5e5e5]',
+          variant === 'transparent' ? 'bg-transparent absolute top-0 w-full' : 'bg-white border-b border-gray-200',
           sticky && 'sticky top-0',
           className
         )}
@@ -62,7 +62,7 @@ export function SiteHeader({
             onClick={handleMenuClick}
             className={cn(
               "flex items-center gap-2.5 hover:opacity-70 transition-opacity min-w-[88px]",
-              variant === 'transparent' ? 'text-white' : 'text-[#181818]'
+              variant === 'transparent' ? 'text-white' : 'text-near-black'
             )}
             aria-label={t('nav.menu')}
           >
@@ -75,7 +75,7 @@ export function SiteHeader({
               href={logoHref}
               className={cn(
                 "text-lg md:text-xl font-medium tracking-[0.28em] hover:opacity-80 transition-opacity",
-                variant === 'transparent' ? 'text-white' : 'text-[#181818]'
+                variant === 'transparent' ? 'text-white' : 'text-near-black'
               )}
             >
               PORSCHE
@@ -84,7 +84,7 @@ export function SiteHeader({
 
           <div className={cn(
             "flex items-center justify-end gap-4 md:gap-5 min-w-[88px]",
-            variant === 'transparent' ? 'text-white' : 'text-[#181818]'
+            variant === 'transparent' ? 'text-white' : 'text-near-black'
           )}>
             {showBookmark && (
               <button

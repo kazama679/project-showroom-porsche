@@ -198,14 +198,14 @@ export default function BrandsPage() {
           <div className="relative hidden sm:block">
             <Search
               size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8F8F8F]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray"
             />
             <input
               type="text"
               placeholder={t("admin.search_brands")}
               value={searchKeyword}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white placeholder-[#8F8F8F] outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C] transition-colors w-64"
+              className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64"
             />
           </div>
           {/* Add Brand Button */}
@@ -224,9 +224,9 @@ export default function BrandsPage() {
       <div className="space-y-6">
         {/* Permission Warning */}
         {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-[2px] border border-[#F6E500]/30 bg-[#F6E500]/10 dark:bg-[#F6E500]/20">
-            <ShieldAlert size={20} className="text-[#B8A500] flex-shrink-0" />
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">
+          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
+            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
+            <p className="text-sm text-near-black dark:text-light-gray-surface">
               {t("admin.brand_no_permission")}
             </p>
           </div>
@@ -246,32 +246,32 @@ export default function BrandsPage() {
           <div className="relative">
             <Search
               size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8F8F8F]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray"
             />
             <input
               type="text"
               placeholder={t("admin.search_brands")}
               value={searchKeyword}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white placeholder-[#8F8F8F] outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C] transition-colors"
+              className="w-full pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors"
             />
           </div>
         </div>
 
         {/* Stats Card */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-5">
-            <p className="text-xs font-medium text-[#8F8F8F] dark:text-[#D2D2D2] uppercase tracking-wider">
+          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-5">
+            <p className="text-xs font-medium text-mid-gray dark:text-light-gray-surface uppercase tracking-wider">
               {t("admin.brand_total")}
             </p>
-            <p className="text-2xl font-bold text-[#181818] dark:text-white mt-2">
+            <p className="text-2xl font-bold text-near-black dark:text-white mt-2">
               {totalElements}
             </p>
           </div>
         </div>
 
         {/* Data Table */}
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
           <DataTable
             columns={[
               {
@@ -321,20 +321,20 @@ export default function BrandsPage() {
                               e.stopPropagation();
                               handleOpenModal(row as Brand);
                             }}
-                            className="cursor-pointer p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                            className="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                             title={t("admin.edit")}
                           >
-                            <Edit2 size={16} className="text-[#8F8F8F]" />
+                            <Edit2 size={16} className="text-mid-gray" />
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleOpenDeleteModal(row as Brand);
                             }}
-                            className="cursor-pointer p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                            className="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                             title={t("admin.delete")}
                           >
-                            <Trash2 size={16} className="text-[#DA291C]" />
+                            <Trash2 size={16} className="text-brand-red" />
                           </button>
                         </div>
                       ),
@@ -398,14 +398,14 @@ export default function BrandsPage() {
             required
           />
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">Logo (Cloudinary)</label>
+            <label className="block text-sm font-medium text-near-black dark:text-light-gray-surface">Logo (Cloudinary)</label>
             {editingBrand?.logoUrl && !formData.logo && (
               <div className="mb-2">
-                <Image src={editingBrand.logoUrl} alt="Current Brand" width={80} height={80} unoptimized className="object-contain bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded p-2" />
+                <Image src={editingBrand.logoUrl} alt="Current Brand" width={80} height={80} unoptimized className="object-contain bg-gray-100 dark:bg-neutral-900 rounded p-2" />
               </div>
             )}
             <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, logo: e.target.files?.[0] || null })}
-              className="w-full text-sm text-[#8F8F8F] file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F5F5F5] dark:file:bg-[#404040] file:text-[#181818] dark:file:text-white hover:file:bg-[#EBEBEB] dark:hover:file:bg-[#505050] transition-colors" />
+              className="w-full text-sm text-mid-gray file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 dark:file:bg-neutral-700 file:text-near-black dark:file:text-white hover:file:bg-neutral-200 dark:hover:file:bg-[#505050] transition-colors" />
           </div>
         </div>
       </Modal>
@@ -436,15 +436,15 @@ export default function BrandsPage() {
         }
       >
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-[#DA291C]/10 dark:bg-[#DA291C]/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-[#DA291C]" />
+          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
+            <AlertTriangle size={24} className="text-brand-red" />
           </div>
           <div>
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">
+            <p className="text-sm text-near-black dark:text-light-gray-surface">
               {t("admin.brand_confirm_delete_msg")}
             </p>
             {deletingBrand && (
-              <p className="text-sm font-semibold text-[#181818] dark:text-white mt-2">
+              <p className="text-sm font-semibold text-near-black dark:text-white mt-2">
                 {deletingBrand.name} — {deletingBrand.country}
               </p>
             )}

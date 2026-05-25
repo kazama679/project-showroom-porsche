@@ -104,8 +104,8 @@ export default function DashboardPage() {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Trend Chart */}
-          <div className="lg:col-span-2 bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
-            <h3 className="text-ferrari-subheading mb-6 text-[#181818] dark:text-white">
+          <div className="lg:col-span-2 bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
+            <h3 className="text-porsche-subheading mb-6 text-near-black dark:text-white">
               Bookings & Test Drives Trend
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -141,8 +141,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Category Distribution */}
-          <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
-            <h3 className="text-ferrari-subheading mb-6 text-[#181818] dark:text-white">
+          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
+            <h3 className="text-porsche-subheading mb-6 text-near-black dark:text-white">
               Vehicle Distribution
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -167,8 +167,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Bookings Table */}
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
-          <h3 className="text-ferrari-subheading mb-6 text-[#181818] dark:text-white">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
+          <h3 className="text-porsche-subheading mb-6 text-near-black dark:text-white">
             Recent Bookings
           </h3>
           <DataTable

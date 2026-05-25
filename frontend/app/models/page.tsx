@@ -294,7 +294,7 @@ function ModelsContent() {
                       )}
                     </div>
                     <span className={`text-[15px] transition-colors ${selectedSeriesId === null ? 'font-bold text-black' : 'font-normal text-gray-700 group-hover:text-black'}`}>
-                      All <span className="text-[#8F8F8F]">({allModels.length})</span>
+                      All <span className="text-mid-gray">({allModels.length})</span>
                     </span>
                   </button>
                   
@@ -319,7 +319,7 @@ function ModelsContent() {
                           )}
                         </div>
                         <span className={`text-[15px] transition-colors ${isSelected ? 'font-bold text-black' : 'font-normal text-gray-700 group-hover:text-black'}`}>
-                          {series.name} <span className="text-[#8F8F8F]">({count})</span>
+                          {series.name} <span className="text-mid-gray">({count})</span>
                         </span>
                       </button>
                     )
@@ -339,7 +339,7 @@ function ModelsContent() {
                   <ChevronUp
                     size={18}
                     strokeWidth={2}
-                    className={`text-[#8F8F8F] group-hover:text-black transition-transform duration-300 ${
+                    className={`text-mid-gray group-hover:text-black transition-transform duration-300 ${
                       expandedFilters.includes('body') ? '' : 'rotate-180'
                     }`}
                   />
@@ -347,7 +347,7 @@ function ModelsContent() {
                 {expandedFilters.includes('body') && (
                   <div className="space-y-3.5 pb-2">
                     {bodyDesignOptions.filter(opt => opt.count > 0).length === 0 ? (
-                      <div className="text-[14px] text-[#8F8F8F] font-normal italic">
+                      <div className="text-[14px] text-mid-gray font-normal italic">
                         No body designs available.
                       </div>
                     ) : (
@@ -365,7 +365,7 @@ function ModelsContent() {
                                   )
                                 }}
                                 aria-label={opt.name}
-                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                                className="peer appearance-none w-5 h-5 rounded border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
                               />
                               <svg
                                 width="12"
@@ -382,7 +382,7 @@ function ModelsContent() {
                               </svg>
                             </span>
                             <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                              {opt.name} <span className="text-[#8F8F8F]">({opt.count})</span>
+                              {opt.name} <span className="text-mid-gray">({opt.count})</span>
                             </span>
                           </label>
                         )
@@ -404,7 +404,7 @@ function ModelsContent() {
                   <ChevronUp
                     size={18}
                     strokeWidth={2}
-                    className={`text-[#8F8F8F] group-hover:text-black transition-transform duration-300 ${
+                    className={`text-mid-gray group-hover:text-black transition-transform duration-300 ${
                       expandedFilters.includes('seats') ? '' : 'rotate-180'
                     }`}
                   />
@@ -427,7 +427,7 @@ function ModelsContent() {
                                     prev.includes(seatOption) ? prev.filter(x => x !== seatOption) : [...prev, seatOption]
                                   )
                                 }}
-                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                                className="peer appearance-none w-5 h-5 rounded border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
                               />
                               <svg
                                 width="12"
@@ -444,7 +444,7 @@ function ModelsContent() {
                               </svg>
                             </span>
                             <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                              {seatOption} <span className="text-[#8F8F8F]">({count})</span>
+                              {seatOption} <span className="text-mid-gray">({count})</span>
                             </span>
                           </label>
                         )
@@ -465,7 +465,7 @@ function ModelsContent() {
                   <ChevronUp
                     size={18}
                     strokeWidth={2}
-                    className={`text-[#8F8F8F] group-hover:text-black transition-transform duration-300 ${
+                    className={`text-mid-gray group-hover:text-black transition-transform duration-300 ${
                       expandedFilters.includes('drive') ? '' : 'rotate-180'
                     }`}
                   />
@@ -488,7 +488,7 @@ function ModelsContent() {
                                     prev.includes(driveOption) ? prev.filter(x => x !== driveOption) : [...prev, driveOption]
                                   )
                                 }}
-                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                                className="peer appearance-none w-5 h-5 rounded border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
                               />
                               <svg
                                 width="12"
@@ -505,7 +505,7 @@ function ModelsContent() {
                               </svg>
                             </span>
                             <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                              {driveOption} <span className="text-[#8F8F8F]">({count})</span>
+                              {driveOption} <span className="text-mid-gray">({count})</span>
                             </span>
                           </label>
                         )
@@ -526,7 +526,7 @@ function ModelsContent() {
                   <ChevronUp
                     size={18}
                     strokeWidth={2}
-                    className={`text-[#8F8F8F] group-hover:text-black transition-transform duration-300 ${
+                    className={`text-mid-gray group-hover:text-black transition-transform duration-300 ${
                       expandedFilters.includes('fuel') ? '' : 'rotate-180'
                     }`}
                   />
@@ -549,7 +549,7 @@ function ModelsContent() {
                                     prev.includes(fuelOption) ? prev.filter(x => x !== fuelOption) : [...prev, fuelOption]
                                   )
                                 }}
-                                className="peer appearance-none w-5 h-5 rounded-[4px] border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
+                                className="peer appearance-none w-5 h-5 rounded border border-gray-300 group-hover:border-black transition-all checked:border-black checked:bg-black cursor-pointer"
                               />
                               <svg
                                 width="12"
@@ -566,7 +566,7 @@ function ModelsContent() {
                               </svg>
                             </span>
                             <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
-                              {fuelOption} <span className="text-[#8F8F8F]">({count})</span>
+                              {fuelOption} <span className="text-mid-gray">({count})</span>
                             </span>
                           </label>
                         )
@@ -662,19 +662,19 @@ function ModelsContent() {
                             
                             {/* Fuel type - Grey Badge */}
                             {model.fuelType && (
-                              <span className="px-3 py-1 bg-[#F5F5F7] text-gray-800 text-[12px] font-semibold rounded-full select-none">
+                              <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-[12px] font-semibold rounded-full select-none">
                                 {model.fuelType}
                               </span>
                             )}
                             
                             {/* Drive type - Grey Badge */}
-                            <span className="px-3 py-1 bg-[#F5F5F7] text-gray-800 text-[12px] font-semibold rounded-full select-none">
+                            <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-[12px] font-semibold rounded-full select-none">
                               {driveValue}
                             </span>
                             
                             {/* Transmission type - Grey Badge */}
                             {model.transmission && (
-                              <span className="px-3 py-1 bg-[#F5F5F7] text-gray-800 text-[12px] font-semibold rounded-full select-none truncate max-w-[120px]" title={model.transmission}>
+                              <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-[12px] font-semibold rounded-full select-none truncate max-w-[120px]" title={model.transmission}>
                                 {model.transmission.includes('(') ? model.transmission.split(' ')[0] : model.transmission}
                               </span>
                             )}
@@ -741,7 +741,7 @@ function ModelsContent() {
                             <label className="flex items-center gap-2.5 cursor-pointer group w-fit select-none">
                               <input 
                                 type="checkbox"
-                                className="w-[18px] h-[18px] rounded-[4px] border border-gray-300 group-hover:border-black transition-colors shrink-0 cursor-pointer"
+                                className="w-[18px] h-[18px] rounded border border-gray-300 group-hover:border-black transition-colors shrink-0 cursor-pointer"
                               />
                               <span className="text-[13px] text-gray-700 group-hover:text-black font-semibold transition-colors">Compare</span>
                             </label>
@@ -762,7 +762,7 @@ function ModelsContent() {
 
 export default function ModelOverviewPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F5F5F5] flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-100 flex items-center justify-center">Loading...</div>}>
       <ModelsContent />
     </Suspense>
   )

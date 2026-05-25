@@ -157,9 +157,9 @@ export default function BodyTypesPage() {
     >
       <div className="space-y-6">
         {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-[2px] border border-[#F6E500]/30 bg-[#F6E500]/10 dark:bg-[#F6E500]/20">
-            <ShieldAlert size={20} className="text-[#B8A500] flex-shrink-0" />
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">
+          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
+            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
+            <p className="text-sm text-near-black dark:text-light-gray-surface">
               {t("admin.no_permission")}
             </p>
           </div>
@@ -173,7 +173,7 @@ export default function BodyTypesPage() {
           />
         )}
 
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
           <DataTable
             columns={[
               { key: "id", label: "ID", align: "center", sortable: true },
@@ -196,20 +196,20 @@ export default function BodyTypesPage() {
                               e.stopPropagation();
                               handleOpenModal(row as BodyType);
                             }}
-                            className="cursor-pointer p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                            className="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                             title={t("admin.edit")}
                           >
-                            <Edit2 size={16} className="text-[#8F8F8F]" />
+                            <Edit2 size={16} className="text-mid-gray" />
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleOpenDeleteModal(row as BodyType);
                             }}
-                            className="cursor-pointer p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors"
+                            className="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                             title={t("admin.delete")}
                           >
-                            <Trash2 size={16} className="text-[#DA291C]" />
+                            <Trash2 size={16} className="text-brand-red" />
                           </button>
                         </div>
                       ),
@@ -291,15 +291,15 @@ export default function BodyTypesPage() {
         }
       >
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-[#DA291C]/10 dark:bg-[#DA291C]/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-[#DA291C]" />
+          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
+            <AlertTriangle size={24} className="text-brand-red" />
           </div>
           <div>
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">
+            <p className="text-sm text-near-black dark:text-light-gray-surface">
               {t("admin.are_you_sure")}
             </p>
             {deletingItem && (
-              <p className="text-sm font-semibold text-[#181818] dark:text-white mt-2">
+              <p className="text-sm font-semibold text-near-black dark:text-white mt-2">
                 {deletingItem.name}
               </p>
             )}

@@ -29,19 +29,19 @@ export function Select({
   return (
     <div className="flex flex-col gap-2">
       {label && (
-        <label className="text-ferrari-label text-[#181818] dark:text-white">
+        <label className="text-porsche-label text-near-black dark:text-white">
           {label}
-          {required && <span className="text-[#DA291C] ml-1">*</span>}
+          {required && <span className="text-brand-red ml-1">*</span>}
         </label>
       )}
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8F8F8F] pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray pointer-events-none">
             {icon}
           </div>
         )}
         <select
-          className={`w-full px-3 py-2 border rounded-[2px] text-sm outline-none transition-colors bg-white dark:bg-[#303030] border-[#D2D2D2] dark:border-[#404040] text-[#181818] dark:text-white focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C] disabled:opacity-50 disabled:cursor-not-allowed appearance-none ${icon ? 'pl-9' : ''} ${error ? 'border-[#DA291C] focus:ring-[#DA291C]' : ''} ${className}`}
+          className={`w-full px-3 py-2 border rounded-sm text-sm outline-none transition-colors bg-white dark:bg-dark-surface border-light-gray-surface dark:border-neutral-700 text-near-black dark:text-white focus:border-brand-red focus:ring-1 focus:ring-brand-red disabled:opacity-50 disabled:cursor-not-allowed appearance-none ${icon ? 'pl-9' : ''} ${error ? 'border-brand-red focus:ring-brand-red' : ''} ${className}`}
           {...props}
         >
           {placeholder && (
@@ -55,17 +55,17 @@ export function Select({
             </option>
           ))}
         </select>
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#8F8F8F]">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-mid-gray">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M4 6l4 4 4-4" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </div>
       </div>
       {error && (
-        <p className="text-xs text-[#DA291C] font-medium">{error}</p>
+        <p className="text-xs text-brand-red font-medium">{error}</p>
       )}
       {hint && !error && (
-        <p className="text-xs text-[#8F8F8F] dark:text-[#D2D2D2]">{hint}</p>
+        <p className="text-xs text-mid-gray dark:text-light-gray-surface">{hint}</p>
       )}
     </div>
   )

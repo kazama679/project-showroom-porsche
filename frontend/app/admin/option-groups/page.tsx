@@ -129,10 +129,10 @@ export default function OptionGroupsPage() {
       actions={
         <div className="flex items-center gap-3">
           <div className="relative hidden sm:block">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8F8F8F]" />
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
             <input type="text" placeholder={t('admin.search_options')} value={searchKeyword}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white placeholder-[#8F8F8F] outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C] transition-colors w-64" />
+              className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
           </div>
           {isAdmin && (
             <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
@@ -143,21 +143,21 @@ export default function OptionGroupsPage() {
       }>
       <div className="space-y-6">
         {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-[2px] border border-[#F6E500]/30 bg-[#F6E500]/10 dark:bg-[#F6E500]/20">
-            <ShieldAlert size={20} className="text-[#B8A500] flex-shrink-0" />
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">{t('admin.no_permission')}</p>
+          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
+            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
+            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('admin.no_permission')}</p>
           </div>
         )}
         {showAlert && <Alert type={alertType} message={alertMessage} onClose={() => setShowAlert(false)} />}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-5">
-            <p className="text-xs font-medium text-[#8F8F8F] dark:text-[#D2D2D2] uppercase tracking-wider">{t('admin.option_total')}</p>
-            <p className="text-2xl font-bold text-[#181818] dark:text-white mt-2">{totalElements}</p>
+          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-5">
+            <p className="text-xs font-medium text-mid-gray dark:text-light-gray-surface uppercase tracking-wider">{t('admin.option_total')}</p>
+            <p className="text-2xl font-bold text-near-black dark:text-white mt-2">{totalElements}</p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
+        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
           <DataTable
             columns={[
               { key: 'id', label: 'ID', align: 'center', sortable: true },
@@ -169,12 +169,12 @@ export default function OptionGroupsPage() {
                 render: (value: any, row: any) => (
                   <div className="flex gap-2 justify-center">
                     <button onClick={(e) => { e.stopPropagation(); handleOpenModal(row) }}
-                      className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors" title={t('admin.edit')}>
-                      <Edit2 size={16} className="text-[#8F8F8F]" />
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('admin.edit')}>
+                      <Edit2 size={16} className="text-mid-gray" />
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); handleOpenDeleteModal(row) }}
-                      className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded transition-colors" title={t('admin.delete')}>
-                      <Trash2 size={16} className="text-[#DA291C]" />
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('admin.delete')}>
+                      <Trash2 size={16} className="text-brand-red" />
                     </button>
                   </div>
                 ),
@@ -204,13 +204,13 @@ export default function OptionGroupsPage() {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
           
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-[#181818] dark:text-[#D2D2D2]">
-              {t('admin.option_group_category')} <span className="text-[#DA291C]">*</span>
+            <label className="block text-sm font-medium text-near-black dark:text-light-gray-surface">
+              {t('admin.option_group_category')} <span className="text-brand-red">*</span>
             </label>
             <select
               value={formData.categoryId || ''}
               onChange={(e) => setFormData({ ...formData, categoryId: parseInt(e.target.value) })}
-              className="w-full px-4 py-2 border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white"
+              className="w-full px-4 py-2 border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white"
               required
             >
               <option value="" disabled>{t('admin.option_group_category')}</option>
@@ -231,12 +231,12 @@ export default function OptionGroupsPage() {
           <Button variant="danger" onClick={handleConfirmDelete} loading={saving}>{t('admin.delete')}</Button>
         </>}>
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-[#DA291C]/10 dark:bg-[#DA291C]/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-[#DA291C]" />
+          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
+            <AlertTriangle size={24} className="text-brand-red" />
           </div>
           <div>
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">{t('admin.option_confirm_delete_msg')}</p>
-            {deletingGroup && <p className="text-sm font-semibold text-[#181818] dark:text-white mt-2">{deletingGroup.name}</p>}
+            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('admin.option_confirm_delete_msg')}</p>
+            {deletingGroup && <p className="text-sm font-semibold text-near-black dark:text-white mt-2">{deletingGroup.name}</p>}
           </div>
         </div>
       </Modal>

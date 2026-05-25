@@ -222,9 +222,9 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
         <div className="space-y-8">
           {/* Assigned options */}
           <section>
-            <h4 className="text-sm font-semibold text-[#181818] dark:text-white mb-3">{labels.assignedTitle}</h4>
+            <h4 className="text-sm font-semibold text-near-black dark:text-white mb-3">{labels.assignedTitle}</h4>
             <div className="relative mb-3">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8F8F8F]" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
               <input
                 type="text"
                 value={assignedSearch}
@@ -233,25 +233,25 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                   setAssignedPage(1)
                 }}
                 placeholder={labels.searchAssigned}
-                className="w-full pl-9 pr-4 py-2 text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C]"
+                className="w-full pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red"
               />
             </div>
 
-            <div className="border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] overflow-hidden">
+            <div className="border border-light-gray-surface dark:border-neutral-700 rounded-sm overflow-hidden">
               {assignedLoading ? (
-                <p className="p-4 text-sm text-[#8F8F8F] text-center">...</p>
+                <p className="p-4 text-sm text-mid-gray text-center">...</p>
               ) : assigned.length === 0 ? (
-                <p className="p-4 text-sm text-[#8F8F8F] text-center">{labels.noAssigned}</p>
+                <p className="p-4 text-sm text-mid-gray text-center">{labels.noAssigned}</p>
               ) : (
-                <ul className="divide-y divide-[#EBEBEB] dark:divide-[#404040] max-h-[240px] overflow-y-auto">
+                <ul className="divide-y divide-neutral-200 dark:divide-neutral-700 max-h-[240px] overflow-y-auto">
                   {assigned.map((row) => (
                     <li
                       key={row.id}
-                      className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] dark:hover:bg-[#404040]/50"
+                      className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-neutral-700/50"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-[#181818] dark:text-white truncate">{row.optionItemName}</p>
-                        <p className="text-xs text-[#8F8F8F]">ID: {row.optionItemId}</p>
+                        <p className="text-sm font-medium text-near-black dark:text-white truncate">{row.optionItemName}</p>
+                        <p className="text-xs text-mid-gray">ID: {row.optionItemId}</p>
                       </div>
                       {/* isDefault toggle */}
                       <button
@@ -261,20 +261,20 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                         title={labels.setDefault}
                         className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors border shrink-0 ${
                           row.isDefault
-                            ? 'bg-[#DA291C] border-[#DA291C] text-white'
-                            : 'bg-white dark:bg-[#303030] border-[#D2D2D2] dark:border-[#404040] text-[#8F8F8F] hover:border-[#DA291C] hover:text-[#DA291C]'
+                            ? 'bg-brand-red border-brand-red text-white'
+                            : 'bg-white dark:bg-dark-surface border-light-gray-surface dark:border-neutral-700 text-mid-gray hover:border-brand-red hover:text-brand-red'
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
-                        <span className={`w-2 h-2 rounded-full ${row.isDefault ? 'bg-white' : 'bg-[#D2D2D2]'}`} />
+                        <span className={`w-2 h-2 rounded-full ${row.isDefault ? 'bg-white' : 'bg-light-gray-surface'}`} />
                         {row.isDefault ? labels.defaultLabel : labels.setDefault}
                       </button>
                       <button
                         type="button"
                         onClick={() => setDeletingOption(row)}
-                        className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#404040] rounded shrink-0"
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded shrink-0"
                         title={labels.delete}
                       >
-                        <Trash2 size={16} className="text-[#DA291C]" />
+                        <Trash2 size={16} className="text-brand-red" />
                       </button>
                     </li>
                   ))}
@@ -283,7 +283,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
             </div>
 
             {assignedTotal > 0 && (
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#EBEBEB] dark:border-[#404040] text-sm text-[#8F8F8F] dark:text-[#A4A4A4] select-none">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-200 dark:border-neutral-700 text-sm text-mid-gray dark:text-neutral-400 select-none">
                 {/* Left Side: Total and page size selector */}
                 <div className="flex items-center gap-4">
                   <span className="font-medium">
@@ -298,11 +298,11 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                         setAssignedPageSize(newSize)
                         setAssignedPage(1)
                       }}
-                      className="h-8 px-2 py-1 bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#404040] rounded-[4px] text-xs text-[#181818] dark:text-white outline-none cursor-pointer hover:border-black dark:hover:border-white transition-colors"
+                      className="h-8 px-2 py-1 bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-700 rounded text-xs text-near-black dark:text-white outline-none cursor-pointer hover:border-black dark:hover:border-white transition-colors"
                     >
-                      <option value="10" className="bg-white dark:bg-[#303030]">10</option>
-                      <option value="20" className="bg-white dark:bg-[#303030]">20</option>
-                      <option value="100" className="bg-white dark:bg-[#303030]">100</option>
+                      <option value="10" className="bg-white dark:bg-dark-surface">10</option>
+                      <option value="20" className="bg-white dark:bg-dark-surface">20</option>
+                      <option value="100" className="bg-white dark:bg-dark-surface">100</option>
                     </select>
                   </div>
                 </div>
@@ -313,7 +313,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                     type="button"
                     disabled={assignedPage <= 1}
                     onClick={() => setAssignedPage((p) => p - 1)}
-                    className="w-8 h-8 flex items-center justify-center border border-[#D2D2D2] dark:border-[#404040] rounded-[4px] bg-white dark:bg-[#303030] hover:bg-gray-50 dark:hover:bg-[#404040] text-[#181818] dark:text-white transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-8 h-8 flex items-center justify-center border border-light-gray-surface dark:border-neutral-700 rounded bg-white dark:bg-dark-surface hover:bg-gray-50 dark:hover:bg-neutral-700 text-near-black dark:text-white transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     ←
                   </button>
@@ -344,7 +344,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                           e.currentTarget.blur()
                         }
                       }}
-                      className="w-12 h-8 text-center bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#404040] rounded-[4px] py-1 text-xs text-[#181818] dark:text-white focus:border-black dark:focus:border-white outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [appearance:textfield]"
+                      className="w-12 h-8 text-center bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-700 rounded py-1 text-xs text-near-black dark:text-white focus:border-black dark:focus:border-white outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [appearance:textfield]"
                     />
                     <span>/ {Math.ceil(assignedTotal / assignedPageSize)}</span>
                   </div>
@@ -352,7 +352,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                     type="button"
                     disabled={assignedPage >= Math.ceil(assignedTotal / assignedPageSize)}
                     onClick={() => setAssignedPage((p) => p + 1)}
-                    className="w-8 h-8 flex items-center justify-center border border-[#D2D2D2] dark:border-[#404040] rounded-[4px] bg-white dark:bg-[#303030] hover:bg-gray-50 dark:hover:bg-[#404040] text-[#181818] dark:text-white transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-8 h-8 flex items-center justify-center border border-light-gray-surface dark:border-neutral-700 rounded bg-white dark:bg-dark-surface hover:bg-gray-50 dark:hover:bg-neutral-700 text-near-black dark:text-white transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     →
                   </button>
@@ -363,9 +363,9 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
 
           {/* Add option via search */}
           <section>
-            <h4 className="text-sm font-semibold text-[#181818] dark:text-white mb-3">{labels.addTitle}</h4>
+            <h4 className="text-sm font-semibold text-near-black dark:text-white mb-3">{labels.addTitle}</h4>
             <div className="relative mb-2">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8F8F8F]" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
               <input
                 type="text"
                 value={addSearch}
@@ -374,30 +374,30 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                   setAddPage(1)
                 }}
                 placeholder={labels.searchOptions}
-                className="w-full pl-9 pr-4 py-2 text-sm border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] bg-white dark:bg-[#303030] text-[#181818] dark:text-white outline-none focus:border-[#DA291C] focus:ring-1 focus:ring-[#DA291C]"
+                className="w-full pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red"
               />
             </div>
-            <p className="text-xs text-[#8F8F8F] mb-3">{labels.searchHint}</p>
+            <p className="text-xs text-mid-gray mb-3">{labels.searchHint}</p>
 
-            <div className="border border-[#D2D2D2] dark:border-[#404040] rounded-[2px] overflow-hidden">
+            <div className="border border-light-gray-surface dark:border-neutral-700 rounded-sm overflow-hidden">
               {addSearch.trim().length < 2 ? (
-                <p className="p-4 text-sm text-[#8F8F8F] text-center">{labels.searchHint}</p>
+                <p className="p-4 text-sm text-mid-gray text-center">{labels.searchHint}</p>
               ) : addLoading ? (
-                <p className="p-4 text-sm text-[#8F8F8F] text-center">...</p>
+                <p className="p-4 text-sm text-mid-gray text-center">...</p>
               ) : addResults.length === 0 ? (
-                <p className="p-4 text-sm text-[#8F8F8F] text-center">{labels.noResults}</p>
+                <p className="p-4 text-sm text-mid-gray text-center">{labels.noResults}</p>
               ) : (
-                <ul className="divide-y divide-[#EBEBEB] dark:divide-[#404040] max-h-[280px] overflow-y-auto">
+                <ul className="divide-y divide-neutral-200 dark:divide-neutral-700 max-h-[280px] overflow-y-auto">
                   {addResults.map((opt) => {
                     const isAssigned = assignedOptionIds.has(opt.id)
                     return (
                       <li
                         key={opt.id}
-                        className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] dark:hover:bg-[#404040]/50"
+                        className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-neutral-700/50"
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-[#181818] dark:text-white truncate">{opt.name}</p>
-                          <p className="text-xs text-[#8F8F8F] truncate">
+                          <p className="text-sm font-medium text-near-black dark:text-white truncate">{opt.name}</p>
+                          <p className="text-xs text-mid-gray truncate">
                             {opt.optionGroupName} · {formatPrice(opt.price)} · ID: {opt.id}
                           </p>
                         </div>
@@ -417,7 +417,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
                               size="sm"
                               onClick={() => handleAddOption(opt, true)}
                               disabled={saving}
-                              className="!bg-[#DA291C]/5 !text-[#DA291C] !border-[#DA291C]/20 hover:!bg-[#DA291C] hover:!text-white"
+                              className="!bg-brand-red/5 !text-brand-red !border-brand-red/20 hover:!bg-brand-red hover:!text-white"
                             >
                               {labels.addAsDefault}
                             </Button>
@@ -431,7 +431,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
             </div>
 
             {addSearch.trim().length >= 2 && addTotal > addPageSize && (
-              <div className="flex items-center justify-between mt-2 text-xs text-[#8F8F8F]">
+              <div className="flex items-center justify-between mt-2 text-xs text-mid-gray">
                 <span>
                   {labels.total}: {addTotal}
                 </span>
@@ -479,13 +479,13 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
         }
       >
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-[#DA291C]/10 flex-shrink-0">
-            <AlertTriangle size={24} className="text-[#DA291C]" />
+          <div className="p-3 rounded-full bg-brand-red/10 flex-shrink-0">
+            <AlertTriangle size={24} className="text-brand-red" />
           </div>
           <div>
-            <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">{labels.confirmDeleteMsg}</p>
+            <p className="text-sm text-near-black dark:text-light-gray-surface">{labels.confirmDeleteMsg}</p>
             {deletingOption && (
-              <p className="text-sm font-semibold text-[#181818] dark:text-white mt-2">{deletingOption.optionItemName}</p>
+              <p className="text-sm font-semibold text-near-black dark:text-white mt-2">{deletingOption.optionItemName}</p>
             )}
           </div>
         </div>

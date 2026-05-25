@@ -18,11 +18,11 @@ export function PageLayout({
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-ferrari-heading text-[#181818] dark:text-white">
+          <h1 className="text-porsche-heading text-near-black dark:text-white">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-sm text-[#8F8F8F] dark:text-[#D2D2D2] mt-1">
+            <p className="text-sm text-mid-gray dark:text-light-gray-surface mt-1">
               {subtitle}
             </p>
           )}

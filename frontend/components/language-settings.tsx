@@ -25,7 +25,7 @@ export function LanguageSettings() {
           {/* Vietnamese Option */}
           <button
             onClick={() => setLanguage('vi')}
-            className={`w-full p-6 rounded-[2px] border-2 transition-all duration-300 ${
+            className={`w-full p-6 rounded-sm border-2 transition-all duration-300 ${
               language === 'vi'
                 ? 'border-black bg-black text-white'
                 : 'border-gray-200 bg-white text-black hover:border-black'
@@ -56,7 +56,7 @@ export function LanguageSettings() {
           {/* English Option */}
           <button
             onClick={() => setLanguage('en')}
-            className={`w-full p-6 rounded-[2px] border-2 transition-all duration-300 ${
+            className={`w-full p-6 rounded-sm border-2 transition-all duration-300 ${
               language === 'en'
                 ? 'border-black bg-black text-white'
                 : 'border-gray-200 bg-white text-black hover:border-black'
@@ -86,7 +86,7 @@ export function LanguageSettings() {
         </div>
 
         {/* Info Section */}
-        <div className="mt-12 p-8 bg-gray-50 rounded-[2px] space-y-4">
+        <div className="mt-12 p-8 bg-gray-50 rounded-sm space-y-4">
           <h3 className="text-lg font-light">
             {language === 'vi' ? 'Thông tin' : 'Information'}
           </h3>
@@ -103,7 +103,7 @@ export function LanguageSettings() {
         </div>
 
         {/* Current Language Display */}
-        <div className="mt-8 p-6 border border-gray-200 rounded-[2px]">
+        <div className="mt-8 p-6 border border-gray-200 rounded-sm">
           <p className="text-sm text-gray-600 mb-2">
             {language === 'vi' ? 'Ngôn ngữ hiện tại' : 'Current Language'}:
           </p>

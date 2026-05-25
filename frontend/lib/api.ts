@@ -1,13 +1,16 @@
 // Base API configuration for communicating with Spring Boot backend
-const API_BASE_URL = "http://localhost:8080/api/v1";
 
-export interface ApiResponse<T = any> {
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+
+// ── Types ────────────────────────────────────────────────────────────────────
+
+export interface ApiResponse<T = unknown> {
   code: number;
   status: string;
   message?: string;
   data: T;
   timestamp?: string;
-  meta?: any;
+  meta?: unknown;
 }
 
 export interface ApiError {
@@ -17,6 +20,18 @@ export interface ApiError {
   message?: string;
 }
 
+// ── HTTP Method Enum ─────────────────────────────────────────────────────────
+
+enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  PATCH = "PATCH",
+}
+
+// ── API Client ───────────────────────────────────────────────────────────────
+
 class ApiClient {
   private baseUrl: string;
 
@@ -24,8 +39,11 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async parseResponse(res: Response) {
-    if (res.status === 204) return {};
+  // ── Private Helpers ──────────────────────────────────────────────────────
+
+  private async parseResponse(res: Response): Promise<Record<string, unknown>> {
+    const HTTP_NO_CONTENT = 204;
+    if (res.status === HTTP_NO_CONTENT) return {};
     const text = await res.text();
     try {
       return text ? JSON.parse(text) : {};
@@ -34,119 +52,81 @@ class ApiClient {
     }
   }
 
-  private getHeaders(): Record<string, string> {
-    // No longer need Authorization header — JWT is sent automatically via httpOnly cookie
-    return {
-      "Content-Type": "application/json",
-    };
+  private buildHeaders(isFormData: boolean): Record<string, string> {
+    // No Authorization header — JWT is sent automatically via httpOnly cookie
+    if (isFormData) return {};
+    return { "Content-Type": "application/json" };
   }
 
-  async post<T = any>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
-    const isFormData = body instanceof FormData;
-    const headers = this.getHeaders();
-    if (isFormData) {
-      delete headers["Content-Type"];
-    }
-
-    const res = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: "POST",
-      headers: headers,
-      credentials: "include", // sends httpOnly cookie automatically
-      body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
-    });
-
-    const data = await this.parseResponse(res);
-
-    if (!res.ok) {
-      const error: ApiError = {
-        code: data.code || res.status,
-        status: data.status || "ERROR",
-        data: data.data || "An unexpected error occurred",
-        message: data.message,
-      };
-      throw error;
-    }
-
-    return data as ApiResponse<T>;
+  private buildBody(body?: unknown): BodyInit | undefined {
+    if (!body) return undefined;
+    if (body instanceof FormData) return body;
+    return JSON.stringify(body);
   }
 
-  async get<T = any>(endpoint: string, params?: Record<string, string>): Promise<ApiResponse<T>> {
+  private buildUrl(endpoint: string, params?: Record<string, string>): string {
     let url = `${this.baseUrl}${endpoint}`;
     if (params) {
-      const searchParams = new URLSearchParams(params);
-      url += `?${searchParams.toString()}`;
+      url += `?${new URLSearchParams(params).toString()}`;
     }
+    return url;
+  }
+
+  // ── Generic Request ──────────────────────────────────────────────────────
+
+  private async request<T = unknown>(
+    method: HttpMethod,
+    endpoint: string,
+    options?: { body?: unknown; params?: Record<string, string> },
+  ): Promise<ApiResponse<T>> {
+    const isFormData = options?.body instanceof FormData;
+    const url = this.buildUrl(endpoint, options?.params);
 
     const res = await fetch(url, {
-      method: "GET",
-      headers: this.getHeaders(),
+      method,
+      headers: this.buildHeaders(isFormData),
       credentials: "include", // sends httpOnly cookie automatically
+      body: this.buildBody(options?.body),
     });
 
     const data = await this.parseResponse(res);
 
     if (!res.ok) {
       const error: ApiError = {
-        code: data.code || res.status,
-        status: data.status || "ERROR",
-        data: data.data || "An unexpected error occurred",
-        message: data.message,
+        code: (data.code as number) || res.status,
+        status: (data.status as string) || "ERROR",
+        data: (data.data as string | Record<string, string>) || "An unexpected error occurred",
+        message: data.message as string | undefined,
       };
       throw error;
     }
 
-    return data as ApiResponse<T>;
-  }
-  async put<T = any>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
-    const isFormData = body instanceof FormData;
-    const headers = this.getHeaders();
-    if (isFormData) {
-      delete headers["Content-Type"];
-    }
-
-    const res = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: "PUT",
-      headers: headers,
-      credentials: "include", // sends httpOnly cookie automatically
-      body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
-    });
-
-    const data = await this.parseResponse(res);
-
-    if (!res.ok) {
-      const error: ApiError = {
-        code: data.code || res.status,
-        status: data.status || "ERROR",
-        data: data.data || "An unexpected error occurred",
-        message: data.message,
-      };
-      throw error;
-    }
-
-    return data as ApiResponse<T>;
+    return data as unknown as ApiResponse<T>;
   }
 
-  async delete<T = any>(endpoint: string): Promise<ApiResponse<T>> {
-    const res = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: "DELETE",
-      headers: this.getHeaders(),
-      credentials: "include", // sends httpOnly cookie automatically
-    });
+  // ── Public Methods ───────────────────────────────────────────────────────
 
-    const data = await this.parseResponse(res);
+  get<T = unknown>(endpoint: string, params?: Record<string, string>): Promise<ApiResponse<T>> {
+    return this.request<T>(HttpMethod.GET, endpoint, { params });
+  }
 
-    if (!res.ok) {
-      const error: ApiError = {
-        code: data.code || res.status,
-        status: data.status || "ERROR",
-        data: data.data || "An unexpected error occurred",
-        message: data.message,
-      };
-      throw error;
-    }
+  post<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
+    return this.request<T>(HttpMethod.POST, endpoint, { body });
+  }
 
-    return data as ApiResponse<T>;
+  put<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
+    return this.request<T>(HttpMethod.PUT, endpoint, { body });
+  }
+
+  delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(HttpMethod.DELETE, endpoint);
+  }
+
+  patch<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
+    return this.request<T>(HttpMethod.PATCH, endpoint, { body });
   }
 }
+
+// ── Singleton Export ─────────────────────────────────────────────────────────
 
 export const apiClient = new ApiClient(API_BASE_URL);

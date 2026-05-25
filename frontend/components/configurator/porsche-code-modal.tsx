@@ -56,14 +56,14 @@ export function PorscheCodeModal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#f5f5f5] hover:bg-[#e5e5e5] flex items-center justify-center transition-colors z-10"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
           aria-label="Đóng"
         >
           <X size={18} strokeWidth={1.5} />
         </button>
 
         {/* Car image */}
-        <div className="relative w-full h-48 md:h-56 bg-[#f8f8f8] rounded-t-2xl overflow-hidden">
+        <div className="relative w-full h-48 md:h-56 bg-gray-50 rounded-t-2xl overflow-hidden">
           <Image
             src={modelImage}
             alt="Porsche"
@@ -75,23 +75,23 @@ export function PorscheCodeModal({
 
         {/* Content */}
         <div className="px-8 pb-8 pt-6">
-          <h3 className="text-xl md:text-2xl font-light text-[#181818] mb-3">
+          <h3 className="text-xl md:text-2xl font-light text-near-black mb-3">
             Mã Porsche dành cho cấu hình xe của bạn
           </h3>
-          <p className="text-sm text-[#666] font-light mb-6 leading-relaxed">
+          <p className="text-sm text-dark-gray font-light mb-6 leading-relaxed">
             Với Mã Porsche, bạn có thể truy cập lại cấu hình xe của mình bất cứ lúc nào và chia sẻ nó với
             đại lý Porsche hoặc những người khác. Chỉ cần nhập mã hiển thị trên trang chọn mẫu xe, ví
             dụ, hoặc đơn giản là sao chép liên kết được tạo đến cấu hình xe của bạn.
           </p>
 
           {/* Code display */}
-          <div className="bg-[#f5f5f5] rounded p-3 mb-2 flex items-center justify-between">
+          <div className="bg-gray-100 rounded p-3 mb-2 flex items-center justify-between">
             <div className="flex items-center">
               {codeChars.map((char, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-center justify-center text-sm text-[#181818] px-3 ${
-                    idx < codeChars.length - 1 ? 'border-r border-[#d2d2d2]' : ''
+                  className={`flex items-center justify-center text-sm text-near-black px-3 ${
+                    idx < codeChars.length - 1 ? 'border-r border-light-gray-surface' : ''
                   }`}
                 >
                   {char}
@@ -101,7 +101,7 @@ export function PorscheCodeModal({
             <button
               type="button"
               onClick={handleCopyCode}
-              className="flex items-center gap-1.5 text-xs text-[#666] hover:text-[#181818] transition-colors pr-2"
+              className="flex items-center gap-1.5 text-xs text-dark-gray hover:text-near-black transition-colors pr-2"
             >
               {codeCopied ? (
                 <>
@@ -118,17 +118,17 @@ export function PorscheCodeModal({
           </div>
 
           {/* Link display */}
-          <div className="bg-[#f5f5f5] rounded p-3 mb-6 flex items-center justify-between">
+          <div className="bg-gray-100 rounded p-3 mb-6 flex items-center justify-between">
             <div className="flex items-center gap-1 min-w-0 pl-3">
-              <span className="text-sm text-[#666] font-light truncate">
+              <span className="text-sm text-dark-gray font-light truncate">
                 https://porsche-code.com/
               </span>
-              <span className="text-sm font-medium text-[#181818]">{porscheCode}</span>
+              <span className="text-sm font-medium text-near-black">{porscheCode}</span>
             </div>
             <button
               type="button"
               onClick={handleCopyLink}
-              className="flex items-center gap-1.5 text-xs text-[#666] hover:text-[#181818] transition-colors pr-2 flex-shrink-0"
+              className="flex items-center gap-1.5 text-xs text-dark-gray hover:text-near-black transition-colors pr-2 flex-shrink-0"
             >
               {linkCopied ? (
                 <>
@@ -144,7 +144,7 @@ export function PorscheCodeModal({
             </button>
           </div>
 
-          <p className="text-xs text-[#999] font-light leading-relaxed">
+          <p className="text-xs text-neutral-400 font-light leading-relaxed">
             Để lưu cấu hình xe của bạn vĩnh viễn vào hồ sơ Porsche ID và có thể truy cập từ bất cứ đâu,
             hãy sử dụng nút &ldquo;Lưu&rdquo; trong trình cấu hình.
           </p>

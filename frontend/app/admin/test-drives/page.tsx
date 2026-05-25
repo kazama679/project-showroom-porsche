@@ -7,6 +7,7 @@ import { Badge } from '@/components/admin/badge'
 import { PageLayout } from '@/components/admin/page-layout'
 import { Alert } from '@/components/admin/alert'
 import { testDriveApi, TestDriveBookingResponse } from '@/lib/test-drive-api'
+import { BookingStatus } from '@/constants/enums'
 
 const statusVariants = {
   PENDING: 'warning',
@@ -91,12 +92,12 @@ export default function TestDrivesPage() {
           />
         )}
 
-        <div className="relative bg-white dark:bg-[#303030] border border-[#D2D2D2] dark:border-[#303030] rounded-[2px] p-6">
+        <div className="relative bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
           {actionInProgress && (
             <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/20 dark:bg-black/40 backdrop-blur-sm">
-              <div className="flex items-center gap-3 border border-[#D2D2D2] dark:border-[#404040] bg-white dark:bg-[#1A1A1A] px-5 py-4 shadow-xl rounded-md">
-                <Loader2 size={18} className="animate-spin text-[#181818] dark:text-white" />
-                <span className="text-sm font-medium text-[#181818] dark:text-white">
+              <div className="flex items-center gap-3 border border-light-gray-surface dark:border-neutral-700 bg-white dark:bg-neutral-900 px-5 py-4 shadow-xl rounded-md">
+                <Loader2 size={18} className="animate-spin text-near-black dark:text-white" />
+                <span className="text-sm font-medium text-near-black dark:text-white">
                   {actionInProgress.type === 'approve'
                     ? 'Đang duyệt và gửi email...'
                     : 'Đang từ chối yêu cầu...'}
@@ -146,33 +147,33 @@ export default function TestDrivesPage() {
                 render: (value) => {
                   const request = requests.find((r) => r.id === value)
                   const activeAction = actionInProgress
-                  if (request?.status !== 'PENDING') {
-                    return <span className="text-xs text-[#8F8F8F]">No actions</span>
+                  if (request?.status !== BookingStatus.PENDING) {
+                    return <span className="text-xs text-mid-gray">No actions</span>
                   }
                   return (
                     <div className="flex gap-2 justify-center">
                       <button
                         onClick={() => handleApprove(value)}
                         disabled={Boolean(activeAction)}
-                        className="p-2 hover:bg-[#03904A]/10 rounded transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                        className="p-2 hover:bg-success-green/10 rounded transition-colors disabled:cursor-not-allowed disabled:opacity-40"
                         aria-label="Approve test drive"
                       >
                         {activeAction?.id === value && activeAction?.type === 'approve' ? (
-                          <Loader2 size={16} className="animate-spin text-[#03904A]" />
+                          <Loader2 size={16} className="animate-spin text-success-green" />
                         ) : (
-                          <Check size={16} className="text-[#03904A]" />
+                          <Check size={16} className="text-success-green" />
                         )}
                       </button>
                       <button
                         onClick={() => handleReject(value)}
                         disabled={Boolean(activeAction)}
-                        className="p-2 hover:bg-[#DA291C]/10 rounded transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                        className="p-2 hover:bg-brand-red/10 rounded transition-colors disabled:cursor-not-allowed disabled:opacity-40"
                         aria-label="Reject test drive"
                       >
                         {activeAction?.id === value && activeAction?.type === 'reject' ? (
-                          <Loader2 size={16} className="animate-spin text-[#DA291C]" />
+                          <Loader2 size={16} className="animate-spin text-brand-red" />
                         ) : (
-                          <X size={16} className="text-[#DA291C]" />
+                          <X size={16} className="text-brand-red" />
                         )}
                       </button>
                     </div>

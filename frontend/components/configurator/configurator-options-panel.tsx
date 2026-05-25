@@ -48,7 +48,7 @@ function ColorSwatch({
       title={option.name}
       onClick={onSelect}
       className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-md border-2 overflow-hidden transition-all hover:scale-105 ${
-        selected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-[#d2d2d2]'
+        selected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-light-gray-surface'
       }`}
       style={!option.image ? { backgroundColor: option.color ?? '#ccc' } : undefined}
     >
@@ -89,10 +89,10 @@ function OptionCard({
       className={`flex flex-col text-left rounded-lg border bg-white overflow-hidden transition-all h-full ${
         selected
           ? 'border-black ring-1 ring-black shadow-sm'
-          : 'border-[#e5e5e5] hover:border-[#b0b0b0] hover:shadow-sm'
+          : 'border-gray-200 hover:border-[#b0b0b0] hover:shadow-sm'
       }`}
     >
-      <div className="relative aspect-[4/3] w-full bg-white border-b border-[#f0f0f0]">
+      <div className="relative aspect-[4/3] w-full bg-white border-b border-neutral-100">
         <Image 
           src={option.image || 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'} 
           alt={option.name} 
@@ -110,28 +110,28 @@ function OptionCard({
           className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow-sm"
           aria-hidden="true"
         >
-          <Info size={14} className="text-[#555]" strokeWidth={1.5} />
+          <Info size={14} className="text-neutral-600" strokeWidth={1.5} />
         </span>
       </div>
 
       <div className="flex flex-col flex-1 p-3 gap-2">
-        <p className="text-[13px] font-light text-[#181818] leading-snug line-clamp-3 min-h-[2.75rem]">
+        <p className="text-[13px] font-light text-near-black leading-snug line-clamp-3 min-h-[2.75rem]">
           {option.name}
         </p>
         {option.description && (
-          <p className="text-[11px] text-[#888] font-light line-clamp-2 -mt-1">{option.description}</p>
+          <p className="text-[11px] text-neutral-500 font-light line-clamp-2 -mt-1">{option.description}</p>
         )}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1">
           <span
             className={`text-[13px] font-light leading-none ${
-              option.isStandard ? 'text-[#888]' : 'text-[#181818]'
+              option.isStandard ? 'text-neutral-500' : 'text-near-black'
             }`}
           >
             {getOptionPriceLabel(option)}
           </span>
           <span
             className={`w-[18px] h-[18px] rounded-[3px] border flex-shrink-0 flex items-center justify-center ${
-              selected ? 'bg-black border-black' : 'border-[#999] bg-white'
+              selected ? 'bg-black border-black' : 'border-neutral-400 bg-white'
             }`}
             aria-hidden="true"
           >
@@ -170,13 +170,13 @@ function SubGroupOptions({
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-3 text-left hover:bg-[#fafafa] transition-colors"
+        className="w-full flex items-center justify-between py-3 text-left hover:bg-neutral-50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-medium text-[#181818]">{subGroup.title}</h3>
-          <span className="text-xs text-[#666] font-light">{getSubGroupPriceLabel(subGroup)}</span>
+          <h3 className="text-sm font-medium text-near-black">{subGroup.title}</h3>
+          <span className="text-xs text-dark-gray font-light">{getSubGroupPriceLabel(subGroup)}</span>
         </div>
-        <span className="text-lg text-[#999] font-light leading-none mr-1">
+        <span className="text-lg text-neutral-400 font-light leading-none mr-1">
           {isExpanded ? '−' : '+'}
         </span>
       </button>
@@ -251,7 +251,7 @@ export function ConfiguratorOptionsPanel({
     <div className="flex flex-col h-full min-h-0">
       
       <div className="relative mb-7">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666]" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-gray" />
         <input
           type="search"
           value={searchQuery}
@@ -259,7 +259,7 @@ export function ConfiguratorOptionsPanel({
           placeholder="Tìm kiếm các tùy chọn thiết bị"
           aria-label="Tìm kiếm các tùy chọn thiết bị"
           id="configurator-option-search"
-          className="w-full pl-10 pr-4 py-3 border border-[#d2d2d2] rounded-lg text-sm font-light focus:outline-none focus:border-black transition-colors"
+          className="w-full pl-10 pr-4 py-3 border border-light-gray-surface rounded-lg text-sm font-light focus:outline-none focus:border-black transition-colors"
         />
       </div>
 
@@ -268,20 +268,20 @@ export function ConfiguratorOptionsPanel({
           const isExpanded = expandedSections[section.id] !== false
 
           return (
-            <div key={section.id} className="border-b border-[#e5e5e5]">
+            <div key={section.id} className="border-b border-gray-200">
               <button
                 type="button"
                 onClick={() => onToggleSection(section.id)}
-                className="w-full flex items-center justify-between py-4 text-left hover:bg-[#fafafa] px-1 transition-colors"
+                className="w-full flex items-center justify-between py-4 text-left hover:bg-neutral-50 px-1 transition-colors"
               >
-                <h2 className="text-base font-light text-[#181818]">{section.title}</h2>
-                <span className="text-xl text-[#999] font-light leading-none">
+                <h2 className="text-base font-light text-near-black">{section.title}</h2>
+                <span className="text-xl text-neutral-400 font-light leading-none">
                   {isExpanded ? '−' : '+'}
                 </span>
               </button>
 
               {isExpanded && (
-                <div className="pb-4 px-1 divide-y divide-[#f0f0f0]">
+                <div className="pb-4 px-1 divide-y divide-neutral-100">
                   {section.subGroups.map((subGroup) => (
                     <SubGroupOptions
                       key={subGroup.id}
@@ -300,7 +300,7 @@ export function ConfiguratorOptionsPanel({
         })}
 
         {filteredSections.length === 0 && (
-          <p className="text-sm text-[#666] font-light py-8 text-center">
+          <p className="text-sm text-dark-gray font-light py-8 text-center">
             No equipment options match your search.
           </p>
         )}

@@ -18,31 +18,31 @@ export function Alert({
 }: AlertProps) {
   const styles = {
     info: {
-      bg: 'bg-[#4C98B9]/10 dark:bg-[#4C98B9]/20',
-      border: 'border-[#4C98B9]/30',
-      icon: 'text-[#4C98B9]',
-      text: 'text-[#4C98B9] dark:text-[#7ECEFF]',
+      bg: 'bg-info-blue/10 dark:bg-info-blue/20',
+      border: 'border-info-blue/30',
+      icon: 'text-info-blue',
+      text: 'text-info-blue dark:text-blue-300',
       Icon: Info,
     },
     success: {
-      bg: 'bg-[#03904A]/10 dark:bg-[#03904A]/20',
-      border: 'border-[#03904A]/30',
-      icon: 'text-[#03904A]',
-      text: 'text-[#03904A] dark:text-[#4AFF7A]',
+      bg: 'bg-success-green/10 dark:bg-success-green/20',
+      border: 'border-success-green/30',
+      icon: 'text-success-green',
+      text: 'text-success-green dark:text-green-400',
       Icon: CheckCircle,
     },
     warning: {
-      bg: 'bg-[#F6E500]/10 dark:bg-[#F6E500]/20',
-      border: 'border-[#F6E500]/30',
-      icon: 'text-[#B8A500]',
-      text: 'text-[#B8A500] dark:text-[#FFE500]',
+      bg: 'bg-modena-yellow/10 dark:bg-modena-yellow/20',
+      border: 'border-modena-yellow/30',
+      icon: 'text-yellow-600',
+      text: 'text-yellow-600 dark:text-yellow-400',
       Icon: AlertTriangle,
     },
     error: {
-      bg: 'bg-[#DA291C]/10 dark:bg-[#DA291C]/20',
-      border: 'border-[#DA291C]/30',
-      icon: 'text-[#DA291C]',
-      text: 'text-[#DA291C] dark:text-[#FF6B6B]',
+      bg: 'bg-brand-red/10 dark:bg-brand-red/20',
+      border: 'border-brand-red/30',
+      icon: 'text-brand-red',
+      text: 'text-brand-red dark:text-red-400',
       Icon: AlertCircle,
     },
   }
@@ -52,12 +52,12 @@ export function Alert({
 
   return (
     <div
-      className={`rounded-[2px] border ${style.bg} ${style.border} p-4 flex items-start gap-3`}
+      className={`rounded-sm border ${style.bg} ${style.border} p-4 flex items-start gap-3`}
     >
       <Icon size={20} className={style.icon} />
       <div className="flex-1 min-w-0">
         {title && <p className={`font-medium ${style.text}`}>{title}</p>}
-        <p className="text-sm text-[#181818] dark:text-[#D2D2D2]">{message}</p>
+        <p className="text-sm text-near-black dark:text-light-gray-surface">{message}</p>
         {action && <div className="mt-2">{action}</div>}
       </div>
       {onClose && (

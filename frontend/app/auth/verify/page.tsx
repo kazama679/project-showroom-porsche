@@ -121,10 +121,10 @@ function VerifyForm() {
             <p className="text-gray-900 font-medium mb-8">{email || 'your email'}</p>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[2px] text-sm mb-6">{error}</div>
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-sm text-sm mb-6">{error}</div>
             )}
             {success && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-[2px] text-sm flex items-center gap-2 mb-6">
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-sm text-sm flex items-center gap-2 mb-6">
                 <CheckCircle size={16} />{success}
               </div>
             )}

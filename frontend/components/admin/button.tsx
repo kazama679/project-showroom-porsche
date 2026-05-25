@@ -22,19 +22,19 @@ export function Button({
 }: ButtonProps) {
   const variantStyles = {
     primary:
-      "bg-[#DA291C] text-white hover:bg-[#B01E0A] active:bg-[#9D2211] disabled:opacity-50 cursor-pointer",
+      "bg-brand-red text-white hover:bg-dark-red active:bg-deep-red disabled:opacity-50 cursor-pointer",
     secondary:
-      "cursor-pointer bg-white text-[#181818] border border-[#D2D2D2] hover:bg-[#F5F5F5] active:bg-[#E5E5E5] dark:bg-[#303030] dark:text-white dark:border-[#404040] dark:hover:bg-[#404040] disabled:opacity-50",
+      "cursor-pointer bg-white text-near-black border border-light-gray-surface hover:bg-gray-100 active:bg-gray-200 dark:bg-dark-surface dark:text-white dark:border-neutral-700 dark:hover:bg-neutral-700 disabled:opacity-50",
     danger:
-      "cursor-pointer bg-[#DA291C] text-white hover:bg-[#B01E0A] active:bg-[#9D2211] disabled:opacity-50",
+      "cursor-pointer bg-brand-red text-white hover:bg-dark-red active:bg-deep-red disabled:opacity-50",
     ghost:
-      "cursor-pointer bg-transparent text-[#181818] hover:bg-[#F5F5F5] active:bg-[#E5E5E5] dark:text-white dark:hover:bg-[#404040] disabled:opacity-50",
+      "cursor-pointer bg-transparent text-near-black hover:bg-gray-100 active:bg-gray-200 dark:text-white dark:hover:bg-neutral-700 disabled:opacity-50",
   };
 
   const sizeStyles = {
-    sm: "px-2.5 py-1.5 text-xs font-medium rounded-[2px]",
-    md: "px-3 py-2 text-sm font-medium rounded-[2px]",
-    lg: "px-4 py-2.5 text-base font-medium rounded-[2px]",
+    sm: "px-2.5 py-1.5 text-xs font-medium rounded-sm",
+    md: "px-3 py-2 text-sm font-medium rounded-sm",
+    lg: "px-4 py-2.5 text-base font-medium rounded-sm",
   };
 
   return (

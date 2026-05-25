@@ -1,6 +1,7 @@
 'use client'
 
 import { apiClient } from './api'
+import { BookingStatus } from '../constants/enums'
 
 export interface TestDriveBookingRequest {
   carModelId?: number
@@ -37,7 +38,7 @@ export interface TestDriveBookingResponse {
   preferredDate: string
   preferredTime: string
   message: string
-  status: 'PENDING' | 'APPROVED' | 'REJECTED'
+  status: BookingStatus
   adminNote?: string
   createdAt: string
   updatedAt: string
