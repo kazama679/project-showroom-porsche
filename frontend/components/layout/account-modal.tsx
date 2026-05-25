@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { X, ChevronRight, User } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { authService, AuthUser } from '@/lib/auth'
 
 interface AccountModalProps {
@@ -13,6 +14,10 @@ interface AccountModalProps {
 
 export function AccountModal({ open, onClose }: AccountModalProps) {
   const router = useRouter()
+  const tNav = useTranslations('navigation')
+  const tAccount = useTranslations('account')
+  const tAuth = useTranslations('auth')
+  const tCommon = useTranslations('common')
   const [user, setUser] = useState<AuthUser | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
@@ -43,30 +48,30 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
 
   // Menu items for left panel
   const menuItems = [
-    { label: 'Mô hình', href: '/models', hasArrow: true },
-    { label: 'Công cụ mua sắm', href: '#', hasArrow: true },
-    { label: 'Cửa hàng Porsche', href: '#', hasArrow: false },
-    { label: 'Dịch vụ', href: '#', hasArrow: true },
-    { label: 'Kinh nghiệm', href: '#', hasArrow: true },
-    { label: 'Tìm đại lý Porsche gần bạn', href: '#', hasArrow: true },
+    { label: tNav('models'), href: '/models', hasArrow: true },
+    { label: tAccount('shopping_tools'), href: '#', hasArrow: true },
+    { label: tAccount('porsche_store'), href: '#', hasArrow: false },
+    { label: tAccount('services'), href: '#', hasArrow: true },
+    { label: tAccount('experience'), href: '#', hasArrow: true },
+    { label: tAccount('find_dealer'), href: '#', hasArrow: true },
   ]
 
   // Service items for right panel
   const serviceItems: { label: string; href: string; badge?: number | null }[] = [
-    { label: 'Thực hiện thanh toán', href: '#' },
-    { label: 'Ứng dụng My Porsche', href: '#' },
-    { label: 'Tin nhắn', href: '#' },
-    { label: 'Tìm kiếm đã lưu', href: '#' },
-    { label: 'Xe đã được cứu', href: '/saved-vehicles' },
-    { label: 'Tìm dịch vụ kết nối', href: '#' },
-    { label: 'Đặt chỗ & Đơn hàng', href: '#' },
-    { label: 'Liên hệ & Hỗ trợ', href: '#' },
+    { label: tAccount('make_payment'), href: '#' },
+    { label: tAccount('my_porsche_app'), href: '#' },
+    { label: tAccount('messages'), href: '#' },
+    { label: tAccount('saved_searches'), href: '#' },
+    { label: tNav('saved_vehicles'), href: '/saved-vehicles' },
+    { label: tAccount('connect_services'), href: '#' },
+    { label: tAccount('bookings_orders'), href: '#' },
+    { label: tAccount('contact_support'), href: '#' },
   ]
 
   // Settings items
   const settingsItems = [
-    { label: 'Cài đặt hồ sơ', href: '/account-settings' },
-    { label: 'Sự riêng tư', href: '#' },
+    { label: tAccount('profile'), href: '/account-settings' },
+    { label: tAccount('privacy'), href: '#' },
   ]
 
   return (
@@ -103,7 +108,7 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
               <div className="flex items-center gap-3">
                 <User size={22} strokeWidth={1.5} className="text-near-black" />
                 <div>
-                  <p className="text-sm font-normal text-near-black">Tài khoản</p>
+                  <p className="text-sm font-normal text-near-black">{tNav('account')}</p>
                   <p className="text-xs text-dark-gray font-light">{user.fullName}</p>
                 </div>
                 <ChevronRight size={18} strokeWidth={1.5} className="text-neutral-400 ml-auto" />
@@ -119,7 +124,7 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
             type="button"
             onClick={onClose}
             className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
-            aria-label="Đóng"
+            aria-label={tCommon('close')}
           >
             <X size={20} strokeWidth={1.5} />
           </button>
@@ -129,13 +134,13 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
               <>
                 {/* Greeting */}
                 <h2 className="text-2xl font-light text-near-black mb-8">
-                  Chào mừng, {user.fullName}
+                  {tAccount('welcome')}, {user.fullName}
                 </h2>
 
                 {/* Services */}
                 <div className="mb-8">
                   <p className="text-xs text-neutral-400 font-light uppercase tracking-wider mb-4">
-                    Dịch vụ
+                    {tAccount('services')}
                   </p>
                   <div className="space-y-0">
                     {serviceItems.map((item, idx) => (
@@ -159,7 +164,7 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
                 {/* Settings */}
                 <div className="mb-8">
                   <p className="text-xs text-neutral-400 font-light uppercase tracking-wider mb-4">
-                    Cài đặt
+                    {tAccount('settings')}
                   </p>
                   <div className="space-y-0">
                     {settingsItems.map((item, idx) => (
@@ -182,7 +187,7 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
                   disabled={isLoggingOut}
                   className="w-full max-w-[280px] py-3.5 border border-light-gray-surface rounded-lg text-sm font-normal text-near-black hover:border-near-black hover:bg-neutral-50 transition-colors disabled:opacity-50"
                 >
-                  {isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}
+                  {isLoggingOut ? tAccount('logging_out') : tAccount('logout')}
                 </button>
               </>
             ) : (
@@ -190,17 +195,17 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
               <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
                 <User size={40} strokeWidth={1} className="text-neutral-300 mb-4" />
                 <h2 className="text-xl font-light text-near-black mb-2">
-                  Đăng nhập với Porsche ID
+                  {tAuth('login_prompt')}
                 </h2>
                 <p className="text-sm text-dark-gray font-light mb-6 text-center max-w-[300px]">
-                  Đăng nhập để truy cập các dịch vụ Porsche của bạn.
+                  {tAuth('login_desc')}
                 </p>
                 <Link
                   href="/auth/login"
                   onClick={onClose}
                   className="px-8 py-3 bg-near-black text-white rounded-lg text-sm font-medium hover:bg-dark-surface transition-colors"
                 >
-                  Đăng nhập
+                  {tNav('login')}
                 </Link>
               </div>
             )}

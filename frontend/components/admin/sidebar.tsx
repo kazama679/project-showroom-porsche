@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useLanguage } from "@/lib/language-context";
+import { Link } from '@/i18n/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { authService } from "@/lib/auth";
 import {
   Menu,
@@ -34,57 +34,57 @@ interface MenuItem {
 
 const menuItemsConfig: MenuItem[] = [
   {
-    labelKey: "admin.dashboard",
+    labelKey: "dashboard",
     href: "/admin",
     icon: LayoutGrid,
     exact: true,
   },
   {
-    labelKey: "admin.inventory",
+    labelKey: "inventory",
     icon: Package,
     submenu: [
-      { labelKey: "admin.inventory", href: "/admin/cars" },
-      { labelKey: "admin.brands", href: "/admin/brands" },
-      { labelKey: "admin.body_design", href: "/admin/body-types" },
-      { labelKey: "admin.series", href: "/admin/series" },
-      { labelKey: "admin.models", href: "/admin/models" },
-      { labelKey: "admin.options", href: "/admin/options" },
-      { labelKey: "admin.option_groups_management", href: "/admin/option-groups" },
-      { labelKey: "admin.option_items_management", href: "/admin/option-items" },
-      { labelKey: "admin.car_model_options_management", href: "/admin/car-model-options" },
-      { labelKey: "admin.option_rules_management", href: "/admin/option-rules" },
-      { labelKey: "admin.media", href: "/admin/media" },
+      { labelKey: "cars", href: "/admin/cars" },
+      { labelKey: "brands", href: "/admin/brands" },
+      { labelKey: "body_design", href: "/admin/body-types" },
+      { labelKey: "series", href: "/admin/series" },
+      { labelKey: "models", href: "/admin/models" },
+      { labelKey: "options", href: "/admin/options" },
+      { labelKey: "option_groups_management", href: "/admin/option-groups" },
+      { labelKey: "option_items_management", href: "/admin/option-items" },
+      { labelKey: "car_model_options_management", href: "/admin/car-model-options" },
+      { labelKey: "option_rules_management", href: "/admin/option-rules" },
+      { labelKey: "media", href: "/admin/media" },
     ],
   },
   {
-    labelKey: "admin.operations",
+    labelKey: "operations",
     icon: Calendar,
     submenu: [
-      { labelKey: "admin.bookings", href: "/admin/bookings" },
-      { labelKey: "admin.test_drives", href: "/admin/test-drives" },
-      { labelKey: "admin.reviews", href: "/admin/reviews" },
+      { labelKey: "bookings", href: "/admin/bookings" },
+      { labelKey: "test_drives", href: "/admin/test-drives" },
+      { labelKey: "reviews", href: "/admin/reviews" },
     ],
   },
   {
-    labelKey: "admin.users",
+    labelKey: "users",
     href: "/admin/users",
     icon: Users,
   },
   {
-    labelKey: "admin.content",
+    labelKey: "content",
     icon: BookOpen,
     submenu: [
-      { labelKey: "admin.blog", href: "/admin/blog" },
-      { labelKey: "admin.showrooms", href: "/admin/showrooms" },
-      { labelKey: "admin.banners", href: "/admin/banners" },
+      { labelKey: "blog", href: "/admin/blog" },
+      { labelKey: "showrooms", href: "/admin/showrooms" },
+      { labelKey: "banners", href: "/admin/banners" },
     ],
   },
   {
-    labelKey: "admin.system",
+    labelKey: "system",
     icon: Zap,
     submenu: [
-      { labelKey: "admin.ailogs", href: "/admin/ailogs" },
-      { labelKey: "admin.settings", href: "/admin/settings" },
+      { labelKey: "ailogs", href: "/admin/ailogs" },
+      { labelKey: "settings", href: "/admin/settings" },
     ],
   },
 ];
@@ -92,10 +92,11 @@ const menuItemsConfig: MenuItem[] = [
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<string[]>([
-    "admin.dashboard",
+    "dashboard",
   ]);
   const pathname = usePathname();
-  const { t } = useLanguage();
+  const router = useRouter();
+  const t = useTranslations("admin");
 
   const toggleMenu = (labelKey: string) => {
     setExpandedMenus((prev) =>
@@ -216,17 +217,17 @@ export function Sidebar() {
             onClick={() => setIsOpen(false)}
           >
             <Settings size={18} />
-            <span>{t("admin.language")}</span>
+            <span>{t("language")}</span>
           </Link>
           <button
             onClick={async () => {
               await authService.logout();
-              window.location.href = '/auth/login';
+              router.push('/auth/login');
             }}
             className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-light-gray-surface hover:text-white hover:bg-neutral-900 transition-colors rounded-sm"
           >
             <LogOut size={18} />
-            <span>{t("admin.logout")}</span>
+            <span>{t("logout")}</span>
           </button>
         </div>
       </aside>

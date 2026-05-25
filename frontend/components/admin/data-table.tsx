@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useLanguage } from '@/lib/language-context'
+import { useLocale, useTranslations } from 'next-intl'
 
 interface Column<T> {
   key: keyof T | string
@@ -37,8 +37,10 @@ export function DataTable<T extends { id?: string | number }>({
   emptyState,
   pagination,
 }: DataTableProps<T>) {
-  const { language } = useLanguage()
-  const isVi = language === 'vi'
+  const locale = useLocale()
+  const t = useTranslations('dataTable')
+  const tCommon = useTranslations('common')
+  const isVi = locale === 'vi'
 
   const [sortKey, setSortKey] = useState<string | null>(null)
   const [sortDesc, setSortDesc] = useState(false)
@@ -168,7 +170,7 @@ export function DataTable<T extends { id?: string | number }>({
                   colSpan={columns.length}
                   className="px-4 py-8 text-center text-mid-gray dark:text-light-gray-surface"
                 >
-                  {emptyState || (isVi ? 'Không có dữ liệu' : 'No data available')}
+                  {emptyState || tCommon('no_data')}
                 </td>
               </tr>
             ) : (
@@ -207,7 +209,7 @@ export function DataTable<T extends { id?: string | number }>({
           {/* Quick Page Jump Input and Page Counter with beautiful layout */}
           <div className="flex items-center gap-4 text-sm text-mid-gray dark:text-light-gray-surface">
             <div className="flex items-center gap-1.5">
-              <span>{isVi ? 'Trang' : 'Page'}</span>
+              <span>{t('page')}</span>
               <input
                 type="number"
                 min={1}
@@ -223,16 +225,16 @@ export function DataTable<T extends { id?: string | number }>({
                 disabled={loading}
                 className="w-14 px-2 py-0.5 text-center text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors disabled:opacity-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
-              <span>{isVi ? 'trên' : 'of'} {totalPages}</span>
+              <span>{t('of')} {totalPages}</span>
             </div>
-            <span>· {pagination.total} {isVi ? 'mục' : 'items'}</span>
+            <span>· {pagination.total} {t('items')}</span>
           </div>
 
           {/* Right section: Page Size Selector and Navigation Buttons */}
           <div className="flex items-center gap-4">
             {pagination.onPageSizeChange && (
               <div className="flex items-center gap-1.5 text-sm text-mid-gray dark:text-light-gray-surface">
-                <span>{isVi ? 'Hiển thị' : 'Show'}</span>
+                <span>{t('show')}</span>
                 <select
                   value={pagination.pageSize}
                   onChange={(e) => {
@@ -248,7 +250,7 @@ export function DataTable<T extends { id?: string | number }>({
                     </option>
                   ))}
                 </select>
-                <span>{isVi ? 'mục' : 'items'}</span>
+                <span>{t('items')}</span>
               </div>
             )}
 

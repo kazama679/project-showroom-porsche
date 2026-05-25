@@ -1,5 +1,17 @@
-export type Language = 'vi' | 'en'
+/**
+ * @deprecated 
+ * The flat translation dictionary has been deprecated in favor of next-intl JSON messages.
+ * Please use `useTranslations()` from `next-intl` rather than importing from here.
+ * This file is kept temporarily for reference until the cleanup phase is completed.
+ */
+export type Language = 'en' | 'vi'
 
+/**
+ * @deprecated 
+ * The flat translation dictionary has been deprecated in favor of next-intl JSON messages.
+ * Please use `useTranslations()` from `next-intl` rather than importing from here.
+ * This file is kept temporarily for reference until the cleanup phase is completed.
+ */
 export const translations = {
   vi: {
     // Navigation

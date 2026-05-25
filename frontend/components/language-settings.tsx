@@ -1,10 +1,18 @@
 'use client'
 
-import { useLanguage } from '@/lib/language-context'
+import { useLocale, useTranslations } from 'next-intl'
+import { useRouter, usePathname } from '@/i18n/navigation'
 import { ChevronRight } from 'lucide-react'
 
 export function LanguageSettings() {
-  const { language, setLanguage } = useLanguage()
+  const t = useTranslations('navigation')
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const setLanguage = (newLocale: string) => {
+    router.replace(pathname, { locale: newLocale })
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -26,7 +34,7 @@ export function LanguageSettings() {
           <button
             onClick={() => setLanguage('vi')}
             className={`w-full p-6 rounded-sm border-2 transition-all duration-300 ${
-              language === 'vi'
+              locale === 'vi'
                 ? 'border-black bg-black text-white'
                 : 'border-gray-200 bg-white text-black hover:border-black'
             }`}
@@ -39,16 +47,16 @@ export function LanguageSettings() {
               <div className="flex items-center gap-3">
                 <div
                   className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    language === 'vi'
+                    locale === 'vi'
                       ? 'border-white bg-white'
                       : 'border-gray-300'
                   }`}
                 >
-                  {language === 'vi' && (
+                  {locale === 'vi' && (
                     <div className="w-3 h-3 rounded-full bg-black" />
                   )}
                 </div>
-                {language === 'vi' && <ChevronRight size={24} />}
+                {locale === 'vi' && <ChevronRight size={24} />}
               </div>
             </div>
           </button>
@@ -57,7 +65,7 @@ export function LanguageSettings() {
           <button
             onClick={() => setLanguage('en')}
             className={`w-full p-6 rounded-sm border-2 transition-all duration-300 ${
-              language === 'en'
+              locale === 'en'
                 ? 'border-black bg-black text-white'
                 : 'border-gray-200 bg-white text-black hover:border-black'
             }`}
@@ -70,16 +78,16 @@ export function LanguageSettings() {
               <div className="flex items-center gap-3">
                 <div
                   className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    language === 'en'
+                    locale === 'en'
                       ? 'border-white bg-white'
                       : 'border-gray-300'
                   }`}
                 >
-                  {language === 'en' && (
+                  {locale === 'en' && (
                     <div className="w-3 h-3 rounded-full bg-black" />
                   )}
                 </div>
-                {language === 'en' && <ChevronRight size={24} />}
+                {locale === 'en' && <ChevronRight size={24} />}
               </div>
             </div>
           </button>
@@ -88,15 +96,15 @@ export function LanguageSettings() {
         {/* Info Section */}
         <div className="mt-12 p-8 bg-gray-50 rounded-sm space-y-4">
           <h3 className="text-lg font-light">
-            {language === 'vi' ? 'Thông tin' : 'Information'}
+            {locale === 'vi' ? 'Thông tin' : 'Information'}
           </h3>
           <p className="text-sm text-gray-600 font-light leading-relaxed">
-            {language === 'vi'
+            {locale === 'vi'
               ? 'Khi bạn chọn một ngôn ngữ, toàn bộ trang web sẽ thay đổi thành ngôn ngữ đó. Tùy chọn ngôn ngữ của bạn sẽ được lưu lại và áp dụng cho lần truy cập tiếp theo.'
               : 'When you select a language, the entire website will change to that language. Your language preference will be saved and applied on your next visit.'}
           </p>
           <p className="text-sm text-gray-600 font-light leading-relaxed">
-            {language === 'vi'
+            {locale === 'vi'
               ? 'Bạn có thể thay đổi ngôn ngữ bất kỳ lúc nào bằng cách quay lại trang này.'
               : 'You can change the language at any time by returning to this page.'}
           </p>
@@ -105,10 +113,10 @@ export function LanguageSettings() {
         {/* Current Language Display */}
         <div className="mt-8 p-6 border border-gray-200 rounded-sm">
           <p className="text-sm text-gray-600 mb-2">
-            {language === 'vi' ? 'Ngôn ngữ hiện tại' : 'Current Language'}:
+            {locale === 'vi' ? 'Ngôn ngữ hiện tại' : 'Current Language'}:
           </p>
           <p className="text-2xl font-light">
-            {language === 'vi' ? 'Tiếng Việt 🇻🇳' : 'English 🇬🇧'}
+            {locale === 'vi' ? 'Tiếng Việt 🇻🇳' : 'English 🇬🇧'}
           </p>
         </div>
       </main>

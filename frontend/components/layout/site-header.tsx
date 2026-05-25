@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl';
+import { usePathname, useRouter, Link } from '@/i18n/navigation';
 import { Menu, Globe, User, Bookmark } from 'lucide-react'
-import { useLanguage } from '@/lib/language-context'
 import { cn } from '@/lib/utils'
 import { AccountModal } from './account-modal'
 
@@ -34,16 +34,24 @@ export function SiteHeader({
   sticky = false,
   variant = 'default',
 }: SiteHeaderProps) {
-  const { t } = useLanguage()
+  const t = useTranslations('navigation')
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
+  
   const [showAccountModal, setShowAccountModal] = useState(false)
 
   const handleMenuClick = () => {
     if (onMenuClick) {
       onMenuClick()
     } else {
-      // Default: open account modal
       setShowAccountModal(true)
     }
+  }
+
+  const toggleLanguage = () => {
+    const nextLocale = locale === 'vi' ? 'en' : 'vi'
+    router.replace(pathname, { locale: nextLocale })
   }
 
   return (
@@ -64,10 +72,10 @@ export function SiteHeader({
               "flex items-center gap-2.5 hover:opacity-70 transition-opacity min-w-[88px]",
               variant === 'transparent' ? 'text-white' : 'text-near-black'
             )}
-            aria-label={t('nav.menu')}
+            aria-label={t('menu')}
           >
             <Menu size={20} strokeWidth={1.5} />
-            <span className="text-sm font-light hidden sm:inline">{t('nav.menu')}</span>
+            <span className="text-sm font-light hidden sm:inline">{t('menu')}</span>
           </button>
 
           <div className="flex-1 flex justify-center">
@@ -89,7 +97,7 @@ export function SiteHeader({
             {showBookmark && (
               <button
                 type="button"
-                aria-label={t('nav.saved_vehicles')}
+                aria-label={t('saved_vehicles')}
                 className="hover:opacity-70 transition-opacity hidden md:block"
               >
                 <Bookmark size={20} strokeWidth={1.5} />
@@ -97,7 +105,8 @@ export function SiteHeader({
             )}
             <button
               type="button"
-              aria-label="Language"
+              onClick={toggleLanguage}
+              aria-label={t('language')}
               className="hover:opacity-70 transition-opacity hidden md:block"
             >
               <Globe size={20} strokeWidth={1.5} />

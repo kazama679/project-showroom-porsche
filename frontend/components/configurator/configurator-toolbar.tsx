@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation';
 import {
   ChevronLeft,
   Heart,
@@ -30,6 +30,8 @@ function estimateMonthly(total: number): number {
   return Math.round(total / 83)
 }
 
+import { useTranslations } from 'next-intl'
+
 export function ConfiguratorToolbar({
   modelId,
   modelName,
@@ -41,6 +43,7 @@ export function ConfiguratorToolbar({
   onSearch,
   className,
 }: ConfiguratorToolbarProps) {
+  const t = useTranslations('configurator')
   const monthly = estimateMonthly(totalPrice)
 
   return (
@@ -56,7 +59,7 @@ export function ConfiguratorToolbar({
           <Link
             href={`/models/${modelId}`}
             className="p-1.5 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-            aria-label="Quay lại"
+            aria-label={t('back')}
           >
             <ChevronLeft size={20} strokeWidth={1.5} />
           </Link>
@@ -66,14 +69,14 @@ export function ConfiguratorToolbar({
             className="flex items-center gap-1.5 text-sm font-light hover:opacity-70 whitespace-nowrap"
           >
             <Heart size={16} strokeWidth={1.5} fill={saved ? 'currentColor' : 'none'} />
-            <span className="hidden sm:inline">{saved ? 'Đã lưu' : 'Cứu'}</span>
+            <span className="hidden sm:inline">{saved ? t('common.saved') : t('common.save')}</span>
           </button>
           <button
             type="button"
             className="flex items-center gap-1.5 text-sm font-light hover:opacity-70 whitespace-nowrap hidden md:flex"
           >
             <Share2 size={16} strokeWidth={1.5} />
-            <span>Tạo mã Porsche</span>
+            <span>{t('generateCode')}</span>
           </button>
         </div>
 
@@ -83,14 +86,14 @@ export function ConfiguratorToolbar({
             <div className="flex items-center justify-end gap-1.5">
               <Calculator size={14} className="text-dark-gray flex-shrink-0" />
               <span className="text-sm font-light text-near-black whitespace-nowrap">
-                {formatPrice(monthly)}/tháng
+                {formatPrice(monthly)}/{t('month')}
               </span>
-              <button type="button" aria-label="Thông tin thanh toán" className="text-neutral-400 hover:text-black">
+              <button type="button" aria-label={t('paymentInfo')} className="text-neutral-400 hover:text-black">
                 <Info size={14} strokeWidth={1.5} />
               </button>
             </div>
             <p className="text-[10px] text-neutral-400 font-light truncate max-w-[200px]">
-              Tính toán khoản thanh toán hàng tháng
+              {t('calculateMonthly')}
             </p>
           </div>
 
@@ -99,7 +102,7 @@ export function ConfiguratorToolbar({
               <span className="text-sm md:text-base font-light text-near-black whitespace-nowrap">
                 {formatPrice(totalPrice)}
               </span>
-              <button type="button" aria-label="Thông tin giá" className="text-neutral-400 hover:text-black">
+              <button type="button" aria-label={t('priceInfo')} className="text-neutral-400 hover:text-black">
                 <Info size={14} strokeWidth={1.5} />
               </button>
             </div>
@@ -116,19 +119,19 @@ export function ConfiguratorToolbar({
             onClick={onSummary}
             className="px-3 md:px-5 py-2 text-sm font-light border border-light-gray-surface rounded-full hover:border-black transition-colors whitespace-nowrap"
           >
-            Bản tóm tắt
+            {t('summary')}
           </button>
           <button
             type="button"
             onClick={onSelectDealer}
             className="px-3 md:px-5 py-2 text-sm font-light bg-black text-white rounded-full hover:bg-dark-surface transition-colors whitespace-nowrap"
           >
-            Chọn đại lý
+            {t('selectDealer')}
           </button>
           <button
             type="button"
             onClick={onSearch}
-            aria-label="Tìm kiếm"
+            aria-label={t('common.search')}
             className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-neutral-200 transition-colors flex-shrink-0"
           >
             <Search size={18} strokeWidth={1.5} />
@@ -141,7 +144,7 @@ export function ConfiguratorToolbar({
         <div>
           <p className="text-base font-light text-near-black">{formatPrice(totalPrice)}</p>
           <p className="text-[10px] text-neutral-400 font-light">
-            ~{formatPrice(monthly)}/tháng
+            ~{formatPrice(monthly)}/{t('month')}
           </p>
         </div>
         <p className="text-xs text-dark-gray font-light truncate max-w-[50%]">{modelName}</p>

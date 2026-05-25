@@ -2,8 +2,7 @@
 
 import { Search, Bell, User, Sun, Moon } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useLanguage } from "@/lib/language-context";
-import Link from "next/link";
+import { Link } from '@/i18n/navigation';
 
 interface HeaderProps {
   title: string;
@@ -11,7 +10,6 @@ interface HeaderProps {
 }
 
 export function Header({ title, subtitle }: HeaderProps) {
-  const { t } = useLanguage();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
