@@ -42,7 +42,8 @@ class RefreshTokenServiceImplTest
     void setUp()
     {
         ReflectionTestUtils.setField(refreshTokenService, "refreshTtlMs", 604800000L);
-        user = User.builder().id(1L).email("admin@test.local").fullName("Admin").build();
+        user = User.builder().email("admin@test.local").fullName("Admin").build();
+        ReflectionTestUtils.setField(user, "id", 1L);
     }
 
     @Test

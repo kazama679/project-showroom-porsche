@@ -1,0 +1,259 @@
+﻿.\gradlew.bat : WARNING: A restricted 
+method in java.lang.System has been 
+called
+At line:1 char:1
++ .\gradlew.bat compileTestJava 
+--stacktrace > compile_test_output.txt 
+ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpeci 
+   fied: (WARNING: A rest...has been   
+  called:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCo 
+   mmandError
+ 
+WARNING: java.lang.System::load has 
+been called by net.rubygrapefruit.platf
+orm.internal.NativeLibraryLoader in an 
+unnamed module (file:/C:/Users/quang/.g
+radle/wrapper/dists/gradle-8.10.2-bin/a
+04bxjujx95o3nb99gddekhwo/gradle-8.10.2/
+lib/native-platform-0.22-milestone-26.j
+ar)
+WARNING: Use 
+--enable-native-access=ALL-UNNAMED to 
+avoid a warning for callers in this 
+module
+WARNING: Restricted methods will be 
+blocked in a future release unless 
+native access is enabled
+
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+> Task :compileTestJava FAILED
+C:\code\project porsche showroom\projec
+t\backend\src\test\java\com\ra\base_spr
+ing_boot\service\impl\RefreshTokenServi
+ceImplTest.java:45: error: cannot find 
+symbol
+        user = User.builder().id(1L).em
+ail("admin@test.local").fullName("Admin
+").build();
+                             ^
+  symbol:   method id(long)
+  location: class UserBuilder
+1 error
+
+FAILURE: Build failed with an 
+exception.
+
+* What went wrong:
+Execution failed for task 
+':compileTestJava'.
+> Compilation failed; see the compiler 
+error output for details.
+
+* Try:
+> Run with --info option to get more 
+log output.
+> Run with --scan to get full insights.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionExcep
+tion: Execution failed for task 
+':compileTestJava'.
+	at org.gradle.api.internal.tasks.execu
+tion.ExecuteActionsTaskExecuter.lambda$
+executeIfValid$1(ExecuteActionsTaskExec
+uter.java:130)
+	at org.gradle.internal.Try$Failure.ifS
+uccessfulOrElse(Try.java:293)
+	at org.gradle.api.internal.tasks.execu
+tion.ExecuteActionsTaskExecuter.execute
+IfValid(ExecuteActionsTaskExecuter.java
+:128)
+	at org.gradle.api.internal.tasks.execu
+tion.ExecuteActionsTaskExecuter.execute
+(ExecuteActionsTaskExecuter.java:116)
+	at org.gradle.api.internal.tasks.execu
+tion.FinalizePropertiesTaskExecuter.exe
+cute(FinalizePropertiesTaskExecuter.jav
+a:46)
+	at org.gradle.api.internal.tasks.execu
+tion.ResolveTaskExecutionModeExecuter.e
+xecute(ResolveTaskExecutionModeExecuter
+.java:51)
+	at org.gradle.api.internal.tasks.execu
+tion.SkipTaskWithNoActionsExecuter.exec
+ute(SkipTaskWithNoActionsExecuter.java:
+57)
+	at org.gradle.api.internal.tasks.execu
+tion.SkipOnlyIfTaskExecuter.execute(Ski
+pOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execu
+tion.CatchExceptionTaskExecuter.execute
+(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execu
+tion.EventFiringTaskExecuter$1.executeT
+ask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execu
+tion.EventFiringTaskExecuter$1.call(Eve
+ntFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execu
+tion.EventFiringTaskExecuter$1.call(Eve
+ntFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner$CallableBuildOp
+erationWorker.execute(DefaultBuildOpera
+tionRunner.java:209)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner$CallableBuildOp
+erationWorker.execute(DefaultBuildOpera
+tionRunner.java:204)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner$2.execute(Defau
+ltBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner$2.execute(Defau
+ltBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner.execute(Default
+BuildOperationRunner.java:166)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner.execute(Default
+BuildOperationRunner.java:59)
+	at org.gradle.internal.operations.Defa
+ultBuildOperationRunner.call(DefaultBui
+ldOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execu
+tion.EventFiringTaskExecuter.execute(Ev
+entFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTask
+NodeExecutor.execute(LocalTaskNodeExecu
+tor.java:42)
+	at org.gradle.execution.taskgraph.Defa
+ultTaskExecutionGraph$InvokeNodeExecuto
+rsAction.execute(DefaultTaskExecutionGr
+aph.java:331)
+	at org.gradle.execution.taskgraph.Defa
+ultTaskExecutionGraph$InvokeNodeExecuto
+rsAction.execute(DefaultTaskExecutionGr
+aph.java:318)
+	at org.gradle.execution.taskgraph.Defa
+ultTaskExecutionGraph$BuildOperationAwa
+reExecutionAction.lambda$execute$0(Defa
+ultTaskExecutionGraph.java:314)
+	at org.gradle.internal.operations.Curr
+entBuildOperationRef.with(CurrentBuildO
+perationRef.java:85)
+	at org.gradle.execution.taskgraph.Defa
+ultTaskExecutionGraph$BuildOperationAwa
+reExecutionAction.execute(DefaultTaskEx
+ecutionGraph.java:314)
+	at org.gradle.execution.taskgraph.Defa
+ultTaskExecutionGraph$BuildOperationAwa
+reExecutionAction.execute(DefaultTaskEx
+ecutionGraph.java:303)
+	at org.gradle.execution.plan.DefaultPl
+anExecutor$ExecutorWorker.execute(Defau
+ltPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPl
+anExecutor$ExecutorWorker.run(DefaultPl
+anExecutor.java:376)
+	at org.gradle.internal.concurrent.Exec
+utorPolicy$CatchAndRecordFailures.onExe
+cute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.Abst
+ractManagedExecutor$1.run(AbstractManag
+edExecutor.java:48)
+Caused by: org.gradle.api.internal.task
+s.compile.CompilationFailedException: 
+Compilation failed; see the compiler 
+error output for details.
+	at org.gradle.api.internal.tasks.compi
+le.JdkJavaCompiler.execute(JdkJavaCompi
+ler.java:79)
+	at org.gradle.api.internal.tasks.compi
+le.JdkJavaCompiler.execute(JdkJavaCompi
+ler.java:46)
+	at org.gradle.api.internal.tasks.compi
+le.daemon.AbstractIsolatedCompilerWorke
+rExecutor$CompilerWorkAction.execute(Ab
+stractIsolatedCompilerWorkerExecutor.ja
+va:78)
+	at org.gradle.workers.internal.Default
+WorkerServer.execute(DefaultWorkerServe
+r.java:63)
+	at org.gradle.workers.internal.Abstrac
+tClassLoaderWorker$1.create(AbstractCla
+ssLoaderWorker.java:54)
+	at org.gradle.workers.internal.Abstrac
+tClassLoaderWorker$1.create(AbstractCla
+ssLoaderWorker.java:48)
+	at org.gradle.internal.classloader.Cla
+ssLoaderUtils.executeInClassloader(Clas
+sLoaderUtils.java:100)
+	at org.gradle.workers.internal.Abstrac
+tClassLoaderWorker.executeInClassLoader
+(AbstractClassLoaderWorker.java:48)
+	at org.gradle.workers.internal.FlatCla
+ssLoaderWorker.run(FlatClassLoaderWorke
+r.java:32)
+	at org.gradle.workers.internal.FlatCla
+ssLoaderWorker.run(FlatClassLoaderWorke
+r.java:22)
+	at org.gradle.workers.internal.WorkerD
+aemonServer.run(WorkerDaemonServer.java
+:103)
+	at org.gradle.workers.internal.WorkerD
+aemonServer.run(WorkerDaemonServer.java
+:72)
+	at org.gradle.process.internal.worker.
+request.WorkerAction$1.call(WorkerActio
+n.java:152)
+	at org.gradle.process.internal.worker.
+child.WorkerLogEventListener.withWorker
+LoggingProtocol(WorkerLogEventListener.
+java:41)
+	at org.gradle.process.internal.worker.
+request.WorkerAction.lambda$run$1(Worke
+rAction.java:149)
+	at org.gradle.internal.operations.Curr
+entBuildOperationRef.with(CurrentBuildO
+perationRef.java:85)
+	at org.gradle.process.internal.worker.
+request.WorkerAction.run(WorkerAction.j
+ava:141)
+	at java.base/jdk.internal.reflect.Dire
+ctMethodHandleAccessor.invoke(DirectMet
+hodHandleAccessor.java:103)
+	at org.gradle.internal.dispatch.Reflec
+tionDispatch.dispatch(ReflectionDispatc
+h.java:36)
+	at org.gradle.internal.dispatch.Reflec
+tionDispatch.dispatch(ReflectionDispatc
+h.java:24)
+	at org.gradle.internal.remote.internal
+.hub.MessageHubBackedObjectConnection$D
+ispatchWrapper.dispatch(MessageHubBacke
+dObjectConnection.java:182)
+	at org.gradle.internal.remote.internal
+.hub.MessageHubBackedObjectConnection$D
+ispatchWrapper.dispatch(MessageHubBacke
+dObjectConnection.java:164)
+	at org.gradle.internal.remote.internal
+.hub.MessageHub$Handler.run(MessageHub.
+java:414)
+	at org.gradle.internal.concurrent.Exec
+utorPolicy$CatchAndRecordFailures.onExe
+cute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.Abst
+ractManagedExecutor$1.run(AbstractManag
+edExecutor.java:48)
+
+
+BUILD FAILED in 3s
+3 actionable tasks: 1 executed, 2 up-to-date
