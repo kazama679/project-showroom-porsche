@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { translations } from '../lib/translations';
+import { translations } from './_legacy/translations';
 
-const existingEnPath = path.join(__dirname, '../messages/en.json');
-const existingViPath = path.join(__dirname, '../messages/vi.json');
+const existingEnPath = path.join(__dirname, '../src/messages/en.json');
+const existingViPath = path.join(__dirname, '../src/messages/vi.json');
 
 const existingEn = JSON.parse(fs.readFileSync(existingEnPath, 'utf8'));
 const existingVi = JSON.parse(fs.readFileSync(existingViPath, 'utf8'));
@@ -85,7 +85,7 @@ function build(lang: 'en' | 'vi', existing: any) {
   existing.account.logout = lang === 'en' ? "Logout" : "Đăng xuất";
   existing.account.logging_out = lang === 'en' ? "Logging out..." : "Đang đăng xuất...";
 
-  fs.writeFileSync(path.join(__dirname, `../messages/${lang}.json`), JSON.stringify(existing, null, 2));
+  fs.writeFileSync(path.join(__dirname, `../src/messages/${lang}.json`), JSON.stringify(existing, null, 2));
 }
 
 build('en', existingEn);
