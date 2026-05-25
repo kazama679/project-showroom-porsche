@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Check, Loader2, X } from 'lucide-react'
 import { DataTable } from '@/components/admin/data-table'
 import { Badge } from '@/components/admin/badge'
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { Alert } from '@/components/admin/alert'
 import { testDriveApi, TestDriveBookingResponse } from '@/lib/test-drive-api'
 import { BookingStatus } from '@/constants/enums'
@@ -78,11 +78,13 @@ export default function TestDrivesPage() {
     }
   }
 
+  useAdminPage({
+    titleKey: 'test_drive_management',
+    subtitleKey: 'test_drive_subtitle',
+  })
+
   return (
-    <PageLayout
-      title="Test Drive Requests"
-      subtitle="Review and manage customer test drive requests"
-    >
+    <>
       <div className="space-y-6">
         {showAlert && (
           <Alert
@@ -191,6 +193,6 @@ export default function TestDrivesPage() {
           />
         </div>
       </div>
-    </PageLayout>
+    </>
   )
 }

@@ -14,7 +14,7 @@ import { DataTable } from "@/components/admin/data-table";
 import { Button } from "@/components/admin/button";
 import { Modal } from "@/components/admin/modal";
 import { FormInput } from "@/components/admin/form-input";
-import { PageLayout } from "@/components/admin/page-layout";
+import { useAdminPage } from "@/components/admin/admin-page-context";
 import { Alert } from "@/components/admin/alert";
 import { useTranslations } from 'next-intl';
 import { brandService, Brand, BrandFormData } from "@/lib/brand";
@@ -189,39 +189,41 @@ export default function BrandsPage() {
     setCurrentPage(page);
   };
 
-  return (
-    <PageLayout
-      title={t('brand_management')}
-      subtitle={t('brand_subtitle')}
-      actions={
-        <div className="flex items-center gap-3">
-          {/* Search */}
-          <div className="relative hidden sm:block">
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray"
-            />
-            <input
-              type="text"
-              placeholder={t('search_brands')}
-              value={searchKeyword}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64"
-            />
-          </div>
-          {/* Add Brand Button */}
-          {isAdmin && (
-            <Button
-              variant="primary"
-              icon={<Plus size={18} />}
-              onClick={() => handleOpenModal()}
-            >
-              {t('add_brand')}
-            </Button>
-          )}
+  useAdminPage({
+    titleKey: 'brand_management',
+    subtitleKey: 'brand_subtitle',
+    actions: (
+      <div className="flex items-center gap-3">
+        {/* Search */}
+        <div className="relative hidden sm:block">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray"
+          />
+          <input
+            type="text"
+            placeholder={t('search_brands')}
+            value={searchKeyword}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64"
+          />
         </div>
-      }
-    >
+        {/* Add Brand Button */}
+        {isAdmin && (
+          <Button
+            variant="primary"
+            icon={<Plus size={18} />}
+            onClick={() => handleOpenModal()}
+          >
+            {t('add_brand')}
+          </Button>
+        )}
+      </div>
+    ),
+  })
+
+  return (
+    <>
       <div className="space-y-6">
         {/* Permission Warning */}
         {isAuthenticated && !isAdmin && (
@@ -452,6 +454,6 @@ export default function BrandsPage() {
           </div>
         </div>
       </Modal>
-    </PageLayout>
+    </>
   );
 }

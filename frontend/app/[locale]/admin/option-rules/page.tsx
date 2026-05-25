@@ -5,7 +5,7 @@ import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-
 import { DataTable } from '@/components/admin/data-table'
 import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { Alert } from '@/components/admin/alert'
 import { useTranslations } from 'next-intl';
 import { optionRuleService, OptionRule, OptionRuleFormData } from '@/lib/option-rule'
@@ -131,23 +131,28 @@ export default function OptionRulesPage() {
     finally { setSaving(false) }
   }
 
-  return (
-    <PageLayout title={t('option_rules_management')} subtitle={t('option_rules_subtitle')}
-      actions={
-        <div className="flex items-center gap-3">
-          <div className="relative hidden sm:block">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
-            <input type="text" placeholder={t('search')} value={searchKeyword}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
-          </div>
-          {isAdmin && (
-            <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
-              {t('add_option_rule')}
-            </Button>
-          )}
+  useAdminPage({
+    titleKey: 'option_rules_management',
+    subtitleKey: 'option_rules_subtitle',
+    actions: (
+      <div className="flex items-center gap-3">
+        <div className="relative hidden sm:block">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
+          <input type="text" placeholder={t('search')} value={searchKeyword}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
         </div>
-      }>
+        {isAdmin && (
+          <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
+            {t('add_option_rule')}
+          </Button>
+        )}
+      </div>
+    ),
+  })
+
+  return (
+    <>
       <div className="space-y-6">
         {isAuthenticated && !isAdmin && (
           <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
@@ -274,6 +279,6 @@ export default function OptionRulesPage() {
           </div>
         </div>
       </Modal>
-    </PageLayout>
+    </>
   )
 }

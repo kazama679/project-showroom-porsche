@@ -1,6 +1,6 @@
 'use client'
 
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { Button } from '@/components/admin/button'
 import { FormInput } from '@/components/admin/form-input'
 import { Alert } from '@/components/admin/alert'
@@ -9,11 +9,13 @@ import { useState } from 'react'
 export default function SettingsPage() {
   const [saved, setSaved] = useState(false)
 
+  useAdminPage({
+    titleKey: 'settings_title',
+    subtitleKey: 'settings_subtitle',
+  })
+
   return (
-    <PageLayout
-      title="System Settings"
-      subtitle="Configure system-wide preferences"
-    >
+    <>
       <div className="space-y-6 max-w-2xl">
         {saved && (
           <Alert
@@ -72,6 +74,6 @@ export default function SettingsPage() {
           </Button>
         </div>
       </div>
-    </PageLayout>
+    </>
   )
 }

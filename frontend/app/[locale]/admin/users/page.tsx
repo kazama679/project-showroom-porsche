@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl';
 import { Plus, Edit2, Trash2, X } from 'lucide-react'
+import { Button } from '@/components/admin/button'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 
 interface User {
   id: number
@@ -161,22 +163,22 @@ export default function UsersPage() {
     return status === 'active' ? t('active') : t('inactive')
   }
 
+  useAdminPage({
+    titleKey: 'manage_users',
+    subtitleKey: 'users_subtitle',
+    actions: (
+      <Button
+        variant="primary"
+        icon={<Plus size={18} />}
+        onClick={() => handleOpenModal()}
+      >
+        {t('add_user')}
+      </Button>
+    ),
+  })
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('manage_users')}</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">{t('total_users')}: {users.length}</p>
-        </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 bg-brand-red hover:bg-red-700 text-white px-4 py-2 rounded-sm font-medium transition-colors"
-        >
-          <Plus size={20} />
-          {t('add_user')}
-        </button>
-      </div>
 
       {/* Success Alert */}
       {showAlert && (

@@ -1,4 +1,5 @@
 "use client";
+"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, ShieldAlert, AlertTriangle } from "lucide-react";
@@ -6,7 +7,7 @@ import { DataTable } from "@/components/admin/data-table";
 import { Button } from "@/components/admin/button";
 import { Modal } from "@/components/admin/modal";
 import { FormInput } from "@/components/admin/form-input";
-import { PageLayout } from "@/components/admin/page-layout";
+import { useAdminPage } from "@/components/admin/admin-page-context";
 import { Alert } from "@/components/admin/alert";
 import { useTranslations } from 'next-intl';
 import {
@@ -140,22 +141,22 @@ export default function BodyTypesPage() {
     }
   };
 
+  useAdminPage({
+    titleKey: 'body_design_management',
+    subtitleKey: 'body_design_subtitle',
+    actions: isAdmin ? (
+      <Button
+        variant="primary"
+        icon={<Plus size={18} />}
+        onClick={() => handleOpenModal()}
+      >
+        {t('add_body_design')}
+      </Button>
+    ) : null,
+  })
+
   return (
-    <PageLayout
-      title={t('body_design_management')}
-      subtitle={t('body_design_subtitle')}
-      actions={
-        isAdmin ? (
-          <Button
-            variant="primary"
-            icon={<Plus size={18} />}
-            onClick={() => handleOpenModal()}
-          >
-            {t('add_body_design')}
-          </Button>
-        ) : null
-      }
-    >
+    <>
       <div className="space-y-6">
         {isAuthenticated && !isAdmin && (
           <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
@@ -307,7 +308,6 @@ export default function BodyTypesPage() {
           </div>
         </div>
       </Modal>
-    </PageLayout>
+    </>
   );
 }
-

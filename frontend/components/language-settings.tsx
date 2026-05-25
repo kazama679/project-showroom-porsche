@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from 'next-intl'
 import { useRouter, usePathname } from '@/i18n/navigation'
 import { ChevronRight } from 'lucide-react'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 
 export function LanguageSettings() {
   const t = useTranslations('navigation')
@@ -14,18 +15,13 @@ export function LanguageSettings() {
     router.replace(pathname, { locale: newLocale })
   }
 
+  useAdminPage({
+    titleKey: 'language',
+    subtitleKey: 'settings_subtitle',
+  })
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 md:px-16 py-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-light">Language Settings</h1>
-            <p className="text-gray-600 text-sm mt-2">Chọn ngôn ngữ / Select your language</p>
-          </div>
-          <div className="text-2xl font-light text-gray-400">Cài đặt ngôn ngữ</div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white dark:bg-dark-surface">
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-6 md:px-16 py-12">

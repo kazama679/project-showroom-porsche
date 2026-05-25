@@ -1,4 +1,5 @@
 'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, Settings, ListChecks } from 'lucide-react'
@@ -7,7 +8,7 @@ import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
 import { FormInput } from '@/components/admin/form-input'
 import { Select } from '@/components/admin/select'
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { Alert } from '@/components/admin/alert'
 import { useTranslations } from 'next-intl';
 import { carModelService, CarModelItem, CarModelFormData } from '@/lib/car-model'
@@ -198,23 +199,32 @@ export default function ModelsPage() {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(price)
   }
 
-  return (
-    <PageLayout title={t('model_management')} subtitle={t('model_subtitle')}
-      actions={
-        <div className="flex items-center gap-3">
-          <div className="relative hidden sm:block">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
-            <input type="text" placeholder={t('search_models')} value={searchKeyword}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
-          </div>
-          {isAdmin && (
-            <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
-              {t('add_model')}
-            </Button>
-          )}
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  useAdminPage({
+    titleKey: 'model_management',
+    subtitleKey: 'model_subtitle',
+    actions: (
+      <div className="flex items-center gap-3">
+        <div className="relative hidden sm:block">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
+          <input type="text" placeholder={t('search_models')} value={searchKeyword}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
         </div>
-      }>
+        {isAdmin && (
+          <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
+            {t('add_model')}
+          </Button>
+        )}
+      </div>
+    ),
+  })
+
+  return (
+    <>
       <div className="space-y-6">
         {isAuthenticated && !isAdmin && (
           <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
@@ -344,7 +354,6 @@ export default function ModelsPage() {
           <Button variant="primary" onClick={handleSaveSpecs} loading={saving}>{t('update')}</Button>
         </>}>
         <div className="space-y-6">
-          {/* Performance Specs */}
           <div>
             <h4 className="font-semibold text-lg border-b pb-2 mb-4">{t('performance_specs')}</h4>
             <div className="grid grid-cols-2 gap-4">
@@ -357,7 +366,6 @@ export default function ModelsPage() {
             </div>
           </div>
 
-          {/* Engine Specs */}
           {(currentSpecsModel?.fuelType === 'Gasoline' || currentSpecsModel?.fuelType === 'Hybrid' || !currentSpecsModel?.fuelType) && (
             <div>
               <h4 className="font-semibold text-lg border-b pb-2 mb-4">{t('engine_specs')}</h4>
@@ -372,7 +380,6 @@ export default function ModelsPage() {
             </div>
           )}
 
-          {/* Electric Specs */}
           {(currentSpecsModel?.fuelType === 'Electric' || currentSpecsModel?.fuelType === 'Hybrid') && (
             <div>
               <h4 className="font-semibold text-lg border-b pb-2 mb-4">{t('electric_specs')}</h4>
@@ -421,6 +428,6 @@ export default function ModelsPage() {
           defaultUpdated: t('model_options_default_updated'),
         }}
       />
-    </PageLayout>
+    </>
   )
 }

@@ -8,8 +8,9 @@ import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
 import { FormInput } from '@/components/admin/form-input'
 import { Select } from '@/components/admin/select'
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { Alert } from '@/components/admin/alert'
+import { useTranslations } from 'next-intl'
 
 const mockBookings = [
   {
@@ -81,6 +82,7 @@ const statusVariants = {
 } as const
 
 export default function BookingsPage() {
+  const t = useTranslations('admin')
   const [bookings, setBookings] = useState(mockBookings)
   const [currentPage, setCurrentPage] = useState(1)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -178,20 +180,22 @@ export default function BookingsPage() {
     setTimeout(() => setShowAlert(false), 4000)
   }
 
+  useAdminPage({
+    titleKey: 'bookings_management',
+    subtitleKey: 'bookings_subtitle',
+    actions: (
+      <Button
+        variant="primary"
+        icon={<Plus size={18} />}
+        onClick={() => handleOpenModal()}
+      >
+        {t('new_booking')}
+      </Button>
+    ),
+  })
+
   return (
-    <PageLayout
-      title="Booking Management"
-      subtitle="Manage customer bookings and reservations"
-      actions={
-        <Button
-          variant="primary"
-          icon={<Plus size={18} />}
-          onClick={() => handleOpenModal()}
-        >
-          New Booking
-        </Button>
-      }
-    >
+    <>
       <div className="space-y-6">
         {showAlert && (
           <Alert
@@ -346,6 +350,6 @@ export default function BookingsPage() {
           />
         </div>
       </Modal>
-    </PageLayout>
+    </>
   )
 }

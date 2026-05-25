@@ -8,8 +8,8 @@ import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
 import { FormInput } from '@/components/admin/form-input'
 import { Select } from '@/components/admin/select'
-import { PageLayout } from '@/components/admin/page-layout'
-import { Alert } from '@/components/admin/alert'
+import { useAdminPage } from "@/components/admin/admin-page-context"
+import { Alert } from "@/components/admin/alert"
 
 const mockShowrooms = [
   {
@@ -148,20 +148,22 @@ export default function ShowroomsPage() {
     setTimeout(() => setShowAlert(false), 4000)
   }
 
+  useAdminPage({
+    titleKey: 'showrooms_management',
+    subtitleKey: 'showrooms_subtitle',
+    actions: (
+      <Button
+        variant="primary"
+        icon={<Plus size={18} />}
+        onClick={() => handleOpenModal()}
+      >
+        Add Showroom
+      </Button>
+    ),
+  })
+
   return (
-    <PageLayout
-      title="Showroom Management"
-      subtitle="Manage showroom locations and information"
-      actions={
-        <Button
-          variant="primary"
-          icon={<Plus size={18} />}
-          onClick={() => handleOpenModal()}
-        >
-          Add Showroom
-        </Button>
-      }
-    >
+    <>
       <div className="space-y-6">
         {showAlert && (
           <Alert
@@ -292,6 +294,6 @@ export default function ShowroomsPage() {
           />
         </div>
       </Modal>
-    </PageLayout>
+    </>
   )
 }

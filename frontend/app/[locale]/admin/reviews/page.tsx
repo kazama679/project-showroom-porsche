@@ -8,8 +8,9 @@ import { Button } from '@/components/admin/button'
 import { Modal } from '@/components/admin/modal'
 import { FormInput } from '@/components/admin/form-input'
 import { Select } from '@/components/admin/select'
-import { PageLayout } from '@/components/admin/page-layout'
-import { Alert } from '@/components/admin/alert'
+
+import { useAdminPage } from "@/components/admin/admin-page-context"
+import { Alert } from "@/components/admin/alert"
 
 const mockReviews = [
   {
@@ -166,20 +167,22 @@ export default function ReviewsPage() {
     )
   }
 
+  useAdminPage({
+    titleKey: 'reviews_management',
+    subtitleKey: 'reviews_subtitle',
+    actions: (
+      <Button
+        variant="primary"
+        icon={<Plus size={18} />}
+        onClick={() => handleOpenModal()}
+      >
+        Add Review
+      </Button>
+    ),
+  })
+
   return (
-    <PageLayout
-      title="Review Management"
-      subtitle="Manage customer reviews and ratings"
-      actions={
-        <Button
-          variant="primary"
-          icon={<Plus size={18} />}
-          onClick={() => handleOpenModal()}
-        >
-          Add Review
-        </Button>
-      }
-    >
+    <>
       <div className="space-y-6">
         {showAlert && (
           <Alert
@@ -312,6 +315,6 @@ export default function ReviewsPage() {
           />
         </div>
       </Modal>
-    </PageLayout>
+    </>
   )
 }

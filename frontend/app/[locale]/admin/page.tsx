@@ -5,7 +5,7 @@ import { TrendingUp, Users, Car, Calendar, Clock } from 'lucide-react'
 import { KPICard } from '@/components/admin/kpi-card'
 import { DataTable } from '@/components/admin/data-table'
 import { Badge } from '@/components/admin/badge'
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { useState } from 'react'
 
 // Mock data
@@ -88,11 +88,13 @@ const statusVariants = {
 export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1)
 
+  useAdminPage({
+    titleKey: 'dashboard_title',
+    subtitleKey: 'dashboard_subtitle',
+  })
+
   return (
-    <PageLayout
-      title="Dashboard"
-      subtitle="Welcome back! Here&apos;s your Porsche admin overview."
-    >
+    <>
       <div className="space-y-8">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -215,6 +217,6 @@ export default function DashboardPage() {
           />
         </div>
       </div>
-    </PageLayout>
+    </>
   )
 }

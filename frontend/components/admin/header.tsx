@@ -1,16 +1,12 @@
 "use client";
 
-import { Search, Bell, User, Sun, Moon } from "lucide-react";
+import { Bell, User, Sun, Moon } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
-interface HeaderProps {
-  title: string;
-  subtitle?: string;
-}
-
-export function Header({ title, subtitle }: HeaderProps) {
+export function Header() {
   const [isDark, setIsDark] = useState(false);
+  const t = useTranslations('admin');
 
   useEffect(() => {
     const isDarkMode = document.documentElement.classList.contains("dark");
@@ -33,16 +29,11 @@ export function Header({ title, subtitle }: HeaderProps) {
   return (
     <header className="border-b border-light-gray-surface dark:border-dark-surface bg-white dark:bg-black sticky top-0 z-30">
       <div className="flex items-center justify-between h-16 px-6">
-        {/* Title */}
+        {/* Portal title */}
         <div>
-          <h1 className="text-porsche-subheading text-near-black dark:text-white">
-            {title}
-          </h1>
-          {subtitle && (
-            <p className="text-xs text-mid-gray dark:text-light-gray-surface mt-0.5">
-              {subtitle}
-            </p>
-          )}
+          <h2 className="text-porsche-subheading text-near-black dark:text-white">
+            {t('portal')}
+          </h2>
         </div>
 
         {/* Actions */}

@@ -6,7 +6,7 @@ import { DataTable } from '@/components/admin/data-table'
 import { Badge } from '@/components/admin/badge'
 import { Button } from '@/components/admin/button'
 import { Select } from '@/components/admin/select'
-import { PageLayout } from '@/components/admin/page-layout'
+import { useAdminPage } from '@/components/admin/admin-page-context'
 import { Alert } from '@/components/admin/alert'
 
 const mockLogs = [
@@ -144,21 +144,23 @@ export default function AILogsPage() {
     setTimeout(() => setShowAlert(false), 4000)
   }
 
+  useAdminPage({
+    titleKey: 'ai_logs',
+    subtitleKey: 'ai_logs',
+    actions: (
+      <div className="flex gap-2">
+        <Button variant="secondary" icon={<Download size={18} />} onClick={handleExportLogs}>
+          Export Logs
+        </Button>
+        <Button variant="danger" icon={<Trash2 size={18} />} onClick={handleClearLogs}>
+          Clear All
+        </Button>
+      </div>
+    ),
+  })
+
   return (
-    <PageLayout
-      title="AI Logs"
-      subtitle="View AI system activity and logs"
-      actions={
-        <div className="flex gap-2">
-          <Button variant="secondary" icon={<Download size={18} />} onClick={handleExportLogs}>
-            Export
-          </Button>
-          <Button variant="danger" onClick={handleClearLogs}>
-            Clear Logs
-          </Button>
-        </div>
-      }
-    >
+    <>
       <div className="space-y-6">
         {showAlert && (
           <Alert
@@ -233,6 +235,6 @@ export default function AILogsPage() {
           />
         </div>
       </div>
-    </PageLayout>
+    </>
   )
 }
