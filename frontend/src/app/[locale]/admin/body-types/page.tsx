@@ -188,7 +188,7 @@ export default function BodyTypesPage() {
               ...(isAdmin
                 ? [
                     {
-                      key: "id" as keyof BodyType,
+                      key: "actions" as keyof BodyType,
                       label: t('actions'),
                       align: "center" as const,
                       render: (value: any, row: any) => (

@@ -230,7 +230,7 @@ export default function BlogPage() {
                 ),
               },
               {
-                key: 'id',
+                key: 'actions',
                 label: 'Actions',
                 align: 'center',
                 render: (value) => (

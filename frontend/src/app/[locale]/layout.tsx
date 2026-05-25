@@ -48,7 +48,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="bg-white dark:bg-black">
       <body className={`${inter.variable} font-sans antialiased bg-white dark:bg-black text-near-black dark:text-white`}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
           {children}
         </NextIntlClientProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
@@ -56,3 +56,4 @@ export default async function RootLayout({
     </html>
   )
 }
+

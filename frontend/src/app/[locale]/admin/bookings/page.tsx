@@ -244,7 +244,7 @@ export default function BookingsPage() {
                 ),
               },
               {
-                key: 'id',
+                key: 'actions',
                 label: 'Actions',
                 align: 'center',
                 render: (value) => (

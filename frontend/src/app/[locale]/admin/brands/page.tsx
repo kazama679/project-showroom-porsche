@@ -314,7 +314,7 @@ export default function BrandsPage() {
               ...(isAdmin
                 ? [
                     {
-                      key: "id" as keyof Brand,
+                      key: "actions" as keyof Brand,
                       label: t('actions'),
                       align: "center" as const,
                       render: (value: any, row: any) => (

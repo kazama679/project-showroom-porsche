@@ -212,7 +212,7 @@ export default function AILogsPage() {
                 ),
               },
               {
-                key: 'id',
+                key: 'actions',
                 label: 'Actions',
                 align: 'center',
                 render: (value) => (

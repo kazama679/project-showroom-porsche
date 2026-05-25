@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   ReactNode,
 } from 'react'
 import { usePathname } from '@/i18n/navigation'
@@ -69,7 +70,11 @@ function getRouteDefault(pathname: string): AdminPageMeta {
 /*  Context                                                            */
 /* ------------------------------------------------------------------ */
 
-const AdminPageContext = createContext<AdminPageContextValue | null>(null)
+const AdminPageStateContext = createContext<AdminPageMeta | null>(null)
+const AdminPageSetterContext = createContext<{
+  setMeta: (meta: AdminPageMeta) => void
+  resetMeta: () => void
+} | null>(null)
 
 /* ------------------------------------------------------------------ */
 /*  Provider                                                           */
@@ -92,10 +97,14 @@ export function AdminPageProvider({ children }: { children: ReactNode }) {
     setMetaState(getRouteDefault(pathname ?? '/admin'))
   }, [pathname])
 
+  const setterValue = useMemo(() => ({ setMeta, resetMeta }), [setMeta, resetMeta])
+
   return (
-    <AdminPageContext.Provider value={{ meta, setMeta, resetMeta }}>
-      {children}
-    </AdminPageContext.Provider>
+    <AdminPageSetterContext.Provider value={setterValue}>
+      <AdminPageStateContext.Provider value={meta}>
+        {children}
+      </AdminPageStateContext.Provider>
+    </AdminPageSetterContext.Provider>
   )
 }
 
@@ -106,7 +115,7 @@ export function AdminPageProvider({ children }: { children: ReactNode }) {
 /* ------------------------------------------------------------------ */
 
 export function useAdminPage(config: AdminPageMeta) {
-  const ctx = useContext(AdminPageContext)
+  const ctx = useContext(AdminPageSetterContext)
   if (!ctx) {
     throw new Error('useAdminPage must be used within AdminPageProvider')
   }
@@ -123,6 +132,7 @@ export function useAdminPage(config: AdminPageMeta) {
     // We intentionally depend on titleKey/subtitleKey/actions.
     // actions is a ReactNode — callers should memoize with useMemo if it
     // contains state-dependent JSX to avoid infinite loops.
+    // However, splitting the context prevents the infinite loop even if they don't!
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [titleKey, subtitleKey, actions, setMeta, resetMeta])
 }
@@ -134,12 +144,11 @@ export function useAdminPage(config: AdminPageMeta) {
 /* ------------------------------------------------------------------ */
 
 export function AdminPageHeader() {
-  const ctx = useContext(AdminPageContext)
+  const meta = useContext(AdminPageStateContext)
   const t = useTranslations('admin')
 
-  if (!ctx) return null
+  if (!meta) return null
 
-  const { meta } = ctx
   const title = t(meta.titleKey)
   const subtitle = meta.subtitleKey ? t(meta.subtitleKey) : undefined
 
