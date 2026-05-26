@@ -5,8 +5,7 @@ import com.ra.base_spring_boot.dto.request.FormRegister;
 import com.ra.base_spring_boot.dto.request.VerifyOtpRequest;
 import com.ra.base_spring_boot.dto.response.JwtResponse;
 
-public interface IAuthService
-{
+public interface IAuthService {
 
     void register(FormRegister formRegister);
 

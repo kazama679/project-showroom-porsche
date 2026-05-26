@@ -21,7 +21,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -62,4 +62,10 @@ app:
     secure: false
     same-site: Lax
     path: /
+
+# Gemini AI configuration
+gemini:
+  api-key: ${GEMINI_API_KEY:AIzaSyBi5ti-gw97bEwQHeLpOqMtfCDNod6eMWU}
+  model: gemini-2.5-flash
+  base-url: https://generativelanguage.googleapis.com
 

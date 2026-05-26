@@ -49,8 +49,8 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
   // Menu items for left panel
   const menuItems = [
     { label: tNav('models'), href: '/models', hasArrow: true },
-    { label: tAccount('shopping_tools'), href: '#', hasArrow: true },
-    { label: tAccount('porsche_store'), href: '#', hasArrow: false },
+    { label: tAccount('ai_chat'), href: '/advisory', hasArrow: true },
+    { label: tAccount('Xe Đã Lưu'), href: '/saved-vehicles', hasArrow: false },
     { label: tAccount('services'), href: '#', hasArrow: true },
     { label: tAccount('experience'), href: '#', hasArrow: true },
     { label: tAccount('find_dealer'), href: '#', hasArrow: true },

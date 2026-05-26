@@ -369,6 +369,67 @@ const ModelsSection = () => {
 }
 
 /* =========================
+   AI ADVISORY BANNER
+========================= */
+const AiAdvisoryBanner = () => {
+  return (
+    <section className="bg-black text-white py-0">
+      <div className="relative overflow-hidden flex flex-col md:flex-row min-h-[340px]">
+        {/* Left dark gradient panel */}
+        <div className="md:w-1/2 bg-[#111] flex flex-col justify-center p-12 md:p-20 relative z-10">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-brand-red text-white w-8 h-8 flex items-center justify-center font-bold text-sm">P</div>
+            <span className="text-brand-red text-xs tracking-[0.2em] uppercase font-medium">AI Advisory</span>
+          </div>
+          <h3 className="text-3xl md:text-5xl font-light leading-tight mb-6">
+            Tìm chiếc Porsche<br />
+            <span className="font-semibold">hoàn hảo cho bạn.</span>
+          </h3>
+          <p className="text-neutral-400 text-sm leading-relaxed mb-10 max-w-sm">
+            Chuyên viên tư vấn AI của chúng tôi sẽ phân tích ngân sách và nhu cầu của bạn để đề xuất mẫu xe Porsche phù hợp nhất.
+          </p>
+          <Link
+            href="/advisory"
+            className="inline-flex items-center gap-2 bg-brand-red text-white px-8 py-3.5 text-sm tracking-[0.12em] font-semibold w-fit hover:bg-red-700 transition-colors"
+          >
+            Bắt đầu tư vấn →
+          </Link>
+        </div>
+
+        {/* Right side visual */}
+        <div className="md:w-1/2 bg-[#0d0d0d] flex items-center justify-center p-12 relative overflow-hidden">
+          {/* Decorative rings */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[500px] h-[500px] rounded-full border border-white/5 absolute" />
+            <div className="w-[380px] h-[380px] rounded-full border border-white/5 absolute" />
+            <div className="w-[260px] h-[260px] rounded-full border border-white/5 absolute" />
+          </div>
+          {/* Center icon */}
+          <div className="relative z-10 flex flex-col items-center gap-6 text-center">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-red/20 to-brand-red/5 border border-brand-red/30 flex items-center justify-center">
+              <span className="text-white text-4xl font-bold">P</span>
+            </div>
+            <div>
+              <div className="text-white text-lg font-light mb-1">Cố vấn AI Porsche</div>
+              <div className="text-white/40 text-xs tracking-wider">Được tích hợp Gemini AI</div>
+            </div>
+            {/* Fake chat preview */}
+            <div className="flex flex-col gap-2 w-full max-w-xs">
+              <div className="bg-white/5 border border-white/10 rounded px-3 py-2 text-xs text-white/60 text-left">
+                💬 &quot;Tôi muốn mua xe Porsche khoảng 3 tỉ...&quot;
+              </div>
+              <div className="bg-brand-red/15 border border-brand-red/20 rounded px-3 py-2 text-xs text-white/70 text-left">
+                🤖 &quot;Dựa trên ngân sách của bạn, tôi đề xuất Porsche Cayenne...&quot;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* =========================
    DEALERSHIP
 ========================= */
 const DealershipSection = () => {

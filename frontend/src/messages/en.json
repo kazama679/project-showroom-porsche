@@ -431,6 +431,7 @@
   },
   "account": {
     "settings": "Account Settings",
+    "ai_chat": "AI Chat",
     "personal_info": "Personal Information",
     "language": "Language",
     "english": "English",

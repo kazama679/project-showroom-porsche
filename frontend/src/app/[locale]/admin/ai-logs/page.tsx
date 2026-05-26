@@ -1,162 +1,60 @@
 'use client'
 
-import { useState } from 'react'
-import { Trash2, Download } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Eye, Trash2 } from 'lucide-react'
 import { DataTable } from '@/components/features/admin/data-table'
 import { Badge } from '@/components/features/admin/badge'
-import { Button } from '@/components/features/admin/button'
-import { Select } from '@/components/features/admin/select'
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
 import { Alert } from '@/components/features/admin/alert'
-
-const mockLogs = [
-  {
-    id: 1,
-    timestamp: '2024-06-10 14:23:45',
-    eventType: 'Car Listed',
-    module: 'Inventory',
-    message: 'New Porsche 911 Turbo added to system',
-    status: 'success',
-  },
-  {
-    id: 2,
-    timestamp: '2024-06-10 14:15:32',
-    eventType: 'User Login',
-    module: 'Auth',
-    message: 'Admin user logged in successfully',
-    status: 'success',
-  },
-  {
-    id: 3,
-    timestamp: '2024-06-10 14:05:18',
-    eventType: 'Booking Confirmed',
-    module: 'Bookings',
-    message: 'Customer booking #1234 confirmed',
-    status: 'success',
-  },
-  {
-    id: 4,
-    timestamp: '2024-06-10 13:58:22',
-    eventType: 'Review Published',
-    module: 'Reviews',
-    message: '5-star review published for 911 Turbo',
-    status: 'success',
-  },
-  {
-    id: 5,
-    timestamp: '2024-06-10 13:45:10',
-    eventType: 'Data Export',
-    module: 'Reports',
-    message: 'Monthly sales report exported',
-    status: 'success',
-  },
-  {
-    id: 6,
-    timestamp: '2024-06-10 13:32:05',
-    eventType: 'Error',
-    module: 'API',
-    message: 'Failed to fetch vehicle specifications',
-    status: 'error',
-  },
-  {
-    id: 7,
-    timestamp: '2024-06-10 13:20:44',
-    eventType: 'Test Drive Request',
-    module: 'Bookings',
-    message: 'New test drive request from customer',
-    status: 'success',
-  },
-  {
-    id: 8,
-    timestamp: '2024-06-10 13:08:33',
-    eventType: 'Settings Updated',
-    module: 'Admin',
-    message: 'System timezone updated to UTC',
-    status: 'success',
-  },
-]
+import { apiClient } from '@/lib/api'
 
 const statusVariants = {
-  success: 'success',
-  error: 'danger',
-  warning: 'warning',
+  ACTIVE: 'success',
+  CLOSED: 'warning',
 } as const
 
-const eventTypeOptions = [
-  { label: 'All Events', value: 'all' },
-  { label: 'Car Listed', value: 'car' },
-  { label: 'User Login', value: 'login' },
-  { label: 'Booking Confirmed', value: 'booking' },
-  { label: 'Review Published', value: 'review' },
-  { label: 'Error', value: 'error' },
-]
-
 export default function AILogsPage() {
-  const [logs, setLogs] = useState(mockLogs)
+  const [sessions, setSessions] = useState<any[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
-  const [filterType, setFilterType] = useState('all')
+  const [loading, setLoading] = useState(true)
 
-  const filteredLogs = filterType === 'all' ? logs : logs.filter((log) => {
-    // Simple filter based on selected type
-    return true
-  })
+  const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null)
+  const [sessionDetail, setSessionDetail] = useState<any[]>([])
 
-  const handleClearLogs = () => {
-    setLogs([])
-    setAlertMessage('All logs cleared')
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
+  const fetchSessions = async (page: number) => {
+    setLoading(true)
+    try {
+      const res = await apiClient.get<any>(`/admin/ai-chat/sessions?page=${page - 1}&size=10`)
+      const data = res.data
+      setSessions(data.data || [])
+      setTotalItems(data.total || 0)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleExportLogs = () => {
-    const csvContent = [
-      ['Timestamp', 'Event Type', 'Module', 'Message', 'Status'],
-      ...logs.map((log) => [
-        log.timestamp,
-        log.eventType,
-        log.module,
-        log.message,
-        log.status,
-      ]),
-    ]
-      .map((row) => row.join(','))
-      .join('\n')
+  useEffect(() => {
+    fetchSessions(currentPage)
+  }, [currentPage])
 
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `ai-logs-${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
-
-    setAlertMessage('Logs exported successfully')
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
-  }
-
-  const handleDeleteLog = (id: number) => {
-    setLogs(logs.filter((log) => log.id !== id))
-    setAlertMessage('Log entry deleted')
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
+  const handleViewLog = async (id: number) => {
+    setSelectedSessionId(id)
+    try {
+      const res = await apiClient.get<any>(`/admin/ai-chat/sessions/${id}`)
+      setSessionDetail(res.data || [])
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useAdminPage({
     titleKey: 'ai_logs',
     subtitleKey: 'ai_logs',
-    actions: (
-      <div className="flex gap-2">
-        <Button variant="secondary" icon={<Download size={18} />} onClick={handleExportLogs}>
-          Export Logs
-        </Button>
-        <Button variant="danger" icon={<Trash2 size={18} />} onClick={handleClearLogs}>
-          Clear All
-        </Button>
-      </div>
-    ),
   })
 
   return (
@@ -171,69 +69,82 @@ export default function AILogsPage() {
         )}
 
         <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <div className="mb-4">
-            <Select
-              label="Filter by Event Type"
-              options={eventTypeOptions}
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            />
-          </div>
-
           <DataTable
             columns={[
               {
-                key: 'timestamp',
-                label: 'Timestamp',
-                sortable: true,
+                key: 'id',
+                label: 'Session ID',
               },
               {
-                key: 'eventType',
-                label: 'Event Type',
-                sortable: true,
+                key: 'username',
+                label: 'Username',
               },
               {
-                key: 'module',
-                label: 'Module',
-                sortable: true,
-              },
-              {
-                key: 'message',
-                label: 'Message',
+                key: 'createdAt',
+                label: 'Created At',
+                render: (val) => new Date(val).toLocaleString()
               },
               {
                 key: 'status',
                 label: 'Status',
-                align: 'center',
-                render: (value) => (
-                  <Badge variant={statusVariants[value as keyof typeof statusVariants]}>
-                    {value.charAt(0).toUpperCase() + value.slice(1)}
+                render: (val) => (
+                  <Badge variant={statusVariants[val as keyof typeof statusVariants] || 'success'}>
+                    {val}
                   </Badge>
-                ),
+                )
               },
               {
                 key: 'actions',
                 label: 'Actions',
                 align: 'center',
-                render: (value) => (
+                render: (value, row) => (
                   <button
-                    onClick={() => handleDeleteLog(value)}
+                    onClick={() => handleViewLog(row.id)}
                     className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
                   >
-                    <Trash2 size={16} className="text-brand-red" />
+                    <Eye size={16} className="text-brand-red" />
                   </button>
                 ),
               },
             ]}
-            data={filteredLogs}
+            data={sessions}
+            loading={loading}
             pagination={{
               pageSize: 10,
               currentPage,
-              total: filteredLogs.length,
+              total: totalItems,
               onPageChange: setCurrentPage,
             }}
           />
         </div>
+
+        {/* Modal for viewing chat history */}
+        {selectedSessionId && (
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+             <div className="bg-white w-full max-w-2xl h-[80vh] flex flex-col shadow-xl">
+                <div className="p-4 border-b flex justify-between items-center bg-gray-50">
+                   <h3 className="font-bold">Chat History #{selectedSessionId}</h3>
+                   <button onClick={() => setSelectedSessionId(null)} className="text-xl">&times;</button>
+                </div>
+                <div className="p-4 overflow-y-auto flex-1 bg-gray-100">
+                    {sessionDetail.map((msg: any) => (
+                       <div key={msg.id} className={`flex flex-col mb-4 max-w-[80%] ${msg.sender === 'USER' ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
+                          <div className={`p-3 rounded-lg text-sm ${msg.sender === 'USER' ? 'bg-blue-600 text-white' : 'bg-white border'}`}>
+                            {msg.content}
+                          </div>
+                          {msg.recommendedCars && msg.recommendedCars.length > 0 && (
+                            <div className="text-xs text-gray-500 mt-1 bg-white border p-2 rounded">
+                                Recommended Models: {msg.recommendedCars.map((c:any) => c.name).join(', ')}
+                            </div>
+                          )}
+                          <div className="text-[10px] text-gray-400 mt-1">{new Date(msg.createdAt).toLocaleString()}</div>
+                       </div>
+                    ))}
+                    {sessionDetail.length === 0 && <div className="text-center text-gray-500">No messages found.</div>}
+                </div>
+             </div>
+           </div>
+        )}
       </div>
     </>
   )

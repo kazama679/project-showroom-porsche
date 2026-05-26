@@ -14,8 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class User extends BaseObject
-{
+public class User extends BaseObject {
     @Column(name = "full_name")
     private String fullName;
     @Column(name = "username")
@@ -33,10 +32,6 @@ public class User extends BaseObject
     private Boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 }
