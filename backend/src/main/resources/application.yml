@@ -1,21 +1,27 @@
 spring:
   messages:
     basename: text/messages
+
+  application:
+    name: base_spring_boot
+
   flyway:
     enabled: true
     locations: classpath:db/migration
+
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-  application:
-    name: base_spring_boot
+
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/showroom_porsche?createDatabaseIfNotExist=true}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/showroom_porsche?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:123456}
+
   jooq:
-    sql-dialect: org.hibernate.dialect.MySQL8Dialect
+    sql-dialect: MYSQL
+
   jpa:
     hibernate:
       naming:
@@ -26,46 +32,39 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
-  # Redis configuration
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
-  # Mail configuration (Gmail SMTP)
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${SPRING_MAIL_USERNAME:quanglienha123@gmail.com}
-    password: ${SPRING_MAIL_PASSWORD:zwzwpjikgnudquux}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
           auth: true
-          starttls:   
+          starttls:
             enable: true
 
 jwt:
   secret:
-    key: Ascmkkqdnmsdfrtgsyuhidj21ue120938219321ndsad
+    key: ${JWT_SECRET_KEY:}
   expired:
-    access: 900000
-    refresh: 604800000
+    access: ${JWT_EXPIRED_ACCESS:900000}
+    refresh: ${JWT_EXPIRED_REFRESH:604800000}
 
-# Auth cookie defaults (local/dev). Production overrides in application-prod.yml.
-# - secure: false locally (HTTP). prod profile sets secure: true (HTTPS required).
-# - same-site: Lax is fine when frontend and API are same-site (e.g. reverse proxy).
-# - If prod uses same-site: None for cross-origin cookies, secure MUST be true.
 app:
   cookie:
-    secure: false
-    same-site: Lax
-    path: /
+    secure: ${APP_COOKIE_SECURE:false}
+    same-site: ${APP_COOKIE_SAME_SITE:Lax}
+    path: ${APP_COOKIE_PATH:/}
 
-# Gemini AI configuration
 gemini:
-  api-key: ${GEMINI_API_KEY:AIzaSyBi5ti-gw97bEwQHeLpOqMtfCDNod6eMWU}
-  model: gemini-2.5-flash
-  base-url: https://generativelanguage.googleapis.com
-
+  api-key: ${GEMINI_API_KEY:}
+  model: ${GEMINI_MODEL:gemini-2.5-flash}
+  base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com}
