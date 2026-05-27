@@ -17,7 +17,12 @@ export function DynamicAdminWrapper({ children }: { children: React.ReactNode })
       if (!me) {
         router.push('/auth/login')
       } else {
-        setIsAuthorized(true)
+        const isAdmin = me.roles && me.roles.includes('ROLE_ADMIN');
+        if (isAdmin) {
+          setIsAuthorized(true)
+        } else {
+          router.push('/')
+        }
       }
     }
     checkAuth()

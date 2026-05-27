@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   icon?: ReactNode;
@@ -29,6 +29,8 @@ export function Button({
       "cursor-pointer bg-brand-red text-white hover:bg-dark-red active:bg-deep-red disabled:opacity-50",
     ghost:
       "cursor-pointer bg-transparent text-near-black hover:bg-gray-100 active:bg-gray-200 dark:text-white dark:hover:bg-neutral-700 disabled:opacity-50",
+    outline:
+      "cursor-pointer bg-white text-near-black border border-gray-300 hover:bg-gray-50 active:bg-gray-100 dark:bg-transparent dark:text-white dark:border-neutral-600 dark:hover:bg-neutral-800 disabled:opacity-50",
   };
 
   const sizeStyles = {

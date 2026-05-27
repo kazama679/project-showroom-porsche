@@ -57,6 +57,7 @@ const routeDefaults: Record<string, { titleKey: string; subtitleKey?: string }> 
   '/admin/users': { titleKey: 'manage_users', subtitleKey: 'users_subtitle' },
   '/admin/blog': { titleKey: 'blog_management', subtitleKey: 'blog_subtitle' },
   '/admin/language': { titleKey: 'language' },
+  '/admin/vehicle-listings': { titleKey: 'vehicle_listings_title', subtitleKey: 'vehicle_listings_subtitle' },
 }
 
 function getRouteDefault(pathname: string): AdminPageMeta {

@@ -63,6 +63,7 @@ const menuItemsConfig: MenuItem[] = [
       { labelKey: "bookings", href: "/admin/bookings" },
       { labelKey: "test_drives", href: "/admin/test-drives" },
       { labelKey: "reviews", href: "/admin/reviews" },
+      { labelKey: "used_cars", href: "/admin/vehicle-listings" },
     ],
   },
   {
