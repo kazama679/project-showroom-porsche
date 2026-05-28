@@ -1,108 +1,58 @@
 'use client'
 
-import { useState } from 'react'
-import { Link } from '@/i18n/navigation';
+import { useState, useEffect, useMemo } from 'react'
+import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
-import { Menu, User, Heart, Search, ChevronDown, Plus, Info } from 'lucide-react'
+import { Search, ChevronDown, ChevronUp, Bookmark, Calculator, Info, Check } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
+import { vehicleListingApi, VehicleListingResponse } from '@/services/vehicle-listing-api'
+import { useSavedListings } from '@/hooks/use-saved-listings'
+import { SiteHeader } from '@/components/features/layout/site-header'
+import { authService } from '@/services/auth'
+import { InventoryLoginModal } from '@/components/features/inventory/inventory-login-modal'
 
-interface Car {
-  id: number
-  name: string
-  year: number
-  model: string
-  image: string
-  condition: string
-  color: string
-  interiorColor: string
-  specs: {
-    mileage: string
-    engine: string
-    transmission: string
-    drivetrain: string
-    power: string
-    acceleration: string
-  }
-  price: number
-  dealership: string
-  video: boolean
-  images: number
-}
-
-const cars: Car[] = [
-  {
-    id: 1,
-    name: '718 Cayman',
-    year: 2025,
-    model: '718 Cayman (982)',
-    image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&h=400&fit=crop',
-    condition: 'New',
-    color: 'Shark Blue',
-    interiorColor: 'Gray',
-    specs: {
-      mileage: '0 mi',
-      engine: 'Gasoline',
-      transmission: 'Manual',
-      drivetrain: 'Rear-wheel-drive',
-      power: '300 hp / 221 kW',
-      acceleration: '4.9 sec'
-    },
-    price: 95735,
-    dealership: 'Porsche Mechanicsburg',
-    video: true,
-    images: 15
-  },
-  {
-    id: 2,
-    name: '718 Cayman',
-    year: 2025,
-    model: '718 Cayman (982)',
-    image: 'https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=500&h=400&fit=crop',
-    condition: 'Certified Pre-Owned',
-    color: 'Carmine Red',
-    interiorColor: 'Black',
-    specs: {
-      mileage: '8,222 mi',
-      engine: 'Gasoline',
-      transmission: 'PDK (Automatic)',
-      drivetrain: 'Rear-wheel-drive',
-      power: '300 hp / 221 kW',
-      acceleration: '3.5 sec'
-    },
-    price: 84991,
-    dealership: 'Porsche Marin',
-    video: true,
-    images: 18
-  },
-  {
-    id: 3,
-    name: '718 Cayman',
-    year: 2024,
-    model: '718 Cayman Style Edition (MY24) (982)',
-    image: 'https://images.unsplash.com/photo-1578375050575-6d5129474d6e?w=500&h=400&fit=crop',
-    condition: 'Certified Pre-Owned',
-    color: 'Racing Yellow',
-    interiorColor: 'Black',
-    specs: {
-      mileage: '1,240 mi',
-      engine: 'Gasoline',
-      transmission: 'PDK (Automatic)',
-      drivetrain: 'Rear-wheel-drive',
-      power: '300 hp / 220 kW',
-      acceleration: '3.6 sec'
-    },
-    price: 85945,
-    dealership: 'Porsche Marin',
-    video: true,
-    images: 22
-  }
-]
+const FALLBACK_IMAGE = 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'
 
 export default function InventoryPage() {
-  const [expandedFilters, setExpandedFilters] = useState<string[]>(['Condition'])
-  const [selectedConditions, setSelectedConditions] = useState<string[]>(['New'])
-  const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [location, setLocation] = useState('')
-  const [radius, setRadius] = useState('Nationwide (0)')
+  const router = useRouter()
+  const t = useTranslations('usedCarsSearch')
+  const [listings, setListings] = useState<VehicleListingResponse[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [selectedImageForModal, setSelectedImageForModal] = useState('')
+  const { isSaved, toggleListing } = useSavedListings()
+
+  // Filter states (for UI visual mapping)
+  const [expandedFilters, setExpandedFilters] = useState<string[]>(['Vị trí', 'Tình trạng', 'Dòng sản phẩm'])
+
+  // Functional Filter States
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([])
+  const [selectedModel, setSelectedModel] = useState('')
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const data = await vehicleListingApi.getApprovedListings()
+        setListings(data)
+      } catch (error) {
+        console.error('Failed to fetch listings:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchListings()
+  }, [])
+
+  const handleToggleListing = (id: number, imageUrl: string) => {
+    if (!authService.isAuthenticated()) {
+      setSelectedImageForModal(imageUrl)
+      setShowLoginModal(true)
+      return
+    }
+    toggleListing(id)
+  }
 
   const toggleFilter = (filter: string) => {
     setExpandedFilters(prev =>
@@ -110,264 +60,400 @@ export default function InventoryPage() {
     )
   }
 
-  const toggleCondition = (condition: string) => {
-    setSelectedConditions(prev =>
-      prev.includes(condition) ? prev.filter(c => c !== condition) : [...prev, condition]
+  const toggleCondition = (cond: string) => {
+    setSelectedConditions(prev => 
+      prev.includes(cond) ? prev.filter(c => c !== cond) : [...prev, cond]
     )
   }
 
-  const toggleColor = (color: string) => {
-    setSelectedColors(prev =>
-      prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
-    )
+  const formatPrice = (price: number | undefined) => {
+    if (!price) return '0,00'
+    return price.toLocaleString('vi-VN') + ',00'
   }
 
-  const colors = [
-    { name: 'Black', count: 10, circle: '#000000' },
-    { name: 'White', count: 4, circle: '#FFFFFF' },
-    { name: 'Silver', count: 5, circle: '#C0C0C0' },
-    { name: 'Chalk', count: 3, circle: '#E8E8E8' },
-    { name: 'Grey', count: 9, circle: '#808080' },
-    { name: 'Blue', count: 12, circle: '#0000FF' },
-    { name: 'Red', count: 4, circle: '#FF0000' },
-    { name: 'Brown', count: 0, circle: '#8B4513' },
-    { name: 'Yellow', count: 3, circle: '#FFFF00' },
-    { name: 'Green', count: 4, circle: '#008000' },
-    { name: 'Violet', count: 0, circle: '#EE82EE' }
+  // Derive unique models for the dropdown
+  const uniqueModels = useMemo(() => {
+    return Array.from(new Set(listings.map(car => car.model))).filter(Boolean) as string[]
+  }, [listings])
+
+  // Computed filtered list
+  const filteredListings = useMemo(() => {
+    return listings.filter(car => {
+      // 1. Location match (search zipcode or city)
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase()
+        const locationStr = `${car.zipCode || ''} ${car.city || ''} ${car.stateProvince || ''}`.toLowerCase()
+        if (!locationStr.includes(term)) return false
+      }
+
+      // 2. Condition match
+      if (selectedConditions.length > 0) {
+        let match = false
+        const isNew = car.mileage === undefined || car.mileage === 0
+        const isClassic = car.modelYear && car.modelYear < 2000
+        
+        if (selectedConditions.includes('Mới') && isNew) match = true
+        if (selectedConditions.includes('Đã qua sử dụng') && !isNew) match = true
+        if (selectedConditions.includes('Cổ điển') && isClassic) match = true
+        if (selectedConditions.includes('Xe đã qua sử dụng được chứng nhận')) {
+           // We just loosely match this to the data presence of carfax or service records as a proxy
+           if (!isNew && car.hasCarfaxReport) match = true
+        }
+
+        if (!match) return false
+      }
+
+      // 3. Model match
+      if (selectedModel && selectedModel !== t('filter_model_line_default')) {
+        if (car.model !== selectedModel) return false
+      }
+
+      return true
+    })
+  }, [listings, searchTerm, selectedConditions, selectedModel, t])
+
+  // Sidebar accordions mapping based on screenshot
+  const accordionFilters = [
+    { id: '1', title: t('filter_trim_title') },
+    { id: '2', title: t('filter_generation_title') },
+    { id: '3', title: t('filter_year_title') },
+    { id: '4', title: t('filter_body_style_title') },
+    { id: '5', title: t('filter_engine_title') },
+    { id: '6', title: t('filter_options_title') },
+    { id: '7', title: t('filter_ext_color_title') },
+    { id: '8', title: t('filter_int_color_title') },
+    { id: '9', title: t('filter_price_title') },
   ]
 
+  const CheckboxUI = ({ checked }: { checked: boolean }) => (
+    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors shadow-sm ${checked ? 'bg-gray-900 border-gray-900' : 'bg-white border-gray-300'}`}>
+      {checked && <Check className="w-3.5 h-3.5 text-white" />}
+    </div>
+  )
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#f3f4f6]">
+      <SiteHeader className="z-50 bg-transparent absolute top-0 w-full border-none" />
       {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-full px-6 py-4 flex items-center justify-between">
-          <button className="flex items-center gap-2 text-black">
-            <Menu size={20} />
-            <span className="text-sm">Menu</span>
-          </button>
-          <div className="flex-1 flex justify-center">
-            <span className="font-light tracking-wider">PORSCHE</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Heart size={20} />
-            <div className="relative">
-              <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">1</div>
-              <Heart size={20} />
-            </div>
-            <User size={20} />
-          </div>
-        </div>
-      </header>
+      <div className="max-w-[1440px] mx-auto px-6 pt-24 pb-6">
+        <h1 className="text-[32px] font-normal leading-tight text-gray-900 mb-2">
+          {t('header_brand')}
+        </h1>
+        <p className="text-[20px] text-gray-800 font-light">
+          {t('header_desc')}
+        </p>
+      </div>
 
-      {/* Main content */}
-      <div className="flex">
-        {/* Left sidebar - Filters */}
-        <div className="w-80 border-r border-gray-200 bg-gray-50 p-6 max-h-screen overflow-y-auto">
-          <h2 className="text-2xl font-bold mb-8">Porsche 718 Cayman</h2>
-          <p className="text-sm text-gray-600 mb-8">New and pre-owned cars for sale.</p>
-
-          {/* Location Filter */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-black mb-4">Location</h3>
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-3 text-gray-400" size={16} />
-              <input
-                type="text"
-                placeholder="Search Zipcode or City"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-400 text-sm focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 mb-2 block">Radius</label>
-              <select
-                value={radius}
-                onChange={(e) => setRadius(e.target.value)}
-                className="w-full p-3 border border-gray-400 text-sm focus:outline-none bg-white"
-              >
-                <option>Nationwide (0)</option>
-                <option>25 miles</option>
-                <option>50 miles</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Condition Filter */}
-          <div className="mb-8 border-t border-gray-300 pt-8">
+      <div className="max-w-[1440px] mx-auto px-6 pb-12 flex flex-col lg:flex-row items-start gap-6">
+        {/* Left Sidebar */}
+        <div className="w-full lg:w-[340px] flex-shrink-0 bg-white rounded-2xl p-6 shadow-sm">
+          
+          {/* Location */}
+          <div className="mb-6 border-b border-gray-100 pb-6">
             <button
-              onClick={() => toggleFilter('Condition')}
-              className="w-full flex items-center justify-between mb-4"
+              onClick={() => toggleFilter('Vị trí')}
+              className="w-full flex items-center justify-between mb-4 font-semibold text-[15px]"
             >
-              <h3 className="font-semibold text-black">Condition</h3>
-              <ChevronDown size={16} className={expandedFilters.includes('Condition') ? 'rotate-180' : ''} />
+              <span className="flex items-center gap-2">
+                <ChevronUp className={`w-4 h-4 transition-transform ${expandedFilters.includes('Vị trí') ? '' : 'rotate-180'}`} />
+                {t('filter_location_title')}
+              </span>
             </button>
-            {expandedFilters.includes('Condition') && (
-              <div className="space-y-3">
-                {['New', 'Pre-Owned', 'Certified Pre-Owned', 'Classic'].map(condition => (
-                  <label key={condition} className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedConditions.includes(condition)}
-                      onChange={() => toggleCondition(condition)}
-                      className="w-4 h-4 border border-gray-400"
-                    />
-                    <span className="text-sm text-gray-700">{condition}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Model Lines Filter */}
-          <div className="mb-8 border-t border-gray-300 pt-8">
-            <button
-              onClick={() => toggleFilter('ModelLines')}
-              className="w-full flex items-center justify-between mb-4"
-            >
-              <h3 className="font-semibold text-black">Model Lines</h3>
-              <ChevronDown size={16} />
-            </button>
-            {expandedFilters.includes('ModelLines') && (
-              <select className="w-full p-3 border border-gray-400 text-sm bg-white">
-                <option>718/Boxster/Cayman (25+)</option>
-              </select>
-            )}
-          </div>
-
-          {/* Exterior Color */}
-          <div className="mb-8 border-t border-gray-300 pt-8">
-            <button
-              onClick={() => toggleFilter('Color')}
-              className="w-full flex items-center justify-between mb-4"
-            >
-              <h3 className="font-semibold text-black">Exterior Color</h3>
-              <span className="text-xs">−</span>
-            </button>
-            {expandedFilters.includes('Color') && (
-              <div className="space-y-2">
-                {colors.map(color => (
-                  <label key={color.name} className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedColors.includes(color.name)}
-                      onChange={() => toggleColor(color.name)}
-                      className="w-4 h-4 border border-gray-400"
-                    />
-                    <div
-                      className="w-4 h-4 rounded border border-gray-300"
-                      style={{ backgroundColor: color.circle }}
-                    />
-                    <span className="text-sm text-gray-700">
-                      {color.name} ({color.count})
-                    </span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right content - Listings */}
-        <div className="flex-1 p-8">
-          {/* Search bar and sort */}
-          <div className="mb-8 bg-white p-6 rounded-lg border border-gray-200 flex items-center justify-between gap-4">
-            <div className="flex gap-2">
-              {['718/Boxster/Cayman', '718 Cayman', '982'].map((filter, i) => (
-                <div key={i} className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded text-sm">
-                  {filter}
-                  <button className="text-gray-500 hover:text-black">×</button>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded">
-              <Search size={16} />
-              <span className="text-sm text-gray-600">E-Mail me new results</span>
-            </div>
-            <select className="px-4 py-2 border border-gray-300 rounded text-sm bg-white">
-              <option>Sort By: Recommended</option>
-            </select>
-          </div>
-
-          {/* Car listings */}
-          <div className="grid grid-cols-1 gap-8">
-            {cars.map((car) => (
-              <div key={car.id} className="flex gap-6 bg-white border border-gray-200 p-4 rounded-lg hover:shadow-lg transition-shadow">
-                {/* Image */}
-                <div className="relative w-96 h-80 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                  <Image
-                    src={car.image}
-                    alt={car.name}
-                    fill
-                    unoptimized
-                    className="object-cover"
+            
+            {expandedFilters.includes('Vị trí') && (
+              <div className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={t('filter_location_placeholder')}
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-[14px] focus:outline-none focus:ring-1 focus:ring-gray-300 transition-shadow"
                   />
-                  {car.video && (
-                    <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded text-xs font-semibold">
-                      Sound
-                    </div>
-                  )}
-                  <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded text-xs font-semibold">
-                    {car.images} Images
-                  </div>
                 </div>
-
-                {/* Details */}
-                <div className="flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{car.year} {car.model}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{car.condition}</p>
-
-                    <div className="flex gap-2 mb-6">
-                      <span className="text-sm font-semibold">{car.color}</span>
-                      <span className="text-gray-400">·</span>
-                      <span className="text-sm text-gray-600">{car.interiorColor}</span>
-                    </div>
-
-                    <div className="space-y-2 text-sm">
-                      <p>
-                        <span className="font-semibold">{car.specs.engine}</span>
-                        <span className="text-gray-400"> · </span>
-                        <span>{car.specs.mileage}</span>
-                        <span className="text-gray-400"> · </span>
-                        <span>{car.specs.power}</span>
-                        <span className="text-gray-400"> · </span>
-                        <span>{car.specs.drivetrain}</span>
-                        <span className="text-gray-400"> · </span>
-                        <span>{car.specs.transmission}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="mb-4">
-                      <p className="text-3xl font-bold mb-1">${car.price.toLocaleString()}</p>
-                      <p className="text-xs text-gray-600">Excl. taxes, incl. fees</p>
-                      <p className="text-xs text-gray-600">
-                        <span className="font-semibold">Individualize payment:</span> <a href="#" className="underline">Retail Finance</a>
-                      </p>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Link
-                        href={`/inventory/${car.id}`}
-                        className="flex-1 px-6 py-3 bg-black text-white text-center font-semibold text-sm rounded hover:bg-gray-900 transition-colors"
-                      >
-                        Show details
-                      </Link>
-                      <button className="px-6 py-3 border border-black text-black font-semibold text-sm rounded hover:bg-gray-50 transition-colors">
-                        Save
-                      </button>
-                    </div>
-
-                    <p className="text-xs text-gray-600 mt-4">{car.dealership}</p>
+                
+                <div>
+                  <label className="text-[13px] text-gray-500 mb-1.5 block px-1">{t('filter_radius_title')}</label>
+                  <div className="relative">
+                    <select className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] cursor-pointer focus:outline-none">
+                      <option>{t('filter_radius_default')}</option>
+                    </select>
+                    <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* Condition */}
+          <div className="mb-6 border-b border-gray-100 pb-6">
+            <button
+              onClick={() => toggleFilter('Tình trạng')}
+              className="w-full flex items-center justify-between mb-4 font-semibold text-[15px]"
+            >
+              <span className="flex items-center gap-2">
+                <ChevronUp className={`w-4 h-4 transition-transform ${expandedFilters.includes('Tình trạng') ? '' : 'rotate-180'}`} />
+                {t('filter_condition_title')}
+              </span>
+            </button>
+            {expandedFilters.includes('Tình trạng') && (
+              <div className="space-y-4 ml-6">
+                <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Mới')}>
+                  <div className="flex items-center gap-3">
+                    <CheckboxUI checked={selectedConditions.includes('Mới')} />
+                    <span className="text-[14px] text-gray-700">{t('filter_condition_new')}</span>
+                  </div>
+                </label>
+                
+                <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Đã qua sử dụng')}>
+                  <div className="flex items-center gap-3">
+                    <CheckboxUI checked={selectedConditions.includes('Đã qua sử dụng')} />
+                    <span className="text-[14px] text-gray-700">{t('filter_condition_used')}</span>
+                  </div>
+                  <Info className="w-4 h-4 text-gray-500" />
+                </label>
+                
+                <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Xe đã qua sử dụng được chứng nhận')}>
+                  <div className="flex items-center gap-3">
+                    <CheckboxUI checked={selectedConditions.includes('Xe đã qua sử dụng được chứng nhận')} />
+                    <span className="text-[14px] text-gray-700 max-w-[200px] leading-tight">{t('filter_condition_cpo')}</span>
+                  </div>
+                  <Info className="w-4 h-4 text-gray-500" />
+                </label>
+                
+                <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Cổ điển')}>
+                  <div className="flex items-center gap-3">
+                    <CheckboxUI checked={selectedConditions.includes('Cổ điển')} />
+                    <span className="text-[14px] text-gray-700">{t('filter_condition_classic')}</span>
+                  </div>
+                  <Info className="w-4 h-4 text-gray-500" />
+                </label>
+              </div>
+            )}
+          </div>
+
+          {/* Model Line */}
+          <div className="mb-6 border-b border-gray-100 pb-6">
+            <button
+              onClick={() => toggleFilter('Dòng sản phẩm')}
+              className="w-full flex items-center justify-between mb-4 font-semibold text-[15px]"
+            >
+              <span className="flex items-center gap-2">
+                <ChevronUp className={`w-4 h-4 transition-transform ${expandedFilters.includes('Dòng sản phẩm') ? '' : 'rotate-180'}`} />
+                {t('filter_model_line_title')}
+              </span>
+            </button>
+            {expandedFilters.includes('Dòng sản phẩm') && (
+              <div className="relative ml-6">
+                <select 
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] cursor-pointer focus:outline-none"
+                >
+                  <option value="">{t('filter_model_line_default')}</option>
+                  {uniqueModels.map(model => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+            )}
+          </div>
+
+          {/* Other accordion filters based on the screenshot */}
+          <div className="space-y-6">
+            {accordionFilters.map((filter) => (
+              <button
+                key={filter.id}
+                className="w-full flex items-center justify-between border-b border-gray-100 pb-6 font-semibold text-[15px] opacity-70 hover:opacity-100 transition-opacity"
+              >
+                <span className="flex items-center gap-2">
+                  <ChevronDown className="w-4 h-4" />
+                  {filter.title}
+                </span>
+              </button>
             ))}
           </div>
+
+        </div>
+
+        {/* Right Main Content */}
+        <div className="flex-1 flex flex-col gap-6 w-full lg:w-auto">
+          
+          {/* Top Sort Bar */}
+          <div className="bg-white rounded-2xl h-[72px] flex items-center justify-between px-6 shadow-sm">
+            <div className="text-[14px] font-medium text-gray-500">
+               Hiển thị {filteredListings.length} xe
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[14px] font-semibold">{t('sort_by_label')}</span>
+              <div className="relative">
+                <select className="appearance-none bg-gray-100 border-none rounded-lg pl-4 pr-10 py-2.5 text-[14px] font-medium cursor-pointer focus:outline-none w-[180px]">
+                  <option>{t('sort_by_recommended')}</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-2.5 w-5 h-5 text-gray-600 pointer-events-none" />
+              </div>
+            </div>
+          </div>
+
+          {/* Listings */}
+          {loading ? (
+             <div className="flex justify-center p-20 text-gray-500">Loading cars...</div>
+          ) : filteredListings.length === 0 ? (
+             <div className="flex justify-center items-center flex-col p-20 text-gray-500 bg-white rounded-2xl border border-gray-100 min-h-[400px]">
+                <Search className="w-12 h-12 text-gray-300 mb-4" />
+                <p className="text-lg">No used cars match your search.</p>
+                <button onClick={() => { setSearchTerm(''); setSelectedConditions([]); setSelectedModel('') }} className="mt-4 text-blue-600 font-medium hover:underline">
+                  Clear all filters
+                </button>
+             </div>
+          ) : (
+            <div className="space-y-6">
+              {filteredListings.map((car) => {
+                // Determine images with Fallback
+                let mainImage = car.images && car.images.length > 0 ? car.images[0].imageUrl : FALLBACK_IMAGE
+                let thumb1 = car.images && car.images.length > 1 ? car.images[1].imageUrl : FALLBACK_IMAGE
+                let thumb2 = car.images && car.images.length > 2 ? car.images[2].imageUrl : FALLBACK_IMAGE
+                let thumb3 = car.images && car.images.length > 3 ? car.images[3].imageUrl : FALLBACK_IMAGE
+
+                const specsLine = [
+                  car.fuelType === 'Electric' ? t('fuel_electric') : (car.fuelType === 'Gasoline' ? t('fuel_gasoline') : car.fuelType),
+                  car.engineCondition || (car.fuelType === 'Electric' ? `563 ${t('power_hp')} / 414 ${t('power_kw')}` : `420 ${t('power_hp')} / 300 ${t('power_kw')}`), // mock hp based on actual schema gap
+                  car.drivetrain === 'AWD' ? t('drivetrain_awd') : car.drivetrain,
+                  car.transmission === 'Automatic' ? t('transmission_auto') : car.transmission,
+                ].filter(Boolean).join(' · ')
+                
+                const showRangeForEv = car.fuelType === 'Electric'
+                const isCarNew = car.mileage === 0 || car.mileage === undefined
+
+                return (
+                  <div key={car.id} className="bg-white rounded-3xl p-5 flex flex-col xl:flex-row gap-6 shadow-sm overflow-hidden border border-gray-100">
+                    
+                    {/* Images Section */}
+                    <div className="w-full xl:w-[480px] flex flex-col gap-2 flex-shrink-0 relative">
+                      {/* Badges Overlay */}
+                      <div className="absolute top-4 left-4 z-10 flex gap-2">
+                        <span className="bg-black text-white text-[12px] font-medium px-3 py-1.5 rounded-full shadow-sm">{t('badge_video')}</span>
+                        <span className="bg-black text-white text-[12px] font-medium px-3 py-1.5 rounded-full shadow-sm">{t('badge_audio')}</span>
+                      </div>
+                      
+                      {/* Main Image */}
+                      <div className="w-full h-[280px] sm:h-[320px] bg-gray-100 rounded-[20px] overflow-hidden relative">
+                        <Image
+                          src={mainImage}
+                          alt="Vehicle image"
+                          fill
+                          unoptimized
+                          className="object-cover"
+                        />
+                      </div>
+                      
+                      {/* Thumbnails */}
+                      <div className="flex gap-2 h-[80px] sm:h-[100px]">
+                        <div className="flex-1 relative rounded-[12px] overflow-hidden bg-gray-100">
+                          <Image src={mainImage} fill unoptimized className="object-cover" alt="Thumbnail 1" />
+                        </div>
+                        <div className="flex-1 relative rounded-[12px] overflow-hidden bg-gray-100">
+                          <Image src={thumb1} fill unoptimized className="object-cover" alt="Thumbnail 2" />
+                        </div>
+                        <div className="flex-1 relative rounded-[12px] overflow-hidden bg-gray-100">
+                          <Image src={thumb2} fill unoptimized className="object-cover" alt="Thumbnail 3" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Details Section */}
+                    <div className="flex-1 flex flex-col py-2 px-2 xl:px-4">
+                      <div className="flex-1">
+                        <h2 className="text-[26px] font-medium text-gray-900 leading-tight">
+                          Porsche {car.model} {car.trimLevel} {car.modelYear}
+                        </h2>
+                        
+                        {isCarNew && <p className="text-blue-600 text-[15px] font-medium mt-2">{t('condition_new')}</p>}
+                        {!isCarNew && car.mileage && <p className="text-gray-500 text-[15px] font-medium mt-2">{car.mileage.toLocaleString()} km</p>}
+                        
+                        <div className="mt-6 space-y-1.5">
+                          <p className="text-[14px] text-gray-700">
+                            {car.exteriorColor || 'Màu tiêu chuẩn'} <span className="text-gray-400 mx-1">•</span> {car.interiorColor || 'Nội thất tiêu chuẩn'}
+                          </p>
+                          <p className="text-[14px] text-gray-700">
+                            {specsLine}
+                          </p>
+                          {showRangeForEv && (
+                            <p className="text-[14px] text-gray-700">
+                              {t('range_label')} 294 {t('range_unit')}
+                            </p>
+                          )}
+                        </div>
+                        
+                        <div className="mt-8">
+                          <div className="flex items-end gap-3 mb-1">
+                            <span className="text-[32px] font-medium text-gray-900 leading-none">
+                              {formatPrice(car.askingPrice)} {t('price_suffix')}
+                            </span>
+                            <span className="text-[13px] text-gray-500 mb-1">{t('price_desc')}</span>
+                          </div>
+                          
+                          <a href="#" className="text-[14px] font-medium underline underline-offset-4 decoration-1 decoration-gray-400 hover:text-gray-600 mb-4 inline-block">
+                            {t('price_details')}
+                          </a>
+                          
+                          <p className="text-[14px] text-gray-700 mb-6 font-medium">
+                            {t('dealer_fee')} 699,00 {t('price_suffix')}
+                          </p>
+                          
+                          <div className="flex items-center gap-3">
+                            <Calculator className="w-5 h-5 text-gray-600" />
+                            <span className="text-[14px] font-medium">{t('payment_tweak')}</span>
+                          </div>
+                          <div className="flex gap-2 mt-3 flex-wrap">
+                            <span className="bg-gray-200 text-gray-800 text-[13px] font-medium px-4 py-1.5 rounded-full whitespace-nowrap cursor-pointer hover:bg-gray-300 transition-colors">
+                              {t('payment_lease')}
+                            </span>
+                            <span className="bg-gray-200 text-gray-800 text-[13px] font-medium px-4 py-1.5 rounded-full whitespace-nowrap cursor-pointer hover:bg-gray-300 transition-colors">
+                              {t('payment_finance')}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Footer Actions */}
+                      <div className="mt-10 sm:mt-8">
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          <Link href={`/inventory/${car.id}`} className="flex-1 sm:flex-none text-center bg-gray-900 text-white font-medium text-[15px] px-8 py-4 rounded hover:bg-black transition-colors shadow-sm">
+                            {t('btn_show_details')}
+                          </Link>
+                          <button 
+                            onClick={() => handleToggleListing(car.id, mainImage)} 
+                            className={`flex-1 sm:flex-none text-center hover:bg-gray-50 font-medium text-[15px] px-6 py-4 rounded flex items-center justify-center gap-3 border border-gray-200 transition-colors cursor-pointer shadow-sm ${isSaved(car.id) ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-900'}`}
+                          >
+                            <Bookmark className={`w-5 h-5 ${isSaved(car.id) ? 'fill-current' : ''}`} />
+                            {isSaved(car.id) ? t('saved') : t('btn_save')}
+                          </button>
+                        </div>
+                        
+                        <div className="mt-6 text-[13px] text-gray-800 flex items-center flex-wrap gap-x-2">
+                          <span className="font-bold">{car.sellerType === 'Dealer' ? (car.sellerFullName || 'Porsche Monmouth') : (car.sellerFullName || 'Porsche Dealer')}</span>
+                          <span className="text-gray-400 hidden sm:inline">•</span>
+                          <span>{car.city || 'West Long Branch'}, {car.stateProvince || 'NJ'}, {car.zipCode || '07764'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
+      
+      {showLoginModal && (
+        <InventoryLoginModal 
+          carImage={selectedImageForModal || FALLBACK_IMAGE} 
+          onClose={() => setShowLoginModal(false)} 
+        />
+      )}
     </div>
   )
 }

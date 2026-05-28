@@ -163,5 +163,45 @@ public class GlobalHandleException
         );
     }
 
+    /**
+     * @param ex DataIntegrityViolationException
+     * @apiNote handle duplicate entries or other SQL constraints (409)
+     */
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException ex) {
+        String message = ex.getMessage();
+        if (message != null && message.contains("Duplicate entry")) {
+            if (message.contains("uk_email")) {
+                message = "The email address is already in use.";
+            } else if (message.contains("uk_username")) {
+                message = "The username is already taken.";
+            } else {
+                message = "This record already exists.";
+            }
+        } else if (ex.getCause() != null && ex.getCause().getCause() != null) {
+            String sqlMessage = ex.getCause().getCause().getMessage();
+            if (sqlMessage != null && sqlMessage.contains("Duplicate entry")) {
+                if (sqlMessage.toLowerCase().contains("email")) {
+                    message = "The email address is already in use.";
+                } else if (sqlMessage.toLowerCase().contains("username")) {
+                    message = "The username is already taken.";
+                } else {
+                    message = "This record already exists.";
+                }
+            } else {
+                message = "A database error occurred.";
+            }
+        } else {
+            message = "A database constraint was violated.";
+        }
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ResponseWrapper.builder()
+                        .data(message)
+                        .code(HttpStatus.CONFLICT.value())
+                        .status(HttpStatus.CONFLICT)
+                        .build()
+        );
+    }
 
 }

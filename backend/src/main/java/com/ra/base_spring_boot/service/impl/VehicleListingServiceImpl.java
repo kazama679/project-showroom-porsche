@@ -1,5 +1,6 @@
 package com.ra.base_spring_boot.service.impl;
 
+import com.ra.base_spring_boot.dto.request.VehicleInquiryRequest;
 import com.ra.base_spring_boot.dto.request.VehicleListingRequest;
 import com.ra.base_spring_boot.dto.response.VehicleListingResponse;
 import com.ra.base_spring_boot.entity.VehicleListing;
@@ -7,6 +8,7 @@ import com.ra.base_spring_boot.entity.VehicleListingImage;
 import com.ra.base_spring_boot.repository.IVehicleListingRepository;
 import com.ra.base_spring_boot.service.ICloudinaryService;
 import com.ra.base_spring_boot.service.IEmailService;
+import com.ra.base_spring_boot.service.impl.MailService;
 import com.ra.base_spring_boot.service.IVehicleListingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class VehicleListingServiceImpl implements IVehicleListingService {
     private final IVehicleListingRepository listingRepository;
     private final ICloudinaryService cloudinaryService;
     private final IEmailService emailService;
+    private final MailService mailService;
 
     private static final Set<String> SENSITIVE_TYPES = new HashSet<>(Arrays.asList("TITLE_DOC", "REGISTRATION_DOC"));
     private static final Set<String> REQUIRED_TYPES = new HashSet<>(Arrays.asList(
@@ -179,6 +182,46 @@ public class VehicleListingServiceImpl implements IVehicleListingService {
         }
         
         return toResponse(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void sendInquiry(VehicleInquiryRequest request) {
+        VehicleListing listing = listingRepository.findById(request.getVehicleId())
+                .orElseThrow(() -> new RuntimeException("Listing not found: " + request.getVehicleId()));
+
+        if (listing.getSellerEmail() == null || listing.getSellerEmail().isEmpty()) {
+            throw new RuntimeException("Vehicle seller does not have an email address");
+        }
+
+        // Pre-resolve image URL while Hibernate session is still open (images are LAZY loaded)
+        String imageUrl = (listing.getImages() != null && !listing.getImages().isEmpty())
+                ? listing.getImages().get(0).getImageUrl()
+                : "https://configurator.porsche.com/public/fallback-D2RQp9E7.webp";
+
+        // Capture all needed listing data before thread starts to avoid LazyInitializationException
+        final String sellerEmail = listing.getSellerEmail();
+        final String make = listing.getMake();
+        final String model = listing.getModel();
+        final String trimLevel = listing.getTrimLevel();
+        final Integer modelYear = listing.getModelYear();
+        final String vin = listing.getVin();
+        final java.math.BigDecimal askingPrice = listing.getAskingPrice();
+        final Long listingId = listing.getId();
+        final String city = listing.getCity();
+        final String stateProvince = listing.getStateProvince();
+
+        new Thread(() -> {
+            try {
+                mailService.sendVehicleListingInquiryEmailSimple(
+                        sellerEmail, imageUrl, make, model, trimLevel, modelYear,
+                        vin, askingPrice, listingId, city, stateProvince, request);
+            } catch (Exception e) {
+                System.err.println("Failed to send vehicle listing inquiry email: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }).start();
+        
     }
 
     private VehicleListingResponse toResponse(VehicleListing l) {

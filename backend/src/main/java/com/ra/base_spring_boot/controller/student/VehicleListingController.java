@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.student;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ra.base_spring_boot.dto.request.VehicleInquiryRequest;
 import com.ra.base_spring_boot.dto.request.VehicleListingRequest;
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
 import com.ra.base_spring_boot.dto.response.VehicleListingResponse;
@@ -54,6 +55,29 @@ public class VehicleListingController {
                         .status(HttpStatus.OK)
                         .code(200)
                         .data(vehicleListingService.getListingById(id))
+                        .build()
+        );
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllListings() {
+        return ResponseEntity.ok(
+                ResponseWrapper.builder()
+                        .status(HttpStatus.OK)
+                        .code(200)
+                        .data(vehicleListingService.getListingsByStatus("APPROVED"))
+                        .build()
+        );
+    }
+
+    @PostMapping("/inquiry")
+    public ResponseEntity<?> sendInquiry(@RequestBody VehicleInquiryRequest request) {
+        vehicleListingService.sendInquiry(request);
+        return ResponseEntity.ok(
+                ResponseWrapper.builder()
+                        .status(HttpStatus.OK)
+                        .code(200)
+                        .data("Inquiry sent successfully")
                         .build()
         );
     }

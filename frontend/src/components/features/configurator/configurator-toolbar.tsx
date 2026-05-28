@@ -44,62 +44,60 @@ export function ConfiguratorToolbar({
   className,
 }: ConfiguratorToolbarProps) {
   const t = useTranslations('configurator')
+  const tc = useTranslations('common')
   const monthly = estimateMonthly(totalPrice)
 
   return (
-    <div
-      className={cn(
-        'sticky top-0 z-40 bg-white border-b border-gray-200',
-        className
-      )}
-    >
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-2.5 md:py-3 flex items-center justify-between gap-3 md:gap-4">
-        {/* Left: back + save + share */}
-        <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-shrink">
+    <div className={cn('sticky top-0 z-40 border-b border-neutral-200 bg-white/95 backdrop-blur', className)}>
+      <div className="mx-auto flex max-w-[1760px] items-center justify-between gap-3 px-4 py-3 md:px-8">
+        <div className="flex min-w-0 flex-shrink items-center gap-2 md:gap-4">
           <Link
             href={`/models/${modelId}`}
-            className="p-1.5 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-            aria-label={t('back')}
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full hover:bg-gray-100"
+            aria-label={tc('back')}
           >
             <ChevronLeft size={20} strokeWidth={1.5} />
           </Link>
           <button
             type="button"
             onClick={onToggleSave}
-            className="flex items-center gap-1.5 text-sm font-light hover:opacity-70 whitespace-nowrap"
+            className="flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-sm font-light hover:bg-gray-100"
           >
             <Heart size={16} strokeWidth={1.5} fill={saved ? 'currentColor' : 'none'} />
-            <span className="hidden sm:inline">{saved ? t('common.saved') : t('common.save')}</span>
+            <span className="hidden sm:inline">{saved ? tc('saved') : tc('save')}</span>
           </button>
           <button
             type="button"
-            className="flex items-center gap-1.5 text-sm font-light hover:opacity-70 whitespace-nowrap hidden md:flex"
+            className="hidden items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-sm font-light hover:bg-gray-100 md:flex"
           >
             <Share2 size={16} strokeWidth={1.5} />
             <span>{t('generateCode')}</span>
           </button>
         </div>
 
-        {/* Center-right: pricing (hidden on small screens) */}
-        <div className="hidden lg:flex items-center gap-6 xl:gap-8 flex-1 justify-end min-w-0">
+        <div className="hidden min-w-0 flex-1 items-center justify-end gap-6 lg:flex xl:gap-8">
+          <div className="min-w-0 text-center">
+            <p className="truncate text-sm font-medium text-near-black">911 Carrera</p>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-neutral-400">Porsche Code</p>
+          </div>
           <div className="text-right min-w-0">
             <div className="flex items-center justify-end gap-1.5">
               <Calculator size={14} className="text-dark-gray flex-shrink-0" />
-              <span className="text-sm font-light text-near-black whitespace-nowrap">
-                {formatPrice(monthly)}/{t('month')}
+              <span className="whitespace-nowrap text-sm font-light text-near-black">
+                {formatPrice(monthly)}/{tc('month')}
               </span>
               <button type="button" aria-label={t('paymentInfo')} className="text-neutral-400 hover:text-black">
                 <Info size={14} strokeWidth={1.5} />
               </button>
             </div>
-            <p className="text-[10px] text-neutral-400 font-light truncate max-w-[200px]">
+            <p className="max-w-[200px] truncate text-[10px] font-light text-neutral-400">
               {t('calculateMonthly')}
             </p>
           </div>
 
-          <div className="text-right min-w-0 border-l border-gray-200 pl-6 xl:pl-8">
+          <div className="min-w-0 border-l border-gray-200 pl-6 text-right xl:pl-8">
             <div className="flex items-center justify-end gap-1.5">
-              <span className="text-sm md:text-base font-light text-near-black whitespace-nowrap">
+              <span className="whitespace-nowrap text-sm font-light text-near-black md:text-base">
                 {formatPrice(totalPrice)}
               </span>
               <button type="button" aria-label={t('priceInfo')} className="text-neutral-400 hover:text-black">
@@ -112,39 +110,37 @@ export function ConfiguratorToolbar({
           </div>
         </div>
 
-        {/* Right: CTAs */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={onSummary}
-            className="px-3 md:px-5 py-2 text-sm font-light border border-light-gray-surface rounded-full hover:border-black transition-colors whitespace-nowrap"
+            className="whitespace-nowrap rounded-full border border-neutral-300 px-3 py-2 text-sm font-light transition-colors hover:border-black md:px-5"
           >
             {t('summary')}
           </button>
           <button
             type="button"
             onClick={onSelectDealer}
-            className="px-3 md:px-5 py-2 text-sm font-light bg-black text-white rounded-full hover:bg-dark-surface transition-colors whitespace-nowrap"
+            className="whitespace-nowrap rounded-full bg-black px-3 py-2 text-sm font-light text-white transition-colors hover:bg-dark-surface md:px-5"
           >
             {t('selectDealer')}
           </button>
           <button
             type="button"
             onClick={onSearch}
-            aria-label={t('common.search')}
-            className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-neutral-200 transition-colors flex-shrink-0"
+            aria-label={tc('search')}
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 transition-colors hover:bg-neutral-200"
           >
             <Search size={18} strokeWidth={1.5} />
           </button>
         </div>
       </div>
 
-      {/* Mobile price strip */}
-      <div className="lg:hidden border-t border-neutral-100 px-4 py-2 flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 border-t border-neutral-100 px-4 py-2 lg:hidden">
         <div>
           <p className="text-base font-light text-near-black">{formatPrice(totalPrice)}</p>
           <p className="text-[10px] text-neutral-400 font-light">
-            ~{formatPrice(monthly)}/{t('month')}
+            ~{formatPrice(monthly)}/{tc('month')}
           </p>
         </div>
         <p className="text-xs text-dark-gray font-light truncate max-w-[50%]">{modelName}</p>

@@ -89,6 +89,10 @@ public class AuthServiceImpl implements IAuthService
         {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(formLogin.getEmail(), formLogin.getPassword()));
         }
+        catch (org.springframework.security.authentication.DisabledException e)
+        {
+            throw new HttpBadRequest("Account not verified. Please check your email for OTP.");
+        }
         catch (AuthenticationException e)
         {
             throw new HttpBadRequest("Email or password is incorrect");
@@ -100,7 +104,7 @@ public class AuthServiceImpl implements IAuthService
             throw new HttpBadRequest("your account is blocked");
         }
 
-        // Check if account is verified
+        // Additional check just in case (though DisabledException should catch it first)
         if (!userDetails.getUser().getEnabled())
         {
             throw new HttpBadRequest("Account not verified. Please check your email for OTP.");

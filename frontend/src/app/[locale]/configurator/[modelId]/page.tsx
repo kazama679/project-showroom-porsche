@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { SiteHeader } from '@/components/features/layout/site-header'
 import { ConfiguratorToolbar } from '@/components/features/configurator/configurator-toolbar'
 import { ConfiguratorViewer } from '@/components/features/configurator/configurator-viewer'
+import { Porsche3DStream } from '@/components/features/configurator/porsche-3d-stream'
 import { useSiteHeaderVisible } from '@/hooks/use-site-header-visible'
 import { cn } from '@/utils/cn'
 import { ConfiguratorOptionsPanel } from '@/components/features/configurator/configurator-options-panel'
@@ -19,10 +20,13 @@ import {
   GalleryImage,
   calculateTotal,
   buildSummaryFromSelections,
-  MSRP_DISCLAIMER,
   findOptionById,
 } from '@/utils/configurator-data'
-import { configuratorService, mapConfiguratorResponse } from '@/services/configurator'
+import {
+  configuratorService,
+  getPorscheConfiguratorAssets,
+  mapConfiguratorResponse,
+} from '@/services/configurator'
 import { carBuildApi } from '@/services/car-build-api'
 import { authService } from '@/services/auth'
 import { LoginPromptModal } from '@/components/features/configurator/login-prompt-modal'
@@ -37,6 +41,10 @@ const FALLBACK_GALLERY: GalleryImage[] = [
     type: 'exterior',
   },
 ]
+
+const DEFAULT_PORSCHE_MODEL_CODES: Record<number, string> = {
+  2: '9921B2',
+}
 
 /** Modal shown after saving a configuration */
 function SavedModal({
@@ -120,6 +128,7 @@ function ConfiguratorContent() {
   const [model, setModel] = useState<ConfiguratorModel | null>(null)
   const [sections, setSections] = useState<ConfigSection[]>([])
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(FALLBACK_GALLERY)
+  const [porscheModelCode, setPorscheModelCode] = useState<string | null>(null)
   const [selections, setSelections] = useState<Record<string, string[]>>({})
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({})
   const [expandedSummaryGroups, setExpandedSummaryGroups] = useState<Record<string, boolean>>({})
@@ -179,6 +188,21 @@ function ConfiguratorContent() {
         if (cancelled) return
 
         const mapped = mapConfiguratorResponse(data)
+        const porscheModelCode =
+          searchParams?.get('porscheModelCode') ?? DEFAULT_PORSCHE_MODEL_CODES[resolvedModelId]
+        setPorscheModelCode(porscheModelCode ?? null)
+        const porscheAssets = porscheModelCode
+          ? await getPorscheConfiguratorAssets(porscheModelCode)
+          : null
+        if (cancelled) return
+
+        const resolvedGalleryImages =
+          porscheAssets?.galleryImages.length
+            ? porscheAssets.galleryImages
+            : mapped.galleryImages.length > 0
+              ? mapped.galleryImages
+              : FALLBACK_GALLERY
+
         setModel(mapped.model)
         setSections(mapped.sections)
 
@@ -200,9 +224,7 @@ function ConfiguratorContent() {
           }
         }
 
-        setGalleryImages(
-          mapped.galleryImages.length > 0 ? mapped.galleryImages : FALLBACK_GALLERY
-        )
+        setGalleryImages(resolvedGalleryImages)
 
         const expanded: Record<string, boolean> = {}
         mapped.sections.forEach((s) => {
@@ -477,13 +499,13 @@ function ConfiguratorContent() {
       />
 
       <main className="pb-28">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+        <div className="mx-auto max-w-[1760px] px-4 md:px-8">
           {sections.length === 0 ? (
             <p className="text-center text-dark-gray font-light py-24">
               No options configured for this model yet. Assign options in Admin → Car Model Options.
             </p>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-6 lg:gap-10 min-h-[calc(100vh-12rem)] mt-6">
+            <div className="mt-5 grid min-h-[calc(100vh-10rem)] grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_430px] xl:grid-cols-[minmax(0,1fr)_500px]">
               <ConfiguratorViewer
                 images={galleryImages}
                 activeIndex={activeImageIndex}
@@ -491,11 +513,12 @@ function ConfiguratorContent() {
                 modelName={model.name}
                 year={model.year}
                 onOpen360={() => setShow360(true)}
+                porscheModelCode={porscheModelCode}
               />
 
               <div
                 className={cn(
-                  'lg:sticky lg:overflow-hidden flex flex-col transition-all duration-200',
+                  'flex flex-col border-l border-neutral-200 pl-0 transition-all duration-200 lg:sticky lg:overflow-hidden lg:pl-6',
                   siteHeaderVisible 
                     ? 'lg:top-[7.25rem] lg:h-[calc(100vh-7.25rem)]' 
                     : 'lg:top-[4.5rem] lg:h-[calc(100vh-4.5rem)]'
@@ -545,48 +568,38 @@ function ConfiguratorContent() {
         </>
       )}
 
-      {/* 360 Modal */}
+      {/* 3D Modal */}
       {show360 && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black p-0"
           role="dialog"
           aria-modal="true"
-          aria-label="360 degree view"
+          aria-label="3D view"
         >
-          <div className="bg-white rounded-2xl max-w-3xl w-full p-6 relative">
+          <div className="relative h-screen w-screen bg-black">
             <button
               type="button"
               onClick={() => setShow360(false)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-neutral-200 flex items-center justify-center text-lg"
-              aria-label="Close 360 view"
+              className="absolute right-6 top-6 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-lg text-near-black transition-colors hover:bg-white"
+              aria-label="Close 3D view"
             >
               ×
             </button>
-            <h3 className="text-xl font-light mb-4">360° View</h3>
-            <div className="relative h-64 md:h-96 bg-gray-100 rounded-xl overflow-hidden mb-4">
-              <Image
-                src={galleryImages[activeImageIndex]?.src ?? galleryImages[0].src}
-                alt="360 view"
-                fill
-                unoptimized
-                className="object-cover"
-              />
+            <div className="absolute left-6 top-6 z-20 rounded-full bg-white/90 px-4 py-2 text-sm font-light text-near-black">
+              Porsche 3D View
             </div>
-            <p className="text-sm text-dark-gray font-light text-center">
-              Drag to rotate · {MSRP_DISCLAIMER.slice(0, 60)}…
-            </p>
-            <div className="flex justify-center gap-2 mt-4">
-              {galleryImages.slice(0, 8).map((img, i) => (
-                <button
-                  key={img.id}
-                  type="button"
-                  onClick={() => setActiveImageIndex(i)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    i === activeImageIndex ? 'bg-black' : 'bg-light-gray-surface'
-                  }`}
-                  aria-label={`Angle ${i + 1}`}
+            <div className="relative h-full w-full overflow-hidden bg-black">
+              {porscheModelCode ? (
+                <Porsche3DStream modelCode={porscheModelCode} className="absolute inset-0" />
+              ) : (
+                <Image
+                  src={galleryImages[activeImageIndex]?.src ?? galleryImages[0].src}
+                  alt="3D view fallback"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
-              ))}
+              )}
             </div>
           </div>
         </div>

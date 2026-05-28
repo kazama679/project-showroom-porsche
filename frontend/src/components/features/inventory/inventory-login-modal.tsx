@@ -1,0 +1,85 @@
+'use client'
+
+import { X, Check } from 'lucide-react'
+import Image from 'next/image'
+import { Link } from '@/i18n/navigation'
+import { usePathname } from '@/i18n/navigation'
+
+interface InventoryLoginModalProps {
+  carImage: string
+  onClose: () => void
+}
+
+export function InventoryLoginModal({ carImage, onClose }: InventoryLoginModalProps) {
+  const pathname = usePathname()
+
+  const benefits = [
+    'Lưu trữ các mẫu xe yêu thích của bạn',
+    'Truy cập từ mọi thiết bị',
+    'Nhận thông báo khi xe thay đổi giá',
+    'Dễ dàng so sánh và liên hệ đại lý',
+  ]
+
+  // Add the returnUrl so that after login, they come back to this page
+  const loginUrl = `/auth/login?returnUrl=${encodeURIComponent(pathname || '/inventory')}`
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Dialog */}
+      <div className="relative bg-white rounded-2xl max-w-[500px] w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
+          aria-label="Đóng"
+        >
+          <X size={18} strokeWidth={1.5} />
+        </button>
+
+        {/* Car image */}
+        <div className="relative w-full h-48 md:h-56 bg-white rounded-t-2xl overflow-hidden mt-6">
+          <Image
+            src={carImage}
+            alt="Porsche"
+            fill
+            unoptimized
+            className="object-contain p-4"
+          />
+        </div>
+
+        {/* Text content */}
+        <div className="px-8 pb-8 text-left">
+          <h3 className="text-xl md:text-2xl font-light text-near-black mb-4">
+            Để lưu xe này, hãy đăng nhập bằng ID Porsche của bạn hoặc đăng ký.
+          </h3>
+          <p className="text-sm text-neutral-700 font-light mb-6">
+            Lưu xe vào danh sách yêu thích của bạn để có thể xem lại bất cứ lúc nào. Nếu bạn chưa có ID Porsche, bạn có thể đăng ký dễ dàng và tận hưởng các quyền lợi độc quyền:
+          </p>
+          
+          <div className="mb-6">
+            <h4 className="text-sm font-semibold text-near-black mb-3">Ưu điểm của Porsche ID</h4>
+            <ul className="space-y-2">
+              {benefits.map((benefit, idx) => (
+                <li key={idx} className="flex items-start gap-2 text-sm text-neutral-700 font-light">
+                  <Check size={16} strokeWidth={2} className="text-near-black mt-0.5" />
+                  <span>{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Link
+            href={loginUrl}
+            className="w-full py-4 bg-black text-white rounded-md text-sm font-medium hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
+          >
+            Đăng nhập để lưu xe
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}

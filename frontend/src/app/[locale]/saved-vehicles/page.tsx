@@ -20,6 +20,8 @@ import {
   SavedVehicleConfig,
 } from '@/services/car-build-api'
 import { formatPrice } from '@/utils/configurator-data'
+import { vehicleListingApi, VehicleListingResponse } from '@/services/vehicle-listing-api'
+import { useSavedListings } from '@/hooks/use-saved-listings'
 
 /** Delete confirmation dialog (ảnh 4) */
 function DeleteConfirmDialog({
@@ -256,6 +258,74 @@ function SavedVehicleCard({
   )
 }
 
+/** A single saved listing card */
+function SavedListingCard({ car, onRemove }: { car: VehicleListingResponse, onRemove: () => void }) {
+  const mainImage = car.images && car.images.length > 0 ? car.images[0].imageUrl : 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'
+  const dateStr = car.createdAt ? new Date(car.createdAt).toLocaleDateString('vi-VN') : 'N/A'
+
+  return (
+    <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(300px,420px)_1fr] gap-0">
+        <div className="p-4 md:p-5">
+          <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden mb-3">
+            <Image
+              src={mainImage}
+              alt={car.model || 'Car'}
+              fill
+              unoptimized
+              className="object-cover"
+            />
+          </div>
+        </div>
+        <div className="p-5 md:p-6 md:pl-2 flex flex-col justify-between">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-xl md:text-2xl font-light text-near-black mb-1.5">
+                Porsche {car.model} {car.trimLevel} {car.modelYear}
+              </h3>
+              <div className="flex items-center gap-2 text-sm text-dark-gray font-light">
+                <span>Số VIN: {car.vin || 'N/A'}</span>
+                <span>·</span>
+                <span>Đăng ngày: {dateStr}</span>
+              </div>
+            </div>
+            
+            <div className="space-y-1.5 text-sm text-neutral-600">
+               <div className="flex items-center gap-2 flex-wrap">
+                 {car.exteriorColor && <span className="font-medium text-near-black">{car.exteriorColor}</span>}
+                 {car.exteriorColor && car.interiorColor && <span>·</span>}
+                 {car.interiorColor && <span>{car.interiorColor}</span>}
+               </div>
+               <div className="flex items-center gap-2 flex-wrap">
+                 <span className="font-medium text-near-black">{car.askingPrice?.toLocaleString('vi-VN')} đ</span>
+                 {car.drivetrain && <span>· {car.drivetrain}</span>}
+                 {car.transmission && <span>· {car.transmission}</span>}
+               </div>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-3 mt-6">
+            <Link
+              href={`/inventory/${car.id}`}
+              className="px-5 py-2.5 bg-near-black text-white text-sm font-medium rounded-md hover:bg-dark-surface transition-colors flex items-center gap-2"
+            >
+              <ExternalLink size={15} />
+              Hiển thị chi tiết
+            </Link>
+            <button
+              onClick={onRemove}
+              className="px-5 py-2.5 border border-neutral-300 text-near-black text-sm font-light rounded-md hover:border-near-black transition-colors flex items-center gap-2"
+            >
+              <Trash2 size={15} />
+              Xóa khỏi danh sách lưu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /** Empty state (ảnh 5) */
 function EmptyState() {
   return (
@@ -300,6 +370,8 @@ export default function SavedVehiclesPage() {
   const [activeTab, setActiveTab] = useState<'configurations' | 'listings'>('configurations')
   const [savedVehicles, setSavedVehicles] = useState<SavedVehicleConfig[]>([])
   const [loaded, setLoaded] = useState(false)
+  const { savedIds, removeListing } = useSavedListings()
+  const [savedDetailedListings, setSavedDetailedListings] = useState<VehicleListingResponse[]>([])
 
   const loadVehicles = useCallback(async () => {
     try {
@@ -322,6 +394,18 @@ export default function SavedVehiclesPage() {
     loadVehicles()
   }, [loadVehicles])
 
+  useEffect(() => {
+    if (savedIds.length === 0) {
+      setSavedDetailedListings([])
+      return
+    }
+    Promise.all(
+      savedIds.map(id => vehicleListingApi.getListingById(id).catch(() => null))
+    ).then(results => {
+      setSavedDetailedListings(results.filter(r => r !== null) as VehicleListingResponse[])
+    })
+  }, [savedIds])
+
   const handleDelete = async (id: string) => {
     try {
       await carBuildApi.deleteBuild(id)
@@ -341,7 +425,7 @@ export default function SavedVehiclesPage() {
   }
 
   const configCount = savedVehicles.length
-  const listingCount = 0 // placeholder
+  const listingCount = savedIds.length
 
   if (!loaded) {
     return (
@@ -429,20 +513,28 @@ export default function SavedVehiclesPage() {
               Danh sách đã lưu
             </h2>
 
-            <div className="bg-white rounded-lg p-12 md:p-16 text-center">
-              <h3 className="text-2xl font-light text-near-black mb-3">
-                Bạn chưa lưu danh sách nào.
-              </h3>
-              <p className="text-sm text-dark-gray font-light max-w-md mx-auto mb-8">
-                Có vẻ như bạn chưa lưu bất kỳ Porsche nào. Bạn có thể chọn lưu để thêm Porsche yêu thích vào danh sách này.
-              </p>
-              <Link
-                href="/models"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-near-black text-near-black text-sm font-medium rounded-md hover:bg-near-black hover:text-white transition-colors"
-              >
-                Duyệt và lưu danh sách
-              </Link>
-            </div>
+            {listingCount === 0 ? (
+              <div className="bg-white rounded-lg p-12 md:p-16 text-center">
+                <h3 className="text-2xl font-light text-near-black mb-3">
+                  Bạn chưa lưu danh sách nào.
+                </h3>
+                <p className="text-sm text-dark-gray font-light max-w-md mx-auto mb-8">
+                  Có vẻ như bạn chưa lưu bất kỳ Porsche nào. Bạn có thể chọn lưu để thêm Porsche yêu thích vào danh sách này.
+                </p>
+                <Link
+                  href="/inventory"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-near-black text-near-black text-sm font-medium rounded-md hover:bg-near-black hover:text-white transition-colors"
+                >
+                  Duyệt và lưu danh sách
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {savedDetailedListings.map(car => (
+                  <SavedListingCard key={car.id} car={car} onRemove={() => removeListing(car.id)} />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

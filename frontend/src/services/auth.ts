@@ -121,15 +121,26 @@ export const authService = {
 
 // Helper to extract error message from API error
 export function getErrorMessage(error: unknown): string {
-  if (typeof error === "object" && error !== null && "data" in error) {
+  if (typeof error === "object" && error !== null) {
     const apiError = error as ApiError;
-    if (typeof apiError.data === "string") {
-      return apiError.data;
+    // Check if the actual message is present in the "message" field
+    if (apiError.message) {
+      return apiError.message;
     }
-    if (typeof apiError.data === "object") {
-      // Validation errors - return first error message
-      const messages = Object.values(apiError.data);
-      return messages.join(", ");
+    if (apiError.code === 400 || apiError.status === "400" || apiError.status === "BAD_REQUEST") {
+        if (apiError.data && typeof apiError.data === 'string' && apiError.data !== "An unexpected error occurred") {
+            return apiError.data;
+        }
+    }
+    if ("data" in error && apiError.data) {
+      if (typeof apiError.data === "string" && apiError.data !== "An unexpected error occurred") {
+        return apiError.data;
+      }
+      if (typeof apiError.data === "object") {
+        // Validation errors - return first error message
+        const messages = Object.values(apiError.data);
+        if (messages.length > 0) return messages.join(", ");
+      }
     }
   }
   if (error instanceof Error) {

@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { ChevronRight, Info, Search } from 'lucide-react'
+import { Check, Info, Search } from 'lucide-react'
 import {
-  ConfigSection,
   ConfigOption,
+  ConfigSection,
   ConfigSubGroup,
-  getSubGroupPriceLabel,
   getOptionPriceLabel,
+  getSubGroupPriceLabel,
 } from '@/utils/configurator-data'
 
 type ConfiguratorOptionsPanelProps = {
@@ -25,8 +25,8 @@ type ConfiguratorOptionsPanelProps = {
 function isColorSubGroup(section: ConfigSection, subGroup: ConfigSubGroup): boolean {
   const combined = `${section.title} ${subGroup.title}`.toLowerCase()
   return (
-    combined.includes('sơn') ||
-    combined.includes('màu') ||
+    combined.includes('son') ||
+    combined.includes('mau') ||
     combined.includes('color') ||
     combined.includes('paint')
   )
@@ -47,8 +47,8 @@ function ColorSwatch({
       aria-label={option.name}
       title={option.name}
       onClick={onSelect}
-      className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-md border-2 overflow-hidden transition-all hover:scale-105 ${
-        selected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-light-gray-surface'
+      className={`relative h-12 w-12 overflow-hidden rounded-[3px] border transition-all hover:border-black sm:h-14 sm:w-14 ${
+        selected ? 'border-black ring-1 ring-black ring-offset-2' : 'border-neutral-300'
       }`}
       style={!option.image ? { backgroundColor: option.color ?? '#ccc' } : undefined}
     >
@@ -57,14 +57,11 @@ function ColorSwatch({
       )}
       {selected && (
         <span className="absolute inset-0 flex items-center justify-center bg-black/20">
-          <svg viewBox="0 0 12 12" className="w-4 h-4" aria-hidden="true">
-            <path
-              d="M2 6l3 3 5-5"
-              fill="none"
-              stroke={option.color === '#FFFFFF' || option.color === '#D1D5DB' ? '#000' : '#fff'}
-              strokeWidth="1.5"
-            />
-          </svg>
+          <Check
+            className="h-4 w-4"
+            strokeWidth={1.8}
+            color={option.color === '#FFFFFF' || option.color === '#D1D5DB' ? '#000' : '#fff'}
+          />
         </span>
       )}
     </button>
@@ -86,19 +83,17 @@ function OptionCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`flex flex-col text-left rounded-lg border bg-white overflow-hidden transition-all h-full ${
-        selected
-          ? 'border-black ring-1 ring-black shadow-sm'
-          : 'border-gray-200 hover:border-[#b0b0b0] hover:shadow-sm'
+      className={`flex h-full flex-col overflow-hidden rounded-[6px] border bg-white text-left transition-all ${
+        selected ? 'border-black ring-1 ring-black' : 'border-gray-200 hover:border-[#9d9d9d]'
       }`}
     >
-      <div className="relative aspect-[4/3] w-full bg-white border-b border-neutral-100">
-        <Image 
-          src={option.image || 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'} 
-          alt={option.name} 
-          fill 
-          unoptimized 
-          className={aspect && aspect > 1.35 ? "object-cover" : "object-contain p-2"} 
+      <div className="relative aspect-[4/3] w-full border-b border-neutral-100 bg-[#f6f6f6]">
+        <Image
+          src={option.image || 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'}
+          alt={option.name}
+          fill
+          unoptimized
+          className={aspect && aspect > 1.35 ? 'object-cover' : 'object-contain p-3'}
           onLoad={(e) => {
             const img = e.target as HTMLImageElement
             if (img.naturalWidth && img.naturalHeight) {
@@ -107,19 +102,21 @@ function OptionCard({
           }}
         />
         <span
-          className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow-sm"
+          className="absolute left-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm"
           aria-hidden="true"
         >
           <Info size={14} className="text-neutral-600" strokeWidth={1.5} />
         </span>
       </div>
 
-      <div className="flex flex-col flex-1 p-3 gap-2">
-        <p className="text-[13px] font-light text-near-black leading-snug line-clamp-3 min-h-[2.75rem]">
+      <div className="flex flex-1 flex-col gap-2 p-3">
+        <p className="line-clamp-3 min-h-[2.75rem] text-[13px] font-light leading-snug text-near-black">
           {option.name}
         </p>
         {option.description && (
-          <p className="text-[11px] text-neutral-500 font-light line-clamp-2 -mt-1">{option.description}</p>
+          <p className="-mt-1 line-clamp-2 text-[11px] font-light text-neutral-500">
+            {option.description}
+          </p>
         )}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1">
           <span
@@ -130,16 +127,12 @@ function OptionCard({
             {getOptionPriceLabel(option)}
           </span>
           <span
-            className={`w-[18px] h-[18px] rounded-[3px] border flex-shrink-0 flex items-center justify-center ${
-              selected ? 'bg-black border-black' : 'border-neutral-400 bg-white'
+            className={`flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-[3px] border ${
+              selected ? 'border-black bg-black' : 'border-neutral-400 bg-white'
             }`}
             aria-hidden="true"
           >
-            {selected && (
-              <svg viewBox="0 0 12 12" className="w-2.5 h-2.5">
-                <path d="M2 6l3 3 5-5" fill="none" stroke="#fff" strokeWidth="1.5" />
-              </svg>
-            )}
+            {selected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={1.8} />}
           </span>
         </div>
       </div>
@@ -166,23 +159,23 @@ function SubGroupOptions({
   const isColor = isColorSubGroup(section, subGroup)
 
   return (
-    <div className="mb-4">
+    <div className="border-b border-neutral-100 last:border-b-0">
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-3 text-left hover:bg-neutral-50 transition-colors"
+        className="flex w-full items-center justify-between py-3 text-left transition-colors hover:bg-neutral-50"
       >
-        <div className="flex items-center gap-2">
-          <h3 className="text-sm font-medium text-near-black">{subGroup.title}</h3>
-          <span className="text-xs text-dark-gray font-light">{getSubGroupPriceLabel(subGroup)}</span>
+        <div className="min-w-0 pr-3">
+          <h3 className="truncate text-sm font-medium text-near-black">{subGroup.title}</h3>
+          <span className="text-xs font-light text-dark-gray">{getSubGroupPriceLabel(subGroup)}</span>
         </div>
-        <span className="text-lg text-neutral-400 font-light leading-none mr-1">
-          {isExpanded ? '−' : '+'}
+        <span className="mr-1 text-lg font-light leading-none text-neutral-400">
+          {isExpanded ? '-' : '+'}
         </span>
       </button>
 
       {isExpanded && (
-        <div className="pt-2 pb-4">
+        <div className="pb-5 pt-1">
           {isColor ? (
             <div className="flex flex-wrap gap-2.5">
               {subGroup.options.map((option) => (
@@ -212,15 +205,11 @@ function SubGroupOptions({
   )
 }
 
-const DEFAULT_RECOMMENDATION_IMAGE =
-  'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png'
-
 export function ConfiguratorOptionsPanel({
   sections,
   selections,
   expandedSections,
   searchQuery,
-  modelImageUrl,
   onSearchChange,
   onToggleSection,
   onSelectOption,
@@ -248,40 +237,47 @@ export function ConfiguratorOptionsPanel({
   })
 
   return (
-    <div className="flex flex-col h-full min-h-0">
-      
-      <div className="relative mb-7">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-gray" />
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Tìm kiếm các tùy chọn thiết bị"
-          aria-label="Tìm kiếm các tùy chọn thiết bị"
-          id="configurator-option-search"
-          className="w-full pl-10 pr-4 py-3 border border-light-gray-surface rounded-lg text-sm font-light focus:outline-none focus:border-black transition-colors"
-        />
+    <div className="flex h-full min-h-0 flex-col bg-white">
+      <div className="border-b border-neutral-200 pb-4">
+        <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500">Configure</p>
+        <h2 className="mt-1 text-2xl font-light text-near-black">Your 911 Carrera</h2>
+
+        <div className="relative mt-5">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-gray" />
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Search equipment"
+            aria-label="Search equipment"
+            id="configurator-option-search"
+            className="w-full rounded-[4px] border border-neutral-300 py-3 pl-10 pr-4 text-sm font-light transition-colors focus:border-black focus:outline-none"
+          />
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto pb-32 space-y-1">
-        {filteredSections.map((section) => {
+      <div className="flex-1 overflow-y-auto pb-32">
+        {filteredSections.map((section, index) => {
           const isExpanded = expandedSections[section.id] !== false
 
           return (
-            <div key={section.id} className="border-b border-gray-200">
+            <div key={section.id} className="border-b border-neutral-200">
               <button
                 type="button"
                 onClick={() => onToggleSection(section.id)}
-                className="w-full flex items-center justify-between py-4 text-left hover:bg-neutral-50 px-1 transition-colors"
+                className="flex w-full items-center justify-between py-5 text-left transition-colors hover:bg-neutral-50"
               >
-                <h2 className="text-base font-light text-near-black">{section.title}</h2>
-                <span className="text-xl text-neutral-400 font-light leading-none">
-                  {isExpanded ? '−' : '+'}
+                <div className="min-w-0 pr-4">
+                  <p className="text-[11px] text-neutral-400">{String(index + 1).padStart(2, '0')}</p>
+                  <h2 className="truncate text-base font-light text-near-black">{section.title}</h2>
+                </div>
+                <span className="text-xl font-light leading-none text-neutral-400">
+                  {isExpanded ? '-' : '+'}
                 </span>
               </button>
 
               {isExpanded && (
-                <div className="pb-4 px-1 divide-y divide-neutral-100">
+                <div className="pb-5">
                   {section.subGroups.map((subGroup) => (
                     <SubGroupOptions
                       key={subGroup.id}
@@ -300,7 +296,7 @@ export function ConfiguratorOptionsPanel({
         })}
 
         {filteredSections.length === 0 && (
-          <p className="text-sm text-dark-gray font-light py-8 text-center">
+          <p className="py-8 text-center text-sm font-light text-dark-gray">
             No equipment options match your search.
           </p>
         )}

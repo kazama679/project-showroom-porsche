@@ -116,6 +116,11 @@ export const vehicleListingApi = {
     return res.data
   },
 
+  async getApprovedListings(): Promise<VehicleListingResponse[]> {
+    const res = await apiClient.get<VehicleListingResponse[]>(`/vehicle-listings`)
+    return res.data
+  },
+
   // ADMIN METHODS
   async getAllListings(status?: string): Promise<VehicleListingResponse[]> {
     const url = status ? `/admin/vehicle-listings?status=${status}` : `/admin/vehicle-listings`

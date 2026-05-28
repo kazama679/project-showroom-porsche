@@ -52,6 +52,7 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
     { label: tAccount('ai_chat'), href: '/advisory', hasArrow: true },
     { label: tAccount('Xe Đã Lưu'), href: '/saved-vehicles', hasArrow: false },
     { label: 'Bán xe / Sell Car', href: '/sell-your-car', hasArrow: true },
+    { label: tAccount('buy_used_car'), href: '/inventory', hasArrow: true },
     { label: tAccount('services'), href: '#', hasArrow: true },
     { label: tAccount('experience'), href: '#', hasArrow: true },
     { label: tAccount('find_dealer'), href: '#', hasArrow: true },
