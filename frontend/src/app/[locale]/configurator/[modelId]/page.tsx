@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { SiteHeader } from '@/components/features/layout/site-header'
 import { ConfiguratorToolbar } from '@/components/features/configurator/configurator-toolbar'
 import { ConfiguratorViewer } from '@/components/features/configurator/configurator-viewer'
+import { CarModel3DViewer } from '@/components/features/configurator/car-model-3d-viewer'
 import { Porsche3DStream } from '@/components/features/configurator/porsche-3d-stream'
 import { useSiteHeaderVisible } from '@/hooks/use-site-header-visible'
 import { cn } from '@/utils/cn'
@@ -16,6 +17,7 @@ import { ConfiguratorBottomBar } from '@/components/features/configurator/config
 import { ConfiguratorSummary } from '@/components/features/configurator/configurator-summary'
 import {
   ConfigSection,
+  ConfigOption,
   ConfiguratorModel,
   GalleryImage,
   calculateTotal,
@@ -44,6 +46,26 @@ const FALLBACK_GALLERY: GalleryImage[] = [
 
 const DEFAULT_PORSCHE_MODEL_CODES: Record<number, string> = {
   2: '9921B2',
+}
+
+const SERIES_3D_MODEL_URLS = {
+  model718: '/models/718/718.glb',
+  cayenne: '/models/cayenne/2022_porsche_cayenne_turbo_gt.glb',
+  macan: '/models/macan/2019_porsche_macan_turbo.glb',
+  panamera: '/models/panamera/panamera.glb',
+  taycan: '/models/taycan/2025_porsche_taycan_turbo_gt_weissach_package.glb',
+  fallback911: '/models/911/model.glb',
+}
+
+function resolveLocal3dModelUrl(model?: ConfiguratorModel | null) {
+  const series = `${model?.seriesName ?? model?.name ?? ''}`.toLowerCase()
+
+  if (series.includes('taycan')) return SERIES_3D_MODEL_URLS.taycan
+  if (series.includes('cayenne')) return SERIES_3D_MODEL_URLS.cayenne
+  if (series.includes('macan')) return SERIES_3D_MODEL_URLS.macan
+  if (series.includes('panamera')) return SERIES_3D_MODEL_URLS.panamera
+  if (series.includes('718')) return SERIES_3D_MODEL_URLS.model718
+  return SERIES_3D_MODEL_URLS.fallback911
 }
 
 /** Modal shown after saving a configuration */
@@ -260,6 +282,48 @@ function ConfiguratorContent() {
     () => buildSummaryFromSelections(selections, sections),
     [selections, sections]
   )
+
+  const local3dModelUrl = resolveLocal3dModelUrl(model)
+
+  const { selectedPaintOption, selectedWheelOption } = useMemo(() => {
+    let paint: ConfigOption | undefined
+    let wheel: ConfigOption | undefined
+
+    for (const section of sections) {
+      for (const subGroup of section.subGroups) {
+        const selectedIds = selections[subGroup.id] ?? []
+        const combined = `${section.title} ${subGroup.title}`.toLowerCase()
+
+        for (const selectedId of selectedIds) {
+          const option = subGroup.options.find((item) => item.id === selectedId)
+          if (!option) continue
+
+          const visualType = option.visualType?.toUpperCase()
+          if (
+            !paint &&
+            (visualType === 'PAINT_COLOR' ||
+              ((combined.includes('paint') || combined.includes('color') || combined.includes('son') || combined.includes('mau')) &&
+                !combined.includes('interior')))
+          ) {
+            paint = option
+          }
+
+          if (
+            !wheel &&
+            (visualType === 'WHEEL' ||
+              combined.includes('wheel') ||
+              combined.includes('rim') ||
+              combined.includes('mam') ||
+              combined.includes('banh'))
+          ) {
+            wheel = option
+          }
+        }
+      }
+    }
+
+    return { selectedPaintOption: paint, selectedWheelOption: wheel }
+  }, [sections, selections])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -514,6 +578,9 @@ function ConfiguratorContent() {
                 year={model.year}
                 onOpen360={() => setShow360(true)}
                 porscheModelCode={porscheModelCode}
+                local3dModelUrl={local3dModelUrl}
+                selectedPaintOption={selectedPaintOption}
+                selectedWheelOption={selectedWheelOption}
               />
 
               <div
@@ -529,6 +596,7 @@ function ConfiguratorContent() {
                   selections={selections}
                   expandedSections={expandedSections}
                   searchQuery={searchQuery}
+                  modelName={model.name}
                   onSearchChange={setSearchQuery}
                   onToggleSection={handleToggleSection}
                   onSelectOption={handleSelectOption}
@@ -589,7 +657,16 @@ function ConfiguratorContent() {
               Porsche 3D View
             </div>
             <div className="relative h-full w-full overflow-hidden bg-black">
-              {porscheModelCode ? (
+              {local3dModelUrl ? (
+                <CarModel3DViewer
+                  modelUrl={local3dModelUrl}
+                  paintColorHex={selectedPaintOption?.colorHex || selectedPaintOption?.color}
+                  paintMaterialTarget={selectedPaintOption?.materialTarget}
+                  wheelMeshName={selectedWheelOption?.meshName}
+                  wheelVariantKey={selectedWheelOption?.meshName || selectedWheelOption?.name}
+                  className="absolute inset-0"
+                />
+              ) : porscheModelCode ? (
                 <Porsche3DStream modelCode={porscheModelCode} className="absolute inset-0" />
               ) : (
                 <Image

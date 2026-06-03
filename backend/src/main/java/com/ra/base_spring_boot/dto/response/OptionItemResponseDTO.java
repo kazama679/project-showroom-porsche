@@ -21,6 +21,12 @@ public class OptionItemResponseDTO
     private String description;
     private BigDecimal price;
     private String imageUrl;
+    private String visualType;
+    private String colorHex;
+    private String materialTarget;
+    private String meshName;
+    private String textureUrl;
+    private String model3dVariantUrl;
 
     public static OptionItemResponseDTO fromEntity(OptionItem entity)
     {
@@ -32,6 +38,12 @@ public class OptionItemResponseDTO
             .description(entity.getDescription())
             .price(entity.getPrice())
             .imageUrl(entity.getImageUrl())
+            .visualType(entity.getVisualType())
+            .colorHex(entity.getColorHex())
+            .materialTarget(entity.getMaterialTarget())
+            .meshName(entity.getMeshName())
+            .textureUrl(entity.getTextureUrl())
+            .model3dVariantUrl(entity.getModel3dVariantUrl())
             .build();
     }
 }

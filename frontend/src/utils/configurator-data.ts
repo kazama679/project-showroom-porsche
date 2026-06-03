@@ -7,6 +7,12 @@ export type ConfigOption = {
   color?: string
   image?: string
   description?: string
+  visualType?: 'PAINT_COLOR' | 'WHEEL' | 'INTERIOR' | 'NONE' | string
+  colorHex?: string
+  materialTarget?: string
+  meshName?: string
+  textureUrl?: string
+  model3dVariantUrl?: string
 }
 
 export type ConfigSubGroup = {
@@ -52,6 +58,7 @@ export type InventoryItem = {
 export type ConfiguratorModel = {
   id: string
   name: string
+  seriesName?: string
   year: number
   baseMsrp: number
   deliveryFee: number
@@ -471,28 +478,35 @@ export const INVENTORY_ITEMS: InventoryItem[] = [
 export const MSRP_DISCLAIMER =
   'All information is subject to change without notice. Neither Porsche Cars North America, Inc. nor the manufacturer can accept liability arising from the use of any information contained herein. Only an actual invoice issued by PCNA at the time a vehicle is sold to an authorized Porsche dealer may be used as an official indication of equipment and pricing.'
 
-export function formatPrice(value: number): string {
-  return new Intl.NumberFormat('en-US', {
+const USD_TO_VND_RATE = 25500
+
+export function formatPrice(value: number, locale?: string): string {
+  const useVnd = locale === 'vi'
+  const amount = useVnd ? Math.round(value * USD_TO_VND_RATE) : value
+
+  return new Intl.NumberFormat(useVnd ? 'vi-VN' : 'en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: useVnd ? 'VND' : 'USD',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(value)
+  }).format(amount)
 }
 
-export function getOptionPriceLabel(option: ConfigOption): string {
-  if (option.isStandard) return 'Standard Equipment'
-  if (option.price === null || option.price === 0) return option.price === 0 ? '$0' : 'Standard Equipment'
-  return formatPrice(option.price)
+export function getOptionPriceLabel(option: ConfigOption, locale?: string): string {
+  const standardLabel = locale === 'vi' ? 'Trang bị tiêu chuẩn' : 'Standard Equipment'
+  if (option.isStandard) return standardLabel
+  if (option.price === null) return standardLabel
+  if (option.price === 0) return formatPrice(0, locale)
+  return formatPrice(option.price, locale)
 }
 
-export function getSubGroupPriceLabel(subGroup: ConfigSubGroup): string {
+export function getSubGroupPriceLabel(subGroup: ConfigSubGroup, locale?: string): string {
   const prices = subGroup.options
     .map((o) => o.price)
     .filter((p): p is number => p !== null && p > 0)
-  if (prices.length === 0) return '$0'
+  if (prices.length === 0) return formatPrice(0, locale)
   const min = Math.min(...prices)
-  return min === 0 ? '$0' : formatPrice(min)
+  return min === 0 ? formatPrice(0, locale) : formatPrice(min, locale)
 }
 
 export function calculateTotal(

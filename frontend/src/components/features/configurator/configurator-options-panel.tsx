@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { Check, Info, Search } from 'lucide-react'
+import { Check, GripVertical, Info, Search } from 'lucide-react'
+import { useLocale, useTranslations } from 'next-intl'
 import {
   ConfigOption,
   ConfigSection,
@@ -16,6 +17,7 @@ type ConfiguratorOptionsPanelProps = {
   selections: Record<string, string[]>
   expandedSections: Record<string, boolean>
   searchQuery: string
+  modelName: string
   modelImageUrl?: string
   onSearchChange: (query: string) => void
   onToggleSection: (sectionId: string) => void
@@ -72,10 +74,12 @@ function OptionCard({
   option,
   selected,
   onSelect,
+  locale,
 }: {
   option: ConfigOption
   selected: boolean
   onSelect: () => void
+  locale?: string
 }) {
   const [aspect, setAspect] = useState<number | null>(null)
 
@@ -124,7 +128,7 @@ function OptionCard({
               option.isStandard ? 'text-neutral-500' : 'text-near-black'
             }`}
           >
-            {getOptionPriceLabel(option)}
+            {getOptionPriceLabel(option, locale)}
           </span>
           <span
             className={`flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-[3px] border ${
@@ -147,6 +151,7 @@ function SubGroupOptions({
   isExpanded,
   onToggle,
   onSelectOption,
+  locale,
 }: {
   subGroup: ConfigSubGroup
   section: ConfigSection
@@ -154,6 +159,7 @@ function SubGroupOptions({
   isExpanded: boolean
   onToggle: () => void
   onSelectOption: (sectionId: string, optionId: string, subGroupId?: string) => void
+  locale?: string
 }) {
   const selectedIds = selections[subGroup.id] ?? []
   const isColor = isColorSubGroup(section, subGroup)
@@ -167,7 +173,7 @@ function SubGroupOptions({
       >
         <div className="min-w-0 pr-3">
           <h3 className="truncate text-sm font-medium text-near-black">{subGroup.title}</h3>
-          <span className="text-xs font-light text-dark-gray">{getSubGroupPriceLabel(subGroup)}</span>
+          <span className="text-xs font-light text-dark-gray">{getSubGroupPriceLabel(subGroup, locale)}</span>
         </div>
         <span className="mr-1 text-lg font-light leading-none text-neutral-400">
           {isExpanded ? '-' : '+'}
@@ -195,6 +201,7 @@ function SubGroupOptions({
                   option={option}
                   selected={selectedIds.includes(option.id)}
                   onSelect={() => onSelectOption(section.id, option.id, subGroup.id)}
+                  locale={locale}
                 />
               ))}
             </div>
@@ -210,11 +217,18 @@ export function ConfiguratorOptionsPanel({
   selections,
   expandedSections,
   searchQuery,
+  modelName,
   onSearchChange,
   onToggleSection,
   onSelectOption,
 }: ConfiguratorOptionsPanelProps) {
+  const locale = useLocale()
+  const t = useTranslations('configurator')
   const [expandedSubGroups, setExpandedSubGroups] = useState<Record<string, boolean>>({})
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const dragRef = useRef<{ pointerId: number; startY: number; startScrollTop: number } | null>(null)
+  const [scrollHandle, setScrollHandle] = useState({ top: 0, height: 44, visible: false })
 
   const handleToggleSubGroup = (subGroupId: string) => {
     setExpandedSubGroups((prev) => ({
@@ -236,11 +250,89 @@ export function ConfiguratorOptionsPanel({
     )
   })
 
+  const updateScrollHandle = () => {
+    const scrollEl = scrollRef.current
+    const trackEl = trackRef.current
+    if (!scrollEl || !trackEl) return
+
+    const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight
+    const trackHeight = trackEl.clientHeight
+    if (maxScroll <= 0 || trackHeight <= 0) {
+      setScrollHandle((prev) => ({ ...prev, top: 0, visible: false }))
+      return
+    }
+
+    const height = Math.max(44, (scrollEl.clientHeight / scrollEl.scrollHeight) * trackHeight)
+    const maxTop = Math.max(0, trackHeight - height)
+    const top = (scrollEl.scrollTop / maxScroll) * maxTop
+    setScrollHandle({ top, height, visible: true })
+  }
+
+  useEffect(() => {
+    updateScrollHandle()
+    const scrollEl = scrollRef.current
+    if (!scrollEl) return
+
+    const resizeObserver = new ResizeObserver(updateScrollHandle)
+    resizeObserver.observe(scrollEl)
+    resizeObserver.observe(document.body)
+    scrollEl.addEventListener('scroll', updateScrollHandle, { passive: true })
+    window.addEventListener('resize', updateScrollHandle)
+
+    return () => {
+      resizeObserver.disconnect()
+      scrollEl.removeEventListener('scroll', updateScrollHandle)
+      window.removeEventListener('resize', updateScrollHandle)
+    }
+  }, [filteredSections.length, expandedSections, expandedSubGroups])
+
+  const handleTrackPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) return
+    const scrollEl = scrollRef.current
+    const trackEl = trackRef.current
+    if (!scrollEl || !trackEl) return
+
+    const rect = trackEl.getBoundingClientRect()
+    const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight
+    const targetRatio = (event.clientY - rect.top - scrollHandle.height / 2) / Math.max(1, rect.height - scrollHandle.height)
+    scrollEl.scrollTop = Math.max(0, Math.min(1, targetRatio)) * maxScroll
+    updateScrollHandle()
+  }
+
+  const handleThumbPointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const scrollEl = scrollRef.current
+    if (!scrollEl) return
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startY: event.clientY,
+      startScrollTop: scrollEl.scrollTop,
+    }
+  }
+
+  const handleThumbPointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current
+    const scrollEl = scrollRef.current
+    const trackEl = trackRef.current
+    if (!drag || drag.pointerId !== event.pointerId || !scrollEl || !trackEl) return
+
+    const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight
+    const maxTop = Math.max(1, trackEl.clientHeight - scrollHandle.height)
+    scrollEl.scrollTop = drag.startScrollTop + ((event.clientY - drag.startY) / maxTop) * maxScroll
+  }
+
+  const handleThumbPointerUp = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (dragRef.current?.pointerId === event.pointerId) {
+      dragRef.current = null
+    }
+  }
+
   return (
     <div className="flex h-full min-h-0 flex-col bg-white">
       <div className="border-b border-neutral-200 pb-4">
-        <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500">Configure</p>
-        <h2 className="mt-1 text-2xl font-light text-near-black">Your 911 Carrera</h2>
+        <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500">{t('configure')}</p>
+        <h2 className="mt-1 text-2xl font-light text-near-black">{t('yourModel', { model: modelName })}</h2>
 
         <div className="relative mt-5">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-gray" />
@@ -248,58 +340,86 @@ export function ConfiguratorOptionsPanel({
             type="search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search equipment"
-            aria-label="Search equipment"
+            placeholder={t('searchEquipment')}
+            aria-label={t('searchEquipment')}
             id="configurator-option-search"
             className="w-full rounded-[4px] border border-neutral-300 py-3 pl-10 pr-4 text-sm font-light transition-colors focus:border-black focus:outline-none"
           />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto pb-32">
-        {filteredSections.map((section, index) => {
-          const isExpanded = expandedSections[section.id] !== false
+      <div className="relative min-h-0 flex-1">
+        <div ref={scrollRef} className="h-full overflow-y-auto pb-32 pr-5">
+          {filteredSections.map((section, index) => {
+            const isExpanded = expandedSections[section.id] !== false
 
-          return (
-            <div key={section.id} className="border-b border-neutral-200">
-              <button
-                type="button"
-                onClick={() => onToggleSection(section.id)}
-                className="flex w-full items-center justify-between py-5 text-left transition-colors hover:bg-neutral-50"
-              >
-                <div className="min-w-0 pr-4">
-                  <p className="text-[11px] text-neutral-400">{String(index + 1).padStart(2, '0')}</p>
-                  <h2 className="truncate text-base font-light text-near-black">{section.title}</h2>
-                </div>
-                <span className="text-xl font-light leading-none text-neutral-400">
-                  {isExpanded ? '-' : '+'}
-                </span>
-              </button>
+            return (
+              <div key={section.id} className="border-b border-neutral-200">
+                <button
+                  type="button"
+                  onClick={() => onToggleSection(section.id)}
+                  className="flex w-full items-center justify-between py-5 text-left transition-colors hover:bg-neutral-50"
+                >
+                  <div className="min-w-0 pr-4">
+                    <p className="text-[11px] text-neutral-400">{String(index + 1).padStart(2, '0')}</p>
+                    <h2 className="truncate text-base font-light text-near-black">{section.title}</h2>
+                  </div>
+                  <span className="text-xl font-light leading-none text-neutral-400">
+                    {isExpanded ? '-' : '+'}
+                  </span>
+                </button>
 
-              {isExpanded && (
-                <div className="pb-5">
-                  {section.subGroups.map((subGroup) => (
-                    <SubGroupOptions
-                      key={subGroup.id}
-                      subGroup={subGroup}
-                      section={section}
-                      selections={selections}
-                      isExpanded={expandedSubGroups[subGroup.id] !== false}
-                      onToggle={() => handleToggleSubGroup(subGroup.id)}
-                      onSelectOption={onSelectOption}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )
-        })}
+                {isExpanded && (
+                  <div className="pb-5">
+                    {section.subGroups.map((subGroup) => (
+                      <SubGroupOptions
+                        key={subGroup.id}
+                        subGroup={subGroup}
+                        section={section}
+                        selections={selections}
+                        isExpanded={expandedSubGroups[subGroup.id] !== false}
+                        onToggle={() => handleToggleSubGroup(subGroup.id)}
+                        onSelectOption={onSelectOption}
+                        locale={locale}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
 
-        {filteredSections.length === 0 && (
-          <p className="py-8 text-center text-sm font-light text-dark-gray">
-            No equipment options match your search.
-          </p>
-        )}
+          {filteredSections.length === 0 && (
+            <p className="py-8 text-center text-sm font-light text-dark-gray">
+              {t('noEquipmentMatches')}
+            </p>
+          )}
+        </div>
+
+        <div
+          ref={trackRef}
+          className={`absolute bottom-24 right-0 top-3 w-5 cursor-pointer rounded-full transition-opacity ${
+            scrollHandle.visible ? 'opacity-100' : 'pointer-events-none opacity-0'
+          }`}
+          onPointerDown={handleTrackPointerDown}
+          aria-hidden="true"
+        >
+          <div className="absolute inset-y-0 left-2 w-1 rounded-full bg-neutral-200" />
+          {scrollHandle.visible && (
+            <button
+              type="button"
+              tabIndex={-1}
+              className="absolute left-1/2 flex w-5 -translate-x-1/2 touch-none items-center justify-center rounded-full border border-neutral-400 bg-white text-neutral-700 shadow transition-colors hover:border-black hover:text-black active:cursor-grabbing"
+              style={{ top: scrollHandle.top, height: scrollHandle.height }}
+              onPointerDown={handleThumbPointerDown}
+              onPointerMove={handleThumbPointerMove}
+              onPointerUp={handleThumbPointerUp}
+              onPointerCancel={handleThumbPointerUp}
+            >
+              <GripVertical size={14} strokeWidth={1.6} />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

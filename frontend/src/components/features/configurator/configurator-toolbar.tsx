@@ -30,7 +30,7 @@ function estimateMonthly(total: number): number {
   return Math.round(total / 83)
 }
 
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export function ConfiguratorToolbar({
   modelId,
@@ -45,6 +45,7 @@ export function ConfiguratorToolbar({
 }: ConfiguratorToolbarProps) {
   const t = useTranslations('configurator')
   const tc = useTranslations('common')
+  const locale = useLocale()
   const monthly = estimateMonthly(totalPrice)
 
   return (
@@ -84,7 +85,7 @@ export function ConfiguratorToolbar({
             <div className="flex items-center justify-end gap-1.5">
               <Calculator size={14} className="text-dark-gray flex-shrink-0" />
               <span className="whitespace-nowrap text-sm font-light text-near-black">
-                {formatPrice(monthly)}/{tc('month')}
+                {formatPrice(monthly, locale)}/{tc('month')}
               </span>
               <button type="button" aria-label={t('paymentInfo')} className="text-neutral-400 hover:text-black">
                 <Info size={14} strokeWidth={1.5} />
@@ -98,7 +99,7 @@ export function ConfiguratorToolbar({
           <div className="min-w-0 border-l border-gray-200 pl-6 text-right xl:pl-8">
             <div className="flex items-center justify-end gap-1.5">
               <span className="whitespace-nowrap text-sm font-light text-near-black md:text-base">
-                {formatPrice(totalPrice)}
+                {formatPrice(totalPrice, locale)}
               </span>
               <button type="button" aria-label={t('priceInfo')} className="text-neutral-400 hover:text-black">
                 <Info size={14} strokeWidth={1.5} />
@@ -138,9 +139,9 @@ export function ConfiguratorToolbar({
 
       <div className="flex items-center justify-between gap-3 border-t border-neutral-100 px-4 py-2 lg:hidden">
         <div>
-          <p className="text-base font-light text-near-black">{formatPrice(totalPrice)}</p>
+          <p className="text-base font-light text-near-black">{formatPrice(totalPrice, locale)}</p>
           <p className="text-[10px] text-neutral-400 font-light">
-            ~{formatPrice(monthly)}/{tc('month')}
+            ~{formatPrice(monthly, locale)}/{tc('month')}
           </p>
         </div>
         <p className="text-xs text-dark-gray font-light truncate max-w-[50%]">{modelName}</p>

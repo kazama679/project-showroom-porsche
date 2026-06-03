@@ -11,6 +11,7 @@ import { resolveOptionImageUrl } from '@/services/option-images'
 export interface ConfiguratorApiResponse {
   id: number
   name: string
+  seriesName?: string | null
   year: number
   basePrice: number
   deliveryFee: number
@@ -43,6 +44,12 @@ export interface ConfiguratorApiOption {
   isStandard: boolean
   imageUrl: string | null
   color: string | null
+  visualType?: string | null
+  colorHex?: string | null
+  materialTarget?: string | null
+  meshName?: string | null
+  textureUrl?: string | null
+  model3dVariantUrl?: string | null
 }
 
 export interface ConfiguratorApiGalleryImage {
@@ -61,8 +68,14 @@ function mapOption(option: ConfiguratorApiOption, groupTitle?: string): ConfigOp
     description: option.description ?? undefined,
     price: option.isStandard && price === 0 ? 0 : price,
     isStandard: option.isStandard,
-    color: option.color ?? undefined,
+    color: option.colorHex ?? option.color ?? undefined,
     image: resolveOptionImageUrl(option.imageUrl, option.name, groupTitle),
+    visualType: option.visualType ?? undefined,
+    colorHex: option.colorHex ?? option.color ?? undefined,
+    materialTarget: option.materialTarget ?? undefined,
+    meshName: option.meshName ?? undefined,
+    textureUrl: option.textureUrl ?? undefined,
+    model3dVariantUrl: option.model3dVariantUrl ?? undefined,
   }
 }
 
@@ -100,6 +113,7 @@ export function mapConfiguratorResponse(data: ConfiguratorApiResponse): {
   const model: ConfiguratorModel = {
     id: String(data.id),
     name: data.name,
+    seriesName: data.seriesName ?? undefined,
     year: data.year,
     baseMsrp: Number(data.basePrice),
     deliveryFee: Number(data.deliveryFee),

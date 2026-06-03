@@ -34,4 +34,22 @@ public class OptionItem
     @Column(name = "image_url", length = 500)
     private String imageUrl;
 
+    @Column(name = "visual_type", length = 50)
+    private String visualType;
+
+    @Column(name = "color_hex", length = 20)
+    private String colorHex;
+
+    @Column(name = "material_target", length = 100)
+    private String materialTarget;
+
+    @Column(name = "mesh_name", length = 150)
+    private String meshName;
+
+    @Column(name = "texture_url", length = 500)
+    private String textureUrl;
+
+    @Column(name = "model_3d_variant_url", length = 500)
+    private String model3dVariantUrl;
+
 }

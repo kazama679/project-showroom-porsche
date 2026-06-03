@@ -21,4 +21,10 @@ public class ConfiguratorOptionDTO
     private Boolean isStandard;
     private String imageUrl;
     private String color;
+    private String visualType;
+    private String colorHex;
+    private String materialTarget;
+    private String meshName;
+    private String textureUrl;
+    private String model3dVariantUrl;
 }

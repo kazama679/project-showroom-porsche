@@ -18,4 +18,10 @@ public class FormOptionItem
     private String description;
     private BigDecimal price;
     private String imageUrl;
+    private String visualType;
+    private String colorHex;
+    private String materialTarget;
+    private String meshName;
+    private String textureUrl;
+    private String model3dVariantUrl;
 }

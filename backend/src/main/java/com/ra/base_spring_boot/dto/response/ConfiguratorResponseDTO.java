@@ -17,6 +17,7 @@ public class ConfiguratorResponseDTO
 {
     private Long id;
     private String name;
+    private String seriesName;
     private Integer year;
     private BigDecimal basePrice;
     private BigDecimal deliveryFee;

@@ -67,6 +67,12 @@ public class OptionItemServiceImpl implements IOptionItemService
                 .description(form.getDescription())
                 .price(form.getPrice())
                 .imageUrl(form.getImageUrl())
+                .visualType(form.getVisualType())
+                .colorHex(form.getColorHex())
+                .materialTarget(form.getMaterialTarget())
+                .meshName(form.getMeshName())
+                .textureUrl(form.getTextureUrl())
+                .model3dVariantUrl(form.getModel3dVariantUrl())
                 .build();
 
         return OptionItemResponseDTO.fromEntity(optionItemRepository.save(entity));
@@ -98,8 +104,26 @@ public class OptionItemServiceImpl implements IOptionItemService
         oldItem.setDescription(form.getDescription());
         oldItem.setPrice(form.getPrice());
         oldItem.setImageUrl(form.getImageUrl());
+        if (hasVisualMetadata(form)) {
+            oldItem.setVisualType(form.getVisualType());
+            oldItem.setColorHex(form.getColorHex());
+            oldItem.setMaterialTarget(form.getMaterialTarget());
+            oldItem.setMeshName(form.getMeshName());
+            oldItem.setTextureUrl(form.getTextureUrl());
+            oldItem.setModel3dVariantUrl(form.getModel3dVariantUrl());
+        }
 
         return OptionItemResponseDTO.fromEntity(optionItemRepository.save(oldItem));
+    }
+
+    private boolean hasVisualMetadata(FormOptionItem form)
+    {
+        return form.getVisualType() != null
+                || form.getColorHex() != null
+                || form.getMaterialTarget() != null
+                || form.getMeshName() != null
+                || form.getTextureUrl() != null
+                || form.getModel3dVariantUrl() != null;
     }
 
     @Override

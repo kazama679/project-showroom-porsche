@@ -569,20 +569,21 @@ export default function ModelDetailPage() {
       {/* Section 7: Detail image order 2 (Image 6) */}
       <section className="bg-white px-6 md:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-[28px] overflow-hidden bg-gray-100 relative h-[520px] mr-30">
+          <div className="relative aspect-video overflow-hidden rounded-3xl bg-gray-50">
             <Image
               src={detailImageByOrder.order2 || model.imageUrl || ''}
               alt={`${model.name} detail 2`}
               fill
               unoptimized
-              className="object-cover"
+              sizes="(min-width: 1280px) 1280px, 100vw"
+              className="object-contain p-6 md:p-10"
             />
           </div>
         </div>
       </section>
 
       {/* Section 8: Detail image order 3 (Image 7) */}
-      <section className="bg-white px-6 md:px-16 relative z-20">
+      <section className="bg-white px-6 py-16 md:px-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
             <h3 className="text-4xl md:text-5xl font-light text-black mb-6">The one and always.</h3>
@@ -590,28 +591,30 @@ export default function ModelDetailPage() {
               {model.shortDescription || 'A timeless silhouette refined through engineering, with performance and day-to-day usability in perfect balance.'}
             </p>
           </div>
-          <div className="rounded-[28px] my-[-80px] overflow-hidden bg-gray-100 relative h-[720px] w-[600px]">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-gray-50">
             <Image
               src={detailImageByOrder.order3 || model.imageUrl || ''}
               alt={`${model.name} detail 3`}
               fill
               unoptimized
-              className="object-cover"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-contain p-6 md:p-10"
             />
           </div>
         </div>
       </section>
 
       {/* Section 9: Detail image order 4 (Image 8) */}
-      <section className="bg-white px-6 md:px-16 relative z-10">
+      <section className="bg-white px-6 md:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-[28px] overflow-hidden bg-gray-100 relative h-[520px] w-[700px] ml-50">
+          <div className="relative aspect-video w-full max-w-3xl overflow-hidden rounded-3xl bg-gray-50">
             <Image
               src={detailImageByOrder.order4 || model.imageUrl || ''}
               alt={`${model.name} detail 4`}
               fill
               unoptimized
-              className="object-cover"
+              sizes="(min-width: 768px) 768px, 100vw"
+              className="object-contain p-6 md:p-10"
             />
           </div>
         </div>
@@ -624,13 +627,20 @@ export default function ModelDetailPage() {
             {(detailImageByOrder.order5.length > 0 ? detailImageByOrder.order5 : [model.imageUrl || '']).map((url, idx) => (
               <div
                 key={`${url}-${idx}`}
-                className="min-w-[520px] md:min-w-[720px] snap-start rounded-[28px] overflow-hidden bg-gray-100 relative h-[520px]"
+                className="relative aspect-video min-w-full snap-start overflow-hidden rounded-3xl bg-gray-50 md:min-w-3xl"
               >
-                <Image src={url} alt={`${model.name} detail 5 ${idx + 1}`} fill unoptimized className="object-cover" />
+                <Image
+                  src={url}
+                  alt={`${model.name} detail 5 ${idx + 1}`}
+                  fill
+                  unoptimized
+                  sizes="(min-width: 768px) 768px, 100vw"
+                  className="object-contain p-6 md:p-10"
+                />
               </div>
             ))}
             {/* spacer to allow last card fully scroll into view */}
-            <div className="min-w-[24px] md:min-w-[64px]" aria-hidden="true" />
+            <div className="min-w-6 md:min-w-16" aria-hidden="true" />
           </div>
         </div>
       </section>

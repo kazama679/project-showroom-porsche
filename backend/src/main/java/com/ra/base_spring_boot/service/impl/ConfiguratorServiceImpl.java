@@ -19,9 +19,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ConfiguratorServiceImpl implements IConfiguratorService {
     private static final BigDecimal DEFAULT_DELIVERY_FEE = new BigDecimal("2350");
+    private static final Set<String> BLOCKED_OPTION_IMAGE_URLS = Set.of(
+            "https://res.cloudinary.com/dfireq2op/image/upload/v1778648038/porsche/cfa3dfd5-c8d8-4a51-869d-21584728d373.avif"
+    );
 
     private static final String FALLBACK_WHEEL_IMAGE = "https://res.cloudinary.com/dfireq2op/image/upload/v1778661086/porsche/9abe3dfc-d98a-42d1-806e-49da8a25ca8d.avif";
-    private static final String FALLBACK_PAINT_IMAGE = "https://res.cloudinary.com/dfireq2op/image/upload/v1778648038/porsche/cfa3dfd5-c8d8-4a51-869d-21584728d373.avif";
     private static final String FALLBACK_INTERIOR_IMAGE = "https://res.cloudinary.com/dfireq2op/image/upload/v1778661011/porsche/305482cb-a5b2-48cc-8c64-2826fdc29d3b.avif";
     private static final String FALLBACK_OPTION_IMAGE = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png";
 
@@ -46,6 +48,7 @@ public class ConfiguratorServiceImpl implements IConfiguratorService {
         return ConfiguratorResponseDTO.builder()
                 .id(carModel.getId())
                 .name(carModel.getName())
+                .seriesName(carModel.getSeries() != null ? carModel.getSeries().getName() : null)
                 .year(carModel.getYear())
                 .basePrice(carModel.getBasePrice())
                 .deliveryFee(DEFAULT_DELIVERY_FEE)
@@ -128,13 +131,24 @@ public class ConfiguratorServiceImpl implements IConfiguratorService {
                 .price(price)
                 .isStandard(isStandard)
                 .imageUrl(resolveOptionImageUrl(item))
-                .color(inferColorHex(item.getName()))
+                .color(firstNonBlank(item.getColorHex(), inferColorHex(item.getName())))
+                .visualType(item.getVisualType())
+                .colorHex(item.getColorHex())
+                .materialTarget(item.getMaterialTarget())
+                .meshName(item.getMeshName())
+                .textureUrl(item.getTextureUrl())
+                .model3dVariantUrl(item.getModel3dVariantUrl())
                 .build();
+    }
+
+    private String firstNonBlank(String value, String fallback) {
+        return value != null && !value.isBlank() ? value : fallback;
     }
 
     private String resolveOptionImageUrl(OptionItem item) {
         if (item.getImageUrl() != null && !item.getImageUrl().isBlank()) {
-            return item.getImageUrl();
+            String imageUrl = item.getImageUrl().trim();
+            return BLOCKED_OPTION_IMAGE_URLS.contains(imageUrl) ? null : imageUrl;
         }
 
         String groupName = item.getOptionGroup() != null ? item.getOptionGroup().getName() : "";
@@ -147,7 +161,7 @@ public class ConfiguratorServiceImpl implements IConfiguratorService {
             return FALLBACK_WHEEL_IMAGE;
         }
         if (combined.contains("sơn") || combined.contains("màu") || combined.contains("paint")) {
-            return FALLBACK_PAINT_IMAGE;
+            return null;
         }
         if (combined.contains("ghế") || combined.contains("seat") || combined.contains("nội thất")
                 || combined.contains("interior")) {
@@ -183,6 +197,7 @@ public class ConfiguratorServiceImpl implements IConfiguratorService {
         }
 
         return images.stream()
+                .filter(img -> img.getImageUrl() != null && !BLOCKED_OPTION_IMAGE_URLS.contains(img.getImageUrl().trim()))
                 .map(img -> ConfiguratorGalleryImageDTO.builder()
                         .id(String.valueOf(img.getId()))
                         .src(img.getImageUrl())
