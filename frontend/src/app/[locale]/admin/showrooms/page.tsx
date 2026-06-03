@@ -1,15 +1,31 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Edit2, Trash2, MapPin, Phone, Mail } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Badge } from '@/components/features/admin/badge'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
-import { FormInput } from '@/components/features/admin/form-input'
-import { Select } from '@/components/features/admin/select'
-import { useAdminPage } from "@/components/features/admin/admin-page-context"
-import { Alert } from "@/components/features/admin/alert"
+import { Plus, Edit2, Trash2, MapPin, Phone, Mail, Search, Globe } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
+
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Input } from '@/components/base/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/base/ui/select'
+import { Label } from '@/components/base/ui/label'
+import { Badge } from '@/components/base/ui/badge'
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+import { useAdminPage } from '@/components/features/admin/admin-page-context'
 
 const mockShowrooms = [
   {
@@ -50,19 +66,16 @@ const mockShowrooms = [
   },
 ]
 
-const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Coming Soon', value: 'coming_soon' },
-  { label: 'Closed', value: 'closed' },
-]
-
 export default function ShowroomsPage() {
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
+  
   const [showrooms, setShowrooms] = useState(mockShowrooms)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchKeyword, setSearchKeyword] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingShowroom, setEditingShowroom] = useState<(typeof mockShowrooms)[0] | null>(null)
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+  const [deletingShowroom, setDeletingShowroom] = useState<(typeof mockShowrooms)[0] | null>(null)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -72,6 +85,12 @@ export default function ShowroomsPage() {
     email: '',
     status: 'active',
   })
+
+  // Filter showrooms based on search
+  const filteredShowrooms = showrooms.filter(s => 
+    s.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    s.city.toLowerCase().includes(searchKeyword.toLowerCase())
+  )
 
   const handleOpenModal = (showroom?: (typeof mockShowrooms)[0]) => {
     if (showroom) {
@@ -100,8 +119,7 @@ export default function ShowroomsPage() {
 
   const handleSave = () => {
     if (!formData.name || !formData.city || !formData.address) {
-      setAlertMessage('Please fill in all required fields')
-      setShowAlert(true)
+      toast.error(t('fill_required'))
       return
     }
 
@@ -109,191 +127,226 @@ export default function ShowroomsPage() {
       setShowrooms(
         showrooms.map((s) =>
           s.id === editingShowroom.id
-            ? {
-                ...s,
-                name: formData.name,
-                city: formData.city,
-                address: formData.address,
-                phone: formData.phone,
-                email: formData.email,
-                status: formData.status as any,
-              }
+            ? { ...s, ...formData, status: formData.status as any }
             : s
         )
       )
-      setAlertMessage('Showroom updated successfully')
+      toast.success(tCommon('update_success'))
     } else {
       const newShowroom = {
-        id: Math.max(...showrooms.map((s) => s.id)) + 1,
-        name: formData.name,
-        city: formData.city,
-        address: formData.address,
-        phone: formData.phone,
-        email: formData.email,
+        id: Math.max(0, ...showrooms.map((s) => s.id)) + 1,
+        ...formData,
         status: formData.status as any,
       }
       setShowrooms([newShowroom, ...showrooms])
-      setAlertMessage('Showroom created successfully')
+      toast.success(tCommon('create_success'))
     }
-
     setIsModalOpen(false)
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
   }
 
-  const handleDelete = (id: number) => {
-    setShowrooms(showrooms.filter((s) => s.id !== id))
-    setAlertMessage('Showroom deleted successfully')
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
+  const handleOpenDeleteModal = (showroom: typeof mockShowrooms[0]) => {
+    setDeletingShowroom(showroom)
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if (!deletingShowroom) return
+    setShowrooms(showrooms.filter((s) => s.id !== deletingShowroom.id))
+    toast.success(tCommon('delete_success'))
+    setIsDeleteModalOpen(false)
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'active': return 'Active'
+      case 'coming_soon': return 'Coming Soon'
+      case 'closed': return 'Closed'
+      default: return status
+    }
   }
 
   useAdminPage({
     titleKey: 'showrooms_management',
     subtitleKey: 'showrooms_subtitle',
-    actions: (
-      <Button
-        variant="primary"
-        icon={<Plus size={18} />}
-        onClick={() => handleOpenModal()}
-      >
-        Add Showroom
-      </Button>
-    ),
   })
 
   return (
-    <>
-      <div className="space-y-6">
-        {showAlert && (
-          <Alert
-            type="success"
-            message={alertMessage}
-            onClose={() => setShowAlert(false)}
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-2">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            id="showroom-search"
+            placeholder={t('search_showrooms')}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 w-64"
           />
-        )}
+        </div>
+        <Button variant="brand" size="sm" onClick={() => handleOpenModal()}>
+          <Plus size={16} className="mr-2" />
+          Add Showroom
+        </Button>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {showrooms.map((showroom) => (
-            <div
-              key={showroom.id}
-              className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <h3 className="text-porsche-subheading text-near-black dark:text-white">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {filteredShowrooms.map((showroom) => (
+          <div
+            key={showroom.id}
+            className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6 hover:shadow-sm transition-all group"
+          >
+            <div className="flex items-start justify-between mb-5">
+              <div>
+                <h3 className="text-xl font-bold text-near-black dark:text-white uppercase tracking-tight">
                   {showroom.name}
                 </h3>
-                <Badge variant={showroom.status === 'active' ? 'success' : 'warning'}>
-                  {showroom.status.replace('_', ' ').charAt(0).toUpperCase() + showroom.status.slice(1)}
-                </Badge>
-              </div>
-
-              <div className="space-y-3 mb-4">
-                <div className="flex gap-3 text-sm">
-                  <MapPin size={16} className="text-brand-red flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-near-black dark:text-white">{showroom.city}</p>
-                    <p className="text-mid-gray dark:text-light-gray-surface">{showroom.address}</p>
-                  </div>
-                </div>
-                <div className="flex gap-3 text-sm items-center">
-                  <Phone size={16} className="text-brand-red" />
-                  <a href={`tel:${showroom.phone}`} className="text-info-blue hover:underline">
-                    {showroom.phone}
-                  </a>
-                </div>
-                <div className="flex gap-3 text-sm items-center">
-                  <Mail size={16} className="text-brand-red" />
-                  <a href={`mailto:${showroom.email}`} className="text-info-blue hover:underline">
-                    {showroom.email}
-                  </a>
+                <div className="flex items-center gap-2 mt-1 text-gray-400 text-xs font-semibold uppercase tracking-wider">
+                  <Globe size={12} className="text-brand-red" />
+                  {showroom.city}
                 </div>
               </div>
+              <Badge variant={showroom.status === 'active' ? 'success' : 'outline'}>
+                {getStatusLabel(showroom.status)}
+              </Badge>
+            </div>
 
-              <div className="flex gap-2 pt-4 border-t border-light-gray-surface dark:border-neutral-700">
-                <button
-                  onClick={() => handleOpenModal(showroom)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-brand-red text-white rounded-sm hover:bg-dark-red font-medium text-sm"
-                >
-                  <Edit2 size={16} />
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(showroom.id)}
-                  className="px-3 py-2 bg-light-gray-surface dark:bg-neutral-700 text-black dark:text-white rounded-sm hover:bg-neutral-300 dark:hover:bg-[#505050]"
-                >
-                  <Trash2 size={18} />
-                </button>
+            <div className="space-y-3 mb-6">
+              <div className="flex gap-4">
+                <MapPin size={18} className="text-gray-300 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-gray-500 leading-relaxed italic">{showroom.address}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <Phone size={18} className="text-gray-300 flex-shrink-0" />
+                <a href={`tel:${showroom.phone}`} className="text-sm font-medium text-info-blue hover:underline">
+                  {showroom.phone}
+                </a>
+              </div>
+              <div className="flex items-center gap-4">
+                <Mail size={18} className="text-gray-300 flex-shrink-0" />
+                <a href={`mailto:${showroom.email}`} className="text-sm font-medium text-near-black dark:text-white hover:text-brand-red transition-colors">
+                  {showroom.email}
+                </a>
               </div>
             </div>
-          ))}
-        </div>
+
+            <div className="flex gap-2 pt-5 border-t border-light-gray-surface dark:border-neutral-800">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 uppercase text-xs font-bold tracking-widest h-10"
+                onClick={() => handleOpenModal(showroom)}
+              >
+                <Edit2 size={14} className="mr-2" />
+                Edit
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-brand-red h-10 w-10 p-0"
+                onClick={() => handleOpenDeleteModal(showroom)}
+              >
+                <Trash2 size={18} />
+              </Button>
+            </div>
+          </div>
+        ))}
+        {filteredShowrooms.length === 0 && (
+          <div className="col-span-full py-12 text-center text-gray-500 italic bg-gray-50 dark:bg-neutral-900 rounded-sm border border-dashed border-gray-200 dark:border-neutral-800">
+            No showrooms found matching your search.
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingShowroom ? 'Edit Showroom' : 'Add New Showroom'}
-        subtitle={editingShowroom ? 'Update showroom information' : 'Create a new showroom location'}
-        size="md"
-        footer={
-          <>
-            <Button
-              variant="secondary"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingShowroom ? 'Edit Showroom' : 'Add New Showroom'}</DialogTitle>
+            <DialogDescription>
+              {editingShowroom ? 'Update showroom information' : 'Create a new showroom location'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label className="text-xs uppercase font-bold tracking-wider">Showroom Name</Label>
+              <Input
+                placeholder="e.g., Downtown Porsche Center"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-xs uppercase font-bold tracking-wider">City</Label>
+                <Input
+                  placeholder="e.g., New York"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-xs uppercase font-bold tracking-wider">Status</Label>
+                <Select value={formData.status} onValueChange={(val) => setFormData({ ...formData, status: val })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="coming_soon">Coming Soon</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label className="text-xs uppercase font-bold tracking-wider">Address</Label>
+              <Input
+                placeholder="Full street address"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-xs uppercase font-bold tracking-wider">Phone</Label>
+                <Input
+                  placeholder="+1 (xxx) xxx-xxxx"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-xs uppercase font-bold tracking-wider">Email</Label>
+                <Input
+                  type="email"
+                  placeholder="contact@porsche-showroom.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              {tCommon('cancel')}
             </Button>
-            <Button variant="primary" onClick={handleSave}>
-              {editingShowroom ? 'Update' : 'Create'} Showroom
+            <Button variant="brand" onClick={handleSave}>
+              {editingShowroom ? tCommon('update') : tCommon('create')}
             </Button>
-          </>
-        }
-      >
-        <div className="space-y-4">
-          <FormInput
-            label="Showroom Name"
-            placeholder="e.g., Downtown Porsche Center"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
-          />
-          <FormInput
-            label="City"
-            placeholder="e.g., New York"
-            value={formData.city}
-            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-            required
-          />
-          <FormInput
-            label="Address"
-            placeholder="e.g., 123 Main Street, NY 10001"
-            value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            required
-          />
-          <FormInput
-            label="Phone"
-            placeholder="+1 (212) 555-0100"
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          />
-          <FormInput
-            label="Email"
-            type="email"
-            placeholder="contact@porsche.com"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          />
-          <Select
-            label="Status"
-            options={statusOptions}
-            value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-          />
-        </div>
-      </Modal>
-    </>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={isDeleteModalOpen}
+        title={t('confirm_delete')}
+        description={t('are_you_sure')}
+        itemLabel={deletingShowroom?.name}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
+    </div>
   )
 }

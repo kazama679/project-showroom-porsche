@@ -84,7 +84,7 @@ const menuItemsConfig: MenuItem[] = [
     labelKey: "system",
     icon: Zap,
     submenu: [
-      { labelKey: "ailogs", href: "/admin/ailogs" },
+      { labelKey: "aiKnowledge", href: "/admin/ai-knowledge" },
       { labelKey: "settings", href: "/admin/settings" },
     ],
   },

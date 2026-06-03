@@ -1,21 +1,36 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, Car, Settings2, CheckCircle2, XCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
+
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Input } from '@/components/base/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/base/ui/select'
+import { Checkbox } from '@/components/base/ui/checkbox'
+import { Label } from '@/components/base/ui/label'
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
-import { Alert } from '@/components/features/admin/alert'
-import { useTranslations } from 'next-intl';
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+
 import { carModelOptionService, CarModelOption, CarModelOptionFormData } from '@/services/car-model-option'
 import { optionItemService, OptionItem } from '@/services/option-item'
 import { carModelService, CarModelItem } from '@/services/car-model'
 import { authService, getErrorMessage } from '@/services/auth'
 
 export default function CarModelOptionsPage() {
-  const t = useTranslations('admin');
-  const tCommon = useTranslations('common');
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
 
   const [assignments, setAssignments] = useState<CarModelOption[]>([])
   const [carModels, setCarModels] = useState<CarModelItem[]>([])
@@ -32,10 +47,6 @@ export default function CarModelOptionsPage() {
   const [deletingAssignment, setDeletingAssignment] = useState<CarModelOption | null>(null)
   const [saving, setSaving] = useState(false)
 
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>('success')
-
   const [formData, setFormData] = useState<CarModelOptionFormData>({
     carModelId: 0,
     optionItemId: 0,
@@ -45,18 +56,13 @@ export default function CarModelOptionsPage() {
   const isAdmin = authService.isAdmin()
   const isAuthenticated = authService.isAuthenticated()
 
-  const showAlertMessage = (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
-    setAlertMessage(message); setAlertType(type); setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 5000)
-  }
-
   const fetchAssignments = useCallback(async () => {
     setLoading(true)
     try {
       const data = await carModelOptionService.findAll(searchKeyword, currentPage - 1, pageSize)
       setAssignments(data.content)
       setTotalElements(data.totalElements)
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setLoading(false) }
   }, [searchKeyword, currentPage, pageSize])
 
@@ -76,16 +82,8 @@ export default function CarModelOptionsPage() {
     fetchDependencies()
   }, [fetchAssignments, fetchDependencies])
 
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
-  const handleSearchChange = (value: string) => {
-    setSearchKeyword(value)
-    if (searchTimeout) clearTimeout(searchTimeout)
-    const timeout = setTimeout(() => { setCurrentPage(1) }, 400)
-    setSearchTimeout(timeout)
-  }
-
   const handleOpenModal = (item?: CarModelOption) => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
+    if (!isAdmin) { toast.warning(t('no_permission')); return }
     if (item) {
       setEditingAssignment(item)
       setFormData({ carModelId: item.carModelId, optionItemId: item.optionItemId, isDefault: item.isDefault || false })
@@ -100,10 +98,11 @@ export default function CarModelOptionsPage() {
     setIsModalOpen(true)
   }
 
-  const handleSave = async () => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!isAdmin) { toast.warning(t('no_permission')); return }
     if (!formData.carModelId || !formData.optionItemId) { 
-      showAlertMessage(t('fill_required'), 'error'); 
+      toast.error(t('fill_required'))
       return 
     }
 
@@ -111,19 +110,15 @@ export default function CarModelOptionsPage() {
     try {
       if (editingAssignment) {
         await carModelOptionService.update(editingAssignment.id, formData)
-        showAlertMessage(t('option_updated'), 'success')
+        toast.success(t('option_updated'))
       } else {
         await carModelOptionService.create(formData)
-        showAlertMessage(t('option_created'), 'success')
+        toast.success(t('option_created'))
       }
-      setIsModalOpen(false); fetchAssignments()
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+      setIsModalOpen(false)
+      fetchAssignments()
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setSaving(false) }
-  }
-
-  const handleOpenDeleteModal = (item: CarModelOption) => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
-    setDeletingAssignment(item); setIsDeleteModalOpen(true)
   }
 
   const handleConfirmDelete = async () => {
@@ -131,154 +126,230 @@ export default function CarModelOptionsPage() {
     setSaving(true)
     try {
       await carModelOptionService.delete(deletingAssignment.id)
-      showAlertMessage(t('option_deleted'), 'success')
-      setIsDeleteModalOpen(false); setDeletingAssignment(null); fetchAssignments()
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+      toast.success(t('option_deleted'))
+      setIsDeleteModalOpen(false)
+      setDeletingAssignment(null)
+      fetchAssignments()
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setSaving(false) }
   }
+
+  const columns = useMemo(() => [
+    { 
+      key: 'id', 
+      label: 'ID', 
+      align: 'center' as const, 
+      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+    },
+    { 
+      key: 'carModelName', 
+      label: t('model_name'), 
+      sortable: true,
+      render: (val: string) => (
+        <div className="flex items-center gap-2">
+          <Car size={14} className="text-gray-400" />
+          <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{val}</span>
+        </div>
+      )
+    },
+    { 
+      key: 'optionItemName', 
+      label: t('option_item_name'), 
+      sortable: true,
+      render: (val: string) => (
+        <div className="flex items-center gap-2">
+          <Settings2 size={14} className="text-brand-red" />
+          <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{val}</span>
+        </div>
+      )
+    },
+    { 
+      key: 'isDefault', 
+      label: 'Default', 
+      align: 'center' as const, 
+      render: (v: boolean) => (
+        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-[9px] tracking-widest font-bold">
+          {v ? (
+            <span className="flex items-center gap-1.5"><CheckCircle2 size={10} /> {tCommon('yes')}</span>
+          ) : (
+            <span className="flex items-center gap-1.5"><XCircle size={10} /> {tCommon('no')}</span>
+          )}
+        </Badge>
+      )
+    },
+    ...(isAdmin ? [{
+      key: 'actions' as keyof CarModelOption, 
+      label: t('actions'), 
+      align: 'right' as const,
+      render: (_: any, row: CarModelOption) => (
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-near-black dark:hover:text-white"
+            onClick={() => handleOpenModal(row)}
+          >
+            <Edit2 size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-brand-red"
+            onClick={() => {
+              setDeletingAssignment(row)
+              setIsDeleteModalOpen(true)
+            }}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      ),
+    }] : []),
+  ], [isAdmin, t, tCommon])
 
   useAdminPage({
     titleKey: 'car_model_options_management',
     subtitleKey: 'car_model_options_subtitle',
-    actions: (
-      <div className="flex items-center gap-3">
-        <div className="relative hidden sm:block">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
-          <input type="text" placeholder={t('search')} value={searchKeyword}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
+  })
+
+  return (
+    <div className="space-y-6">
+      {isAuthenticated && !isAdmin && (
+        <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
+          <ShieldAlert size={20} className="flex-shrink-0" />
+          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="relative w-full sm:w-64">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder={t('search') || 'Search assignment...'}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 h-10"
+          />
         </div>
         {isAdmin && (
-          <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
+          <Button
+            variant="brand"
+            onClick={() => handleOpenModal()}
+            className="uppercase tracking-widest text-xs font-bold w-full sm:w-auto h-10 px-6"
+          >
+            <Plus size={16} className="mr-2" />
             {t('add_car_model_option')}
           </Button>
         )}
       </div>
-    ),
-  })
 
-  return (
-    <>
-      <div className="space-y-6">
-        {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
-            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('no_permission')}</p>
-          </div>
-        )}
-        {showAlert && <Alert type={alertType} message={alertMessage} onClose={() => setShowAlert(false)} />}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-5">
-            <p className="text-xs font-medium text-mid-gray dark:text-light-gray-surface uppercase tracking-wider">{t('option_total')}</p>
-            <p className="text-2xl font-bold text-near-black dark:text-white mt-2">{totalElements}</p>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <DataTable
-            columns={[
-              { key: 'id', label: 'ID', align: 'center', sortable: true },
-              { key: 'carModelName', label: t('model_name'), sortable: true },
-              { key: 'optionItemName', label: t('option_item_name'), sortable: true },
-              { key: 'isDefault', label: 'Default', align: 'center', render: (v: any) => v ? t('yes') : t('no') },
-              ...(isAdmin ? [{
-                key: 'actions' as keyof CarModelOption, label: t('actions'), align: 'center' as const,
-                render: (value: any, row: any) => (
-                  <div className="flex gap-2 justify-center">
-                    <button onClick={(e) => { e.stopPropagation(); handleOpenModal(row) }}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('edit')}>
-                      <Edit2 size={16} className="text-mid-gray" />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleOpenDeleteModal(row) }}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('delete')}>
-                      <Trash2 size={16} className="text-brand-red" />
-                    </button>
-                  </div>
-                ),
-              }] : []),
-            ]}
-            data={assignments} loading={loading}
-            pagination={{
-              pageSize,
-              currentPage,
-              total: totalElements,
-              onPageChange: setCurrentPage,
-              onPageSizeChange: setPageSize
-            }}
-          />
-        </div>
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-800 rounded-none overflow-hidden shadow-sm">
+        <DataTable
+          columns={columns}
+          data={assignments}
+          loading={loading}
+          pagination={{
+            pageSize,
+            currentPage,
+            total: totalElements,
+            onPageChange: setCurrentPage,
+            onPageSizeChange: setPageSize
+          }}
+        />
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
-        title={editingAssignment ? t('edit_car_model_option') : t('add_car_model_option')}
-        size="md"
-        footer={<>
-          <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={saving}>{tCommon('cancel')}</Button>
-          <Button variant="primary" onClick={handleSave} loading={saving}>{editingAssignment ? t('update') : t('create')}</Button>
-        </>}>
-        <div className="space-y-4">
+      {/* Create/Edit Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0 rounded-none border-none overflow-hidden font-porsche">
+          <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
+            <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
+              {editingAssignment ? t('edit_car_model_option') : t('add_car_model_option')}
+            </DialogTitle>
+            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+              Assign options items to specific vehicle models
+            </DialogDescription>
+          </DialogHeader>
           
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-near-black dark:text-light-gray-surface">
-              {t('model_name')} <span className="text-brand-red">*</span>
-            </label>
-            <select
-              value={formData.carModelId || ''}
-              onChange={(e) => setFormData({ ...formData, carModelId: parseInt(e.target.value) })}
-              className="w-full px-4 py-2 border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white"
-              required
-            >
-              <option value="" disabled>{t('select_model')}</option>
-              {carModels.map((m) => (
-                <option key={m.id} value={m.id}>{m.name}</option>
-              ))}
-            </select>
-          </div>
+          <form onSubmit={handleSave} className="p-8 space-y-6">
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">
+                {t('model_name')} <span className="text-brand-red">*</span>
+              </Label>
+              <Select
+                value={formData.carModelId.toString()}
+                onValueChange={(val) => setFormData({ ...formData, carModelId: parseInt(val) })}
+              >
+                <SelectTrigger className="h-12 font-bold uppercase">
+                  <SelectValue placeholder={t('select_model')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {carModels.map((m) => (
+                    <SelectItem key={m.id} value={m.id.toString()} className="uppercase font-bold text-xs">
+                      {m.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-near-black dark:text-light-gray-surface">
-              {t('option_item_name')} <span className="text-brand-red">*</span>
-            </label>
-            <select
-              value={formData.optionItemId || ''}
-              onChange={(e) => setFormData({ ...formData, optionItemId: parseInt(e.target.value) })}
-              className="w-full px-4 py-2 border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white"
-              required
-            >
-              <option value="" disabled>{t('option_item_name')}</option>
-              {optionItems.map((opt) => (
-                <option key={opt.id} value={opt.id}>{opt.name}</option>
-              ))}
-            </select>
-          </div>
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">
+                {t('option_item_name')} <span className="text-brand-red">*</span>
+              </Label>
+              <Select
+                value={formData.optionItemId.toString()}
+                onValueChange={(val) => setFormData({ ...formData, optionItemId: parseInt(val) })}
+              >
+                <SelectTrigger className="h-12 font-bold uppercase">
+                  <SelectValue placeholder={t('select_option_item')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {optionItems.map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id.toString()} className="uppercase font-bold text-xs text-brand-red">
+                      {opt.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="flex items-center gap-2 mt-4">
-            <input type="checkbox" id="isDefault" checked={formData.isDefault}
-              onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-              className="w-4 h-4 text-brand-red rounded-sm border-light-gray-surface focus:ring-brand-red" />
-            <label htmlFor="isDefault" className="text-sm font-medium text-near-black dark:text-light-gray-surface">
-              Set as Default Option
-            </label>
-          </div>
+            <div className="flex items-center space-x-2 pt-2 pb-2">
+              <Checkbox 
+                id="isDefault" 
+                checked={formData.isDefault} 
+                onCheckedChange={(checked) => setFormData({ ...formData, isDefault: !!checked })}
+                className="rounded-none border-gray-300 data-[state=checked]:bg-brand-red data-[state=checked]:border-brand-red"
+              />
+              <Label htmlFor="isDefault" className="text-xs font-bold uppercase tracking-widest cursor-pointer">
+                {t('set_as_default') || 'Set as Default Option'}
+              </Label>
+            </div>
 
-        </div>
-      </Modal>
+            <DialogFooter className="pt-4 gap-3">
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
+                {tCommon('cancel')}
+              </Button>
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-12 italic italic font-black shadow-lg">
+                {editingAssignment ? t('update') : t('create')}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title={t('option_confirm_delete')} size="sm"
-        footer={<>
-          <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)} disabled={saving}>{tCommon('cancel')}</Button>
-          <Button variant="danger" onClick={handleConfirmDelete} loading={saving}>{t('delete')}</Button>
-        </>}>
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-brand-red" />
-          </div>
-          <div>
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('option_confirm_delete_msg')}</p>
-          </div>
-        </div>
-      </Modal>
-    </>
+      <ConfirmDialog
+        open={isDeleteModalOpen}
+        title={t('option_confirm_delete')}
+        description={t('option_confirm_delete_msg')}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false)
+          setDeletingAssignment(null)
+        }}
+        loading={saving}
+      />
+    </div>
   )
 }

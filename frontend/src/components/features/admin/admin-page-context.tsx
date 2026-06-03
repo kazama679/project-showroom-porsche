@@ -52,7 +52,7 @@ const routeDefaults: Record<string, { titleKey: string; subtitleKey?: string }> 
   '/admin/reviews': { titleKey: 'reviews_management', subtitleKey: 'reviews_subtitle' },
   '/admin/showrooms': { titleKey: 'showrooms_management', subtitleKey: 'showrooms_subtitle' },
   '/admin/test-drives': { titleKey: 'test_drives_management', subtitleKey: 'test_drives_subtitle' },
-  '/admin/ai-logs': { titleKey: 'ai_logs_title', subtitleKey: 'ai_logs_subtitle' },
+  '/admin/ai-knowledge': { titleKey: 'ai_knowledge_title', subtitleKey: 'ai_knowledge_subtitle' },
   '/admin/settings': { titleKey: 'settings_title', subtitleKey: 'settings_subtitle' },
   '/admin/users': { titleKey: 'manage_users', subtitleKey: 'users_subtitle' },
   '/admin/blog': { titleKey: 'blog_management', subtitleKey: 'blog_subtitle' },

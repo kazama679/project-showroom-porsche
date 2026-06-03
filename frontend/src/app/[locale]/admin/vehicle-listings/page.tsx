@@ -2,28 +2,41 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Check, X, Loader2, Eye, Clock, AlertCircle } from 'lucide-react'
+import { Check, X, Eye, Clock, AlertCircle, Car, DollarSign, MapPin, Phone, Mail, Calendar, ShieldCheck, Tag, Plus } from 'lucide-react'
 import { toast } from 'sonner'
-import { vehicleListingApi, VehicleListingResponse } from '@/services/vehicle-listing-api'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
 import { useTranslations } from 'next-intl'
+
+import { vehicleListingApi, VehicleListingResponse } from '@/services/vehicle-listing-api'
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Badge } from '@/components/base/ui/badge'
+import { Textarea } from '@/components/base/ui/textarea'
+import { DataTable } from '@/components/base/admin/data-table'
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+import { useAdminPage } from '@/components/features/admin/admin-page-context'
+import { Label } from '@/components/base/ui/label'
 
 export default function AdminVehicleListingsPage() {
   const t = useTranslations('adminUsedCars')
+  const tAdmin = useTranslations('admin')
+  const tCommon = useTranslations('common')
+  
   const [listings, setListings] = useState<VehicleListingResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
   
-  // Modal state
   const [selectedListing, setSelectedListing] = useState<VehicleListingResponse | null>(null)
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
-  
-  // Image zoom state
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
-
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false)
 
   const fetchListings = async () => {
@@ -96,444 +109,353 @@ export default function AdminVehicleListingsPage() {
     return val ? t('yes') : t('no')
   }
 
-  if (loading && listings.length === 0) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-      </div>
-    )
-  }
+  const columns = [
+    {
+      key: 'id',
+      label: t('table_id'),
+      render: (val: number) => <span className="font-mono text-[10px] text-gray-400">#{val}</span>,
+    },
+    {
+      key: 'vehicle',
+      label: t('table_vehicle'),
+      render: (_: any, row: VehicleListingResponse) => (
+        <div className="flex flex-col">
+          <span className="text-sm font-bold uppercase tracking-tight text-near-black dark:text-white">
+            {row.make} {row.model}
+          </span>
+          <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider transition-colors duration-300">
+            {row.trimLevel} • {row.modelYear} • {row.mileage?.toLocaleString()} KM
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'vin',
+      label: t('table_vin'),
+      render: (val: string) => <span className="font-mono text-[10px] uppercase text-gray-400">{val}</span>,
+    },
+    {
+      key: 'askingPrice',
+      label: t('table_price'),
+      render: (val: number) => <span className="font-bold text-near-black dark:text-white">${val?.toLocaleString()}</span>,
+    },
+    {
+      key: 'status',
+      label: t('table_status'),
+      align: 'center' as const,
+      render: (val: string) => {
+        const variantMap: Record<string, any> = {
+          PENDING: 'warning',
+          APPROVED: 'success',
+          REJECTED: 'destructive',
+          SOLD: 'secondary',
+        }
+        return (
+          <Badge variant={variantMap[val] || 'default'} className="uppercase text-[9px] tracking-widest font-bold">
+            {getStatusLabel(val)}
+          </Badge>
+        )
+      },
+    },
+    {
+      key: 'actions',
+      label: t('table_actions'),
+      align: 'right' as const,
+      render: (_: any, row: VehicleListingResponse) => (
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="h-8 uppercase tracking-widest text-[10px] font-bold border-gray-200 dark:border-neutral-800"
+          onClick={() => setSelectedListing(row)}
+        >
+          <Eye size={14} className="mr-2" /> {t('view_details')}
+        </Button>
+      ),
+    },
+  ]
+
+  useAdminPage({
+    titleKey: 'vehicle_listings_title',
+    subtitleKey: 'vehicle_listings_subtitle',
+  })
 
   return (
-    <div className="space-y-6 relative">
-      
-      {/* Header & Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-        <div className="flex gap-2">
+    <div className="space-y-6">
+      {/* Filters Container */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-800 p-4 shadow-sm">
+        <div className="flex flex-wrap gap-2">
           {['', 'PENDING', 'APPROVED', 'REJECTED', 'SOLD'].map((status) => (
-            <button
+            <Button
               key={status}
+              variant={statusFilter === status ? 'brand' : 'outline'}
+              size="sm"
               onClick={() => setStatusFilter(status)}
-              className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
-                statusFilter === status 
-                  ? 'bg-near-black text-white' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+              className="uppercase tracking-widest px-4 h-9 text-[10px] font-bold"
             >
               {status ? getStatusLabel(status) : t('filter_all')}
-            </button>
+            </Button>
           ))}
         </div>
-        <div className="text-sm text-gray-500 font-medium">
-          {t('total_listings')} {listings.length}
+        <div className="flex items-center gap-2 px-4 h-9 border-l border-gray-100 dark:border-neutral-800 ml-auto bg-gray-50 dark:bg-neutral-900 rounded-sm">
+          <Tag size={12} className="text-gray-400" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            {t('total_listings')}: <span className="text-near-black dark:text-white ml-1">{listings.length}</span>
+          </span>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">{t('table_id')}</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">{t('table_vehicle')}</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">{t('table_vin')}</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">{t('table_price')}</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">{t('table_status')}</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase text-right">{t('table_actions')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {listings.map((l) => (
-                <tr key={l.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">#{l.id}</td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-near-black">{l.make} {l.model} {l.trimLevel}</div>
-                    <div className="text-xs text-gray-500">{l.modelYear} • {l.mileage?.toLocaleString()} km</div>
-                  </td>
-                  <td className="px-6 py-4 text-sm font-mono text-gray-600 uppercase">{l.vin}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-green-700">${l.askingPrice?.toLocaleString()}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                      l.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
-                      l.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                      l.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {l.status === 'PENDING' && <Clock className="w-3 h-3 mr-1" />}
-                      {l.status === 'APPROVED' && <Check className="w-3 h-3 mr-1" />}
-                      {l.status === 'REJECTED' && <X className="w-3 h-3 mr-1" />}
-                      {getStatusLabel(l.status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setSelectedListing(l)}
-                    >
-                      <Eye className="w-4 h-4 mr-2" /> {t('view_details')}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-              {listings.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                    {t('no_listings')}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-800 rounded-none overflow-hidden shadow-sm">
+        <DataTable 
+          columns={columns} 
+          data={listings} 
+          loading={loading}
+          pagination={{
+            currentPage: 1,
+            pageSize: 20,
+            total: listings.length,
+            onPageChange: () => {},
+          }}
+        />
       </div>
 
-      {/* View Details Modal */}
-      {selectedListing && !isRejectModalOpen && (
-        <Modal 
-          isOpen={true} 
-          onClose={() => setSelectedListing(null)}
-          title={`Listing #${selectedListing.id} - ${selectedListing.make} ${selectedListing.model}`}
-          size="xl"
-        >
-          <div className="space-y-6 max-h-[70vh] overflow-y-auto p-1">
-            
-            {selectedListing.status === 'PENDING' && (
-              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+      {/* Detail Dialog */}
+      <Dialog open={!!selectedListing && !isRejectModalOpen && !isApproveModalOpen} onOpenChange={(open) => !open && setSelectedListing(null)}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-0 rounded-none border-none">
+          {selectedListing && (
+            <div className="flex flex-col h-full font-porsche">
+              <div className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h4 className="font-medium text-amber-900">{t('action_required')}</h4>
-                  <p className="text-sm text-amber-700 mt-1">{t('action_desc')}</p>
+                  <div className="flex items-center gap-3 mb-1">
+                    <Badge variant={selectedListing.status === 'APPROVED' ? 'success' : selectedListing.status === 'PENDING' ? 'warning' : 'destructive'} className="rounded-none uppercase tracking-[0.2em] text-[9px] font-bold py-1">
+                      {selectedListing.status}
+                    </Badge>
+                    <span className="font-mono text-[10px] text-gray-400 uppercase tracking-widest">VIN: {selectedListing.vin}</span>
+                  </div>
+                  <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic text-near-black dark:text-white">
+                    {selectedListing.make} {selectedListing.model} {selectedListing.trimLevel}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs uppercase font-bold text-gray-500 tracking-widest">
+                    #{selectedListing.id} • {selectedListing.modelYear} • {selectedListing.mileage?.toLocaleString()} KM
+                  </DialogDescription>
                 </div>
               </div>
-            )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Left Column: Details */}
-              <div className="space-y-8">
-                
-                {/* Vehicle Details */}
-                <div>
-                  <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-near-black">{t('vehicle_details')}</h3>
-                  <div className="space-y-2.5 text-sm">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_vin')}</div> <div className="font-medium uppercase text-right text-near-black break-all">{selectedListing.vin}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_make')}</div> <div className="font-medium text-right text-near-black">{selectedListing.make}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_model')}</div> <div className="font-medium text-right text-near-black">{selectedListing.model} {selectedListing.trimLevel}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_year')}</div> <div className="font-medium text-right text-near-black">{selectedListing.modelYear}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_mileage')}</div> <div className="font-medium text-right text-near-black">{selectedListing.mileage?.toLocaleString()} km</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_ext_color')}</div> <div className="font-medium text-right text-near-black">{selectedListing.exteriorColor || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_int_color')}</div> <div className="font-medium text-right text-near-black">{selectedListing.interiorColor || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_fuel')}</div> <div className="font-medium text-right text-near-black">{selectedListing.fuelType || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_transmission')}</div> <div className="font-medium text-right text-near-black">{selectedListing.transmission || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_drivetrain')}</div> <div className="font-medium text-right text-near-black">{selectedListing.drivetrain || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_seats')}</div> <div className="font-medium text-right text-near-black">{selectedListing.seats || '-'}</div>
-                    </div>
+              <div className="p-8 space-y-10">
+                {selectedListing.status === 'PENDING' && (
+                  <div className="bg-brand-red font-bold text-white px-6 py-4 flex items-center gap-4 uppercase tracking-[0.2em] text-xs skew-x-[-12deg] mx-2">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <span className="skew-x-[12deg]">{t('action_required')}: {t('action_desc')}</span>
                   </div>
-                </div>
+                )}
 
-                {/* Pricing & Transaction */}
-                <div>
-                  <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-near-black">{t('pricing_transaction')}</h3>
-                  <div className="space-y-2.5 text-sm">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_price')}</div> <div className="font-medium text-green-700 text-right">${selectedListing.askingPrice?.toLocaleString()}</div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                  {/* VEHICLE SPECS */}
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-neutral-800 pb-3">
+                      <Car size={16} className="text-brand-red" />
+                      <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">
+                        {t('vehicle_details')}
+                      </h3>
                     </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_negotiable')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.isNegotiable)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_payment')}</div> <div className="font-medium text-right text-near-black break-words">{selectedListing.paymentMethods || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_lien')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasLien)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_location')}</div> <div className="font-medium text-right text-near-black break-words">{selectedListing.city}, {selectedListing.stateProvince} {selectedListing.zipCode}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_shipping')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.supportsShipping)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_tradein')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.acceptsTradeIn)}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Condition */}
-                <div>
-                  <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-near-black">{t('vehicle_condition')}</h3>
-                  <div className="space-y-2.5 text-sm">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_accident')}</div> <div className="font-medium text-right text-near-black break-words">{renderBool(selectedListing.hasAccident)} {selectedListing.accidentDescription ? `(${selectedListing.accidentDescription})` : ''}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_flood')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasFloodDamage)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_repaint')}</div> <div className="font-medium text-right text-near-black break-words">{renderBool(selectedListing.hasRepaint)} {selectedListing.repaintDescription ? `(${selectedListing.repaintDescription})` : ''}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_engine_cond')}</div> <div className="font-medium text-right text-near-black">{selectedListing.engineCondition || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_trans_cond')}</div> <div className="font-medium text-right text-near-black">{selectedListing.transmissionCondition || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_tire_cond')}</div> <div className="font-medium text-right text-near-black">{selectedListing.tireCondition || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_brake_cond')}</div> <div className="font-medium text-right text-near-black">{selectedListing.brakeCondition || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_warning_lights')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasWarningLights)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_electrical')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasElectricalIssues)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_mods')}</div> <div className="font-medium text-right text-near-black break-words">{renderBool(selectedListing.hasModifications)} {selectedListing.modificationsDescription ? `(${selectedListing.modificationsDescription})` : ''}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_smoking')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasSmokingPetExposure)}</div>
-                    </div>
-                  </div>
-                  {selectedListing.conditionDescription && (
-                    <div className="mt-4 text-sm text-gray-700 p-3 bg-gray-50 border border-gray-100 rounded-lg">
-                      <strong className="block mb-1 text-near-black">{t('field_cond_desc')}:</strong> {selectedListing.conditionDescription}
-                    </div>
-                  )}
-                </div>
-
-              </div>
-              
-              {/* Right Column: Docs, Seller, Images */}
-              <div className="space-y-8">
-                 {/* Documents */}
-                 <div>
-                  <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-near-black">{t('history_docs')}</h3>
-                  <div className="space-y-2.5 text-sm">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_title_status')}</div> <div className="font-medium text-right text-near-black">{selectedListing.titleStatus || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_service_rec')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasServiceRecords)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_dealer_serviced')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.dealerServiced)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_last_service')}</div> <div className="font-medium text-right text-near-black">{selectedListing.lastServiceMileage?.toLocaleString() || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_repair_inv')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasRepairInvoices)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_recalls')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasOpenRecalls)}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_reg_valid')}</div> <div className="font-medium text-right text-near-black">{selectedListing.registrationValidUntil || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_owner_num')}</div> <div className="font-medium text-right text-near-black">{selectedListing.ownerNumber || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_carfax')}</div> <div className="font-medium text-right text-near-black">{renderBool(selectedListing.hasCarfaxReport)}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Seller Info */}
-                <div>
-                  <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-near-black">{t('seller_info')}</h3>
-                  <div className="space-y-2.5 text-sm">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_seller_name')}</div> <div className="font-medium text-right text-near-black break-words">{selectedListing.sellerFullName}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_seller_phone')}</div> <div className="font-medium text-right text-near-black break-words">{selectedListing.sellerPhone || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_seller_email')}</div> <div className="font-medium break-all text-right text-near-black">{selectedListing.sellerEmail}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_seller_type')}</div> <div className="font-medium text-right text-near-black">{selectedListing.sellerType || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_contact_time')}</div> <div className="font-medium text-right text-near-black">{selectedListing.preferredContactTime || '-'}</div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="text-gray-500 shrink-0">{t('field_contact_method')}</div> <div className="font-medium text-right text-near-black">{selectedListing.preferredContactMethod || '-'}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Images */}
-                <div>
-                  <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-near-black">{t('images_all')}</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {(selectedListing.images || []).map((img) => (
-                      <div 
-                        key={img.id} 
-                        className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group cursor-pointer hover:border-brand-red transition-all shadow-sm hover:shadow-md"
-                        onClick={() => setZoomedImage(img.imageUrl)}
-                      >
-                        <Image src={img.imageUrl} alt={img.imageType} fill className="object-cover" />
-                        <div className="absolute inset-x-0 bottom-0 bg-black/70 p-1.5 text-[10px] text-white text-center truncate font-medium">
-                          {img.imageType}
+                    <div className="space-y-4">
+                      {[
+                        { label: t('field_make'), value: selectedListing.make },
+                        { label: t('field_model'), value: `${selectedListing.model} ${selectedListing.trimLevel}` },
+                        { label: t('field_year'), value: selectedListing.modelYear },
+                        { label: t('field_mileage'), value: `${selectedListing.mileage?.toLocaleString()} KM` },
+                        { label: t('field_ext_color'), value: selectedListing.exteriorColor || '-' },
+                        { label: t('field_int_color'), value: selectedListing.interiorColor || '-' },
+                        { label: t('field_fuel'), value: selectedListing.fuelType || '-' },
+                        { label: t('field_transmission'), value: selectedListing.transmission || '-' },
+                      ].map((item, i) => (
+                        <div key={i} className="flex justify-between items-center group">
+                          <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{item.label}</span>
+                          <span className="text-xs font-black uppercase text-near-black dark:text-white border-b-2 border-transparent group-hover:border-brand-red transition-all">{item.value}</span>
                         </div>
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                          <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 drop-shadow-md" />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* PRICING & SELLER */}
+                  <div className="space-y-10">
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-2 border-b border-gray-100 dark:border-neutral-800 pb-3">
+                        <DollarSign size={16} className="text-brand-red" />
+                        <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">
+                          {t('pricing_transaction')}
+                        </h3>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center bg-gray-50 dark:bg-neutral-900 p-4 border-l-4 border-brand-red">
+                          <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{t('field_price')}</span>
+                          <span className="text-2xl font-black italic text-near-black dark:text-white">${selectedListing.askingPrice?.toLocaleString()}</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{t('field_negotiable')}</span>
+                            <span className="text-xs font-black uppercase">{renderBool(selectedListing.isNegotiable)}</span>
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{t('field_lien')}</span>
+                            <span className="text-xs font-black uppercase">{renderBool(selectedListing.hasLien)}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 pt-2">
+                          <MapPin size={14} className="text-brand-red" />
+                          <span className="text-[10px] font-bold uppercase tracking-widest">{selectedListing.city}, {selectedListing.stateProvince}</span>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  {(!selectedListing.images || selectedListing.images.length === 0) && (
-                    <div className="text-sm text-gray-500 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                      No images available
                     </div>
-                  )}
+
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-2 border-b border-gray-100 dark:border-neutral-800 pb-3">
+                        <ShieldCheck size={16} className="text-brand-red" />
+                        <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">
+                          {t('seller_info')}
+                        </h3>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 bg-gray-100 dark:bg-neutral-800 rounded-none flex items-center justify-center font-black italic text-brand-red uppercase">
+                            {selectedListing.sellerFullName?.charAt(0)}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-black uppercase text-near-black dark:text-white">{selectedListing.sellerFullName}</span>
+                            <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Individual Member</span>
+                          </div>
+                        </div>
+                        <div className="grid gap-2 pt-2">
+                          <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 italic">
+                            <Mail size={12} className="text-brand-red" /> {selectedListing.sellerEmail}
+                          </div>
+                          {selectedListing.sellerPhone && (
+                            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                              <Phone size={12} className="text-brand-red" /> {selectedListing.sellerPhone}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* IMAGES */}
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-neutral-800 pb-3">
+                      <Eye size={16} className="text-brand-red" />
+                      <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">
+                        {t('images_all')}
+                      </h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      {(selectedListing.images || []).map((img, idx) => (
+                        <div 
+                          key={img.id} 
+                          className="group relative aspect-[4/3] rounded-none overflow-hidden border border-gray-100 dark:border-neutral-800 cursor-zoom-in shadow-sm hover:shadow-xl transition-all duration-500"
+                          onClick={() => setZoomedImage(img.imageUrl)}
+                        >
+                          <Image src={img.imageUrl} alt={img.imageType} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-brand-red/10 transition-colors flex items-center justify-center">
+                            <Plus size={24} className="text-white opacity-0 group-hover:opacity-100 transition-all scale-50 group-hover:scale-100 duration-500 shadow-xl" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {selectedListing.status === 'PENDING' && (
+                <div className="p-8 border-t bg-gray-50/30 flex gap-4">
+                  <Button 
+                    className="flex-1 h-14 uppercase tracking-[0.2em] text-xs font-black italic bg-green-600 hover:bg-green-700 text-white rounded-none shadow-lg" 
+                    onClick={() => setIsApproveModalOpen(true)}
+                    disabled={isProcessing}
+                  >
+                    <Check size={18} className="mr-3" /> {t('btn_approve')}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 h-14 uppercase tracking-[0.2em] text-xs font-black italic border-2 border-brand-red text-brand-red hover:bg-brand-red/5 rounded-none" 
+                    onClick={() => setIsRejectModalOpen(true)}
+                    disabled={isProcessing}
+                  >
+                    <X size={18} className="mr-3" /> {t('btn_reject')}
+                  </Button>
+                </div>
+              )}
             </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
-            {selectedListing.status === 'PENDING' && (
-              <div className="flex gap-4 pt-6 border-t border-gray-100 mt-8">
-                <Button 
-                  variant="primary" 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white border-transparent py-2.5 text-base"
-                  onClick={() => setIsApproveModalOpen(true)}
-                  disabled={isProcessing}
-                >
-                  <Check className="w-5 h-5 mr-2" /> {t('btn_approve')}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 py-2.5 text-base"
-                  onClick={() => setIsRejectModalOpen(true)}
-                  disabled={isProcessing}
-                >
-                  <X className="w-5 h-5 mr-2" /> {t('btn_reject')}
-                </Button>
-              </div>
-            )}
-            
-          </div>
-        </Modal>
-      )}
-
-      {/* Reject Reason Modal */}
-      {isRejectModalOpen && (
-        <Modal 
-          isOpen={true} 
-          onClose={() => setIsRejectModalOpen(false)}
-          title={t('reject_title')}
-        >
-          <div className="space-y-4">
-            <p className="text-sm text-gray-600">
-              {t('reject_desc')}
-            </p>
-            <textarea
-              className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
-              rows={4}
+      {/* Reject Dialog */}
+      <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+        <DialogContent className="sm:max-w-[500px] font-porsche">
+          <DialogHeader>
+            <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">{t('reject_title')}</DialogTitle>
+            <DialogDescription className="text-xs uppercase font-bold tracking-widest text-gray-400">{t('reject_desc')}</DialogDescription>
+          </DialogHeader>
+          <div className="py-6">
+             <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-2 block">{t('reject_reason')}</Label>
+             <Textarea
+              className="min-h-[150px] font-porsche italic text-sm rounded-none border-gray-200"
               placeholder={t('reject_placeholder')}
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
             />
-            <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="w-full" onClick={() => setIsRejectModalOpen(false)}>{t('btn_cancel')}</Button>
-              <Button 
-                variant="primary" 
-                className="w-full bg-brand-red text-white border-transparent"
-                onClick={handleReject}
-                disabled={isProcessing || !rejectReason.trim()}
-              >
-                {isProcessing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <X className="w-4 h-4 mr-2" />}
-                {t('btn_confirm_reject')}
-              </Button>
-            </div>
           </div>
-        </Modal>
-      )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setIsRejectModalOpen(false)} disabled={isProcessing} className="uppercase text-xs font-bold tracking-widest">
+              {t('btn_cancel')}
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={handleReject}
+              disabled={isProcessing || !rejectReason.trim()}
+              loading={isProcessing}
+              className="uppercase text-xs font-bold tracking-widest h-11 px-8"
+            >
+              {t('btn_confirm_reject')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {/* Approve Confirmation Modal */}
-      {isApproveModalOpen && (
-        <Modal 
-          isOpen={true} 
-          onClose={() => setIsApproveModalOpen(false)}
-          title={t('btn_approve')}
-        >
-          <div className="space-y-4 text-center pb-2">
-            <div className="mx-auto w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
-              <Check className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900">{t('btn_approve')}?</h3>
-            <p className="text-sm text-gray-600 px-4">
-              {t('approve_confirm')}
-            </p>
-            <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="w-full" onClick={() => setIsApproveModalOpen(false)}>{t('btn_cancel')}</Button>
-              <Button 
-                variant="primary" 
-                className="w-full bg-green-600 hover:bg-green-700 text-white border-transparent"
-                onClick={handleApprove}
-                disabled={isProcessing}
-              >
-                {isProcessing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Check className="w-4 h-4 mr-2" />}
-                {t('btn_approve')}
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
+      {/* Approve Confirm */}
+      <ConfirmDialog
+        open={isApproveModalOpen}
+        title={t('btn_approve')}
+        description={t('approve_confirm')}
+        confirmLabel={t('btn_approve')}
+        cancelLabel={t('btn_cancel')}
+        variant="brand"
+        onConfirm={handleApprove}
+        onCancel={() => setIsApproveModalOpen(false)}
+        loading={isProcessing}
+      />
 
-      {/* Zoomed Image Fullscreen Overlay */}
+      {/* Zoom Overlay */}
       {zoomedImage && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 cursor-pointer"
+          className="fixed inset-0 z-[100] bg-black/98 flex items-center justify-center p-4 lg:p-12 animate-in fade-in zoom-in-95 duration-300"
           onClick={() => setZoomedImage(null)}
         >
-          <button 
-            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+          <div className="relative w-full h-full max-w-6xl">
+            <Image src={zoomedImage} alt="Zoomed" fill className="object-contain" />
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute top-8 right-8 text-white hover:bg-white/10 h-12 w-12 rounded-none border border-white/20"
             onClick={(e) => {
               e.stopPropagation()
               setZoomedImage(null)
             }}
           >
-            <X className="w-6 h-6" />
-          </button>
-          <div className="relative w-full h-full max-w-6xl max-h-[90vh]">
-            <Image 
-              src={zoomedImage} 
-              alt="Zoomed image" 
-              fill 
-              className="object-contain" 
-            />
-          </div>
+            <X size={32} />
+          </Button>
         </div>
       )}
-      
     </div>
   )
 }

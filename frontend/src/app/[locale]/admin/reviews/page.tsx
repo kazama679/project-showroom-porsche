@@ -1,16 +1,33 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Edit2, Trash2, Star } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Badge } from '@/components/features/admin/badge'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
-import { FormInput } from '@/components/features/admin/form-input'
-import { Select } from '@/components/features/admin/select'
+import { Plus, Edit2, Trash2, Star, User, Car, MessageSquare, Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
-import { useAdminPage } from "@/components/features/admin/admin-page-context"
-import { Alert } from "@/components/features/admin/alert"
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Input } from '@/components/base/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/base/ui/select'
+import { Label } from '@/components/base/ui/label'
+import { Textarea } from '@/components/base/ui/textarea'
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+import { useAdminPage } from '@/components/features/admin/admin-page-context'
 
 const mockReviews = [
   {
@@ -51,27 +68,17 @@ const mockReviews = [
   },
 ]
 
-const statusOptions = [
-  { label: 'Published', value: 'published' },
-  { label: 'Pending', value: 'pending' },
-  { label: 'Rejected', value: 'rejected' },
-]
-
-const ratingOptions = [
-  { label: '★★★★★ (5 Stars)', value: '5' },
-  { label: '★★★★ (4 Stars)', value: '4' },
-  { label: '★★★ (3 Stars)', value: '3' },
-  { label: '★★ (2 Stars)', value: '2' },
-  { label: '★ (1 Star)', value: '1' },
-]
-
 export default function ReviewsPage() {
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
+
   const [reviews, setReviews] = useState(mockReviews)
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchKeyword, setSearchKeyword] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingReview, setEditingReview] = useState<(typeof mockReviews)[0] | null>(null)
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+  const [deletingReview, setDeletingReview] = useState<(typeof mockReviews)[0] | null>(null)
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -80,6 +87,12 @@ export default function ReviewsPage() {
     comment: '',
     status: 'pending',
   })
+
+  const filteredReviews = reviews.filter(r => 
+    r.customerName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    r.vehicle.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    r.comment.toLowerCase().includes(searchKeyword.toLowerCase())
+  )
 
   const handleOpenModal = (review?: (typeof mockReviews)[0]) => {
     if (review) {
@@ -106,8 +119,7 @@ export default function ReviewsPage() {
 
   const handleSave = () => {
     if (!formData.customerName || !formData.vehicle || !formData.comment) {
-      setAlertMessage('Please fill in all required fields')
-      setShowAlert(true)
+      toast.error(t('fill_required'))
       return
     }
 
@@ -126,10 +138,10 @@ export default function ReviewsPage() {
             : review
         )
       )
-      setAlertMessage('Review updated successfully')
+      toast.success(tCommon('update_success'))
     } else {
       const newReview = {
-        id: Math.max(...reviews.map((r) => r.id)) + 1,
+        id: Math.max(0, ...reviews.map((r) => r.id)) + 1,
         customerName: formData.customerName,
         vehicle: formData.vehicle,
         rating: parseInt(formData.rating),
@@ -138,29 +150,27 @@ export default function ReviewsPage() {
         status: formData.status as any,
       }
       setReviews([newReview, ...reviews])
-      setAlertMessage('Review created successfully')
+      toast.success(tCommon('create_success'))
     }
 
     setIsModalOpen(false)
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
   }
 
-  const handleDelete = (id: number) => {
-    setReviews(reviews.filter((review) => review.id !== id))
-    setAlertMessage('Review deleted successfully')
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 4000)
+  const handleConfirmDelete = () => {
+    if (!deletingReview) return
+    setReviews(reviews.filter((review) => review.id !== deletingReview.id))
+    toast.success(tCommon('delete_success'))
+    setIsDeleteModalOpen(false)
   }
 
   const renderStars = (rating: number) => {
     return (
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5">
         {Array.from({ length: 5 }).map((_, i) => (
           <Star
             key={i}
-            size={16}
-            className={i < rating ? 'fill-modena-yellow text-modena-yellow' : 'text-light-gray-surface'}
+            size={12}
+            className={i < rating ? 'fill-brand-red text-brand-red' : 'text-gray-200 dark:text-neutral-800'}
           />
         ))}
       </div>
@@ -170,151 +180,215 @@ export default function ReviewsPage() {
   useAdminPage({
     titleKey: 'reviews_management',
     subtitleKey: 'reviews_subtitle',
-    actions: (
-      <Button
-        variant="primary"
-        icon={<Plus size={18} />}
-        onClick={() => handleOpenModal()}
-      >
-        Add Review
-      </Button>
-    ),
   })
 
-  return (
-    <>
-      <div className="space-y-6">
-        {showAlert && (
-          <Alert
-            type="success"
-            message={alertMessage}
-            onClose={() => setShowAlert(false)}
-          />
-        )}
-
-        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <DataTable
-            columns={[
-              {
-                key: 'customerName',
-                label: 'Customer',
-                sortable: true,
-              },
-              {
-                key: 'vehicle',
-                label: 'Vehicle',
-                sortable: true,
-              },
-              {
-                key: 'rating',
-                label: 'Rating',
-                align: 'center',
-                render: (value) => renderStars(value),
-              },
-              {
-                key: 'comment',
-                label: 'Comment',
-              },
-              {
-                key: 'status',
-                label: 'Status',
-                align: 'center',
-                render: (value) => (
-                  <Badge variant={value === 'published' ? 'success' : 'warning'}>
-                    {value.charAt(0).toUpperCase() + value.slice(1)}
-                  </Badge>
-                ),
-              },
-              {
-                key: 'actions',
-                label: 'Actions',
-                align: 'center',
-                render: (value) => (
-                  <div className="flex gap-2 justify-center">
-                    <button
-                      onClick={() => handleOpenModal(reviews.find((r) => r.id === value))}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
-                    >
-                      <Edit2 size={16} className="text-mid-gray" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(value)}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
-                    >
-                      <Trash2 size={16} className="text-brand-red" />
-                    </button>
-                  </div>
-                ),
-              },
-            ]}
-            data={reviews}
-            pagination={{
-              pageSize: 10,
-              currentPage,
-              total: reviews.length,
-              onPageChange: setCurrentPage,
+  const columns = [
+    {
+      key: 'customerName',
+      label: t('customer'),
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-2">
+          <User size={14} className="text-gray-400" />
+          <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{v}</span>
+        </div>
+      )
+    },
+    {
+      key: 'vehicle',
+      label: t('vehicle'),
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase">
+          <Car size={14} className="text-gray-400" />
+          {v}
+        </div>
+      )
+    },
+    {
+      key: 'rating',
+      label: t('rating'),
+      align: 'center' as const,
+      render: (value: number) => renderStars(value),
+    },
+    {
+      key: 'comment',
+      label: t('comment'),
+      render: (v: string) => (
+        <div className="max-w-[300px] truncate italic text-sm text-gray-500 group-hover:whitespace-normal group-hover:overflow-visible group-hover:transition-all">
+          &quot;{v}&quot;
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      label: t('status'),
+      align: 'center' as const,
+      render: (v: string) => (
+        <Badge variant={v === 'published' ? 'success' : 'warning'} className="uppercase text-[9px] tracking-widest font-bold">
+          {v}
+        </Badge>
+      ),
+    },
+    {
+      key: 'actions',
+      label: t('actions'),
+      align: 'right' as const,
+      render: (_: any, row: any) => (
+        <div className="flex gap-1 justify-end">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-near-black dark:hover:text-white"
+            onClick={() => handleOpenModal(row)}
+          >
+            <Edit2 size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-brand-red"
+            onClick={() => {
+              setDeletingReview(row)
+              setIsDeleteModalOpen(true)
             }}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      ),
+    },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-2">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            id="review-search"
+            placeholder={t('search_reviews')}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 w-64"
           />
         </div>
+        <Button variant="brand" size="sm" onClick={() => handleOpenModal()}>
+          <Plus size={16} className="mr-2" />
+          Add Review
+        </Button>
+      </div>
+
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm overflow-hidden shadow-sm">
+        <DataTable
+          columns={columns}
+          data={filteredReviews}
+          pagination={{
+            pageSize: 10,
+            currentPage,
+            total: filteredReviews.length,
+            onPageChange: setCurrentPage,
+          }}
+        />
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingReview ? 'Edit Review' : 'Add New Review'}
-        subtitle={editingReview ? 'Update review information' : 'Create a new customer review'}
-        size="md"
-        footer={
-          <>
-            <Button
-              variant="secondary"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">
+              {editingReview ? 'Edit Review' : 'Add New Review'}
+            </DialogTitle>
+            <DialogDescription className="italic text-gray-400">
+              {editingReview ? 'Update review information' : 'Create a new customer review'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4 font-porsche">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Customer Name</Label>
+                <Input
+                  placeholder="e.g. John Smith"
+                  value={formData.customerName}
+                  onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
+                  className="font-bold uppercase"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Vehicle</Label>
+                <Input
+                  placeholder="e.g. Porsche 911"
+                  value={formData.vehicle}
+                  onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
+                  className="font-bold uppercase"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Rating</Label>
+                <Select value={formData.rating} onValueChange={(v) => setFormData({ ...formData, rating: v })}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">★★★★★ (5 Stars)</SelectItem>
+                    <SelectItem value="4">★★★★☆ (4 Stars)</SelectItem>
+                    <SelectItem value="3">★★★☆☆ (3 Stars)</SelectItem>
+                    <SelectItem value="2">★★☆☆☆ (2 Stars)</SelectItem>
+                    <SelectItem value="1">★☆☆☆☆ (1 Star)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Status</Label>
+                <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Review Comment</Label>
+              <Textarea
+                placeholder="Message from customer..."
+                value={formData.comment}
+                onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+                className="min-h-[100px] italic h-24"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="uppercase text-xs font-bold tracking-widest">
+              {tCommon('cancel')}
             </Button>
-            <Button variant="primary" onClick={handleSave}>
-              {editingReview ? 'Update' : 'Create'} Review
+            <Button variant="brand" onClick={handleSave} className="uppercase text-xs font-bold tracking-widest">
+              {editingReview ? tCommon('update') : tCommon('create')}
             </Button>
-          </>
-        }
-      >
-        <div className="space-y-4">
-          <FormInput
-            label="Customer Name"
-            placeholder="e.g., John Smith"
-            value={formData.customerName}
-            onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-            required
-          />
-          <FormInput
-            label="Vehicle"
-            placeholder="e.g., Porsche 911 Turbo"
-            value={formData.vehicle}
-            onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-            required
-          />
-          <Select
-            label="Rating"
-            options={ratingOptions}
-            value={formData.rating}
-            onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-          />
-          <FormInput
-            label="Review Comment"
-            placeholder="What did they think of the vehicle?"
-            value={formData.comment}
-            onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-            required
-          />
-          <Select
-            label="Status"
-            options={statusOptions}
-            value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-          />
-        </div>
-      </Modal>
-    </>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={isDeleteModalOpen}
+        title={t('confirm_delete')}
+        description={t('are_you_sure')}
+        itemLabel={`${deletingReview?.customerName} - ${deletingReview?.vehicle}`}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
+    </div>
   )
 }

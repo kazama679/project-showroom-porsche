@@ -1,22 +1,40 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
-import { FormInput } from '@/components/features/admin/form-input'
-import { Select } from '@/components/features/admin/select'
-import { useAdminPage } from "@/components/features/admin/admin-page-context";
-import { Alert } from '@/components/features/admin/alert'
-import { useTranslations } from 'next-intl';
+import { Plus, Edit2, Trash2, Search, Video, Image, LayoutPanelLeft, MonitorPlay, UserCheck, ShieldAlert } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
+
+import { DataTable } from '@/components/base/admin/data-table'
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Input } from '@/components/base/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/base/ui/select'
+import { Label } from '@/components/base/ui/label'
+import { Badge } from '@/components/base/ui/badge'
+import { Switch } from '@/components/base/ui/switch'
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+import { useAdminPage } from '@/components/features/admin/admin-page-context'
 import { homeBannerService, HomeBannerItem, HomeBannerFormData } from '@/services/home-banner'
 import { carModelService, CarModelItem } from '@/services/car-model'
 import { authService, getErrorMessage } from '@/services/auth'
 
 export default function BannersPage() {
-  const t = useTranslations('admin');
-  const tCommon = useTranslations('common');
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
 
   const [banners, setBanners] = useState<HomeBannerItem[]>([])
   const [carModels, setCarModels] = useState<CarModelItem[]>([])
@@ -24,7 +42,7 @@ export default function BannersPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [searchKeyword, setSearchKeyword] = useState('')
-  const [searchType, setSearchType] = useState<string>('')
+  const [searchType, setSearchType] = useState<string>('all')
   const [loading, setLoading] = useState(true)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -32,10 +50,6 @@ export default function BannersPage() {
   const [editingBanner, setEditingBanner] = useState<HomeBannerItem | null>(null)
   const [deletingBanner, setDeletingBanner] = useState<HomeBannerItem | null>(null)
   const [saving, setSaving] = useState(false)
-
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>('success')
 
   const [formData, setFormData] = useState<HomeBannerFormData>({
     carModelId: null,
@@ -50,54 +64,15 @@ export default function BannersPage() {
   const isAdmin = authService.isAdmin()
   const isAuthenticated = authService.isAuthenticated()
 
-  useAdminPage({
-    titleKey: 'banners',
-    subtitleKey: 'banners_subtitle',
-    actions: (
-      <div className="flex items-center gap-3">
-        <div className="relative hidden sm:block">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
-          <input
-            type="text"
-            placeholder={t('search_banners')}
-            value={searchKeyword}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64"
-          />
-        </div>
-        <select
-          value={searchType}
-          onChange={(e) => handleTypeFilterChange(e.target.value)}
-          className="px-3 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white outline-none focus:border-brand-red transition-colors"
-        >
-          <option value="">All Types</option>
-          <option value="HERO">Hero Banner</option>
-          <option value="CARD">Featured Card</option>
-        </select>
-        {isAdmin && (
-          <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
-            {t('add_banner')}
-          </Button>
-        )}
-      </div>
-    ),
-  })
-
-  const showAlertMessage = (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
-    setAlertMessage(message)
-    setAlertType(type)
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 5000)
-  }
-
   const fetchBanners = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await homeBannerService.findAll(searchKeyword, currentPage - 1, pageSize, searchType || undefined)
+      const typeParam = searchType === 'all' ? undefined : (searchType as any)
+      const data = await homeBannerService.findAll(searchKeyword, currentPage - 1, pageSize, typeParam)
       setBanners(data.content)
       setTotalElements(data.totalElements)
     } catch (error) {
-      showAlertMessage(getErrorMessage(error), 'error')
+      toast.error(getErrorMessage(error))
     } finally {
       setLoading(false)
     }
@@ -120,24 +95,9 @@ export default function BannersPage() {
     fetchCarModels()
   }, [fetchCarModels])
 
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
-  const handleSearchChange = (value: string) => {
-    setSearchKeyword(value)
-    if (searchTimeout) clearTimeout(searchTimeout)
-    const timeout = setTimeout(() => {
-      setCurrentPage(1)
-    }, 400)
-    setSearchTimeout(timeout)
-  }
-
-  const handleTypeFilterChange = (value: string) => {
-    setSearchType(value)
-    setCurrentPage(1)
-  }
-
   const handleOpenModal = (item?: HomeBannerItem) => {
     if (!isAdmin) {
-      showAlertMessage(t('no_permission'), 'warning')
+      toast.warning(t('no_permission'))
       return
     }
     if (item) {
@@ -168,11 +128,11 @@ export default function BannersPage() {
 
   const handleSave = async () => {
     if (!isAdmin) {
-      showAlertMessage(t('no_permission'), 'warning')
+      toast.warning(t('no_permission'))
       return
     }
     if (!formData.title.trim()) {
-      showAlertMessage(t('fill_required'), 'error')
+      toast.error(t('fill_required'))
       return
     }
 
@@ -180,27 +140,18 @@ export default function BannersPage() {
     try {
       if (editingBanner) {
         await homeBannerService.update(editingBanner.id, formData)
-        showAlertMessage(t('banner_updated'), 'success')
+        toast.success(tCommon('update_success'))
       } else {
         await homeBannerService.create(formData)
-        showAlertMessage(t('banner_created'), 'success')
+        toast.success(tCommon('create_success'))
       }
       setIsModalOpen(false)
       fetchBanners()
     } catch (error) {
-      showAlertMessage(getErrorMessage(error), 'error')
+      toast.error(getErrorMessage(error))
     } finally {
       setSaving(false)
     }
-  }
-
-  const handleOpenDeleteModal = (item: HomeBannerItem) => {
-    if (!isAdmin) {
-      showAlertMessage(t('no_permission'), 'warning')
-      return
-    }
-    setDeletingBanner(item)
-    setIsDeleteModalOpen(true)
   }
 
   const handleConfirmDelete = async () => {
@@ -208,231 +159,282 @@ export default function BannersPage() {
     setSaving(true)
     try {
       await homeBannerService.delete(deletingBanner.id)
-      showAlertMessage(t('banner_deleted'), 'success')
+      toast.success(tCommon('delete_success'))
       setIsDeleteModalOpen(false)
       setDeletingBanner(null)
       fetchBanners()
     } catch (error) {
-      showAlertMessage(getErrorMessage(error), 'error')
+      toast.error(getErrorMessage(error))
     } finally {
       setSaving(false)
     }
   }
 
-  return (
-    <>
-      <div className="space-y-6">
-        {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
-            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('no_permission')}</p>
-          </div>
-        )}
-        {showAlert && <Alert type={alertType} message={alertMessage} onClose={() => setShowAlert(false)} />}
+  useAdminPage({
+    titleKey: 'banners',
+    subtitleKey: 'banners_subtitle',
+  })
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-5">
-            <p className="text-xs font-medium text-mid-gray dark:text-light-gray-surface uppercase tracking-wider">
-              {t('banner_total')}
-            </p>
-            <p className="text-2xl font-bold text-near-black dark:text-white mt-2">{totalElements}</p>
-          </div>
+  const columns = [
+    {
+      key: 'id',
+      label: 'ID',
+      align: 'center' as const,
+      sortable: true,
+      render: (v: any) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+    },
+    {
+      key: 'title',
+      label: t('banner_title'),
+      sortable: true,
+      render: (v: string) => <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{v}</span>
+    },
+    {
+      key: 'type',
+      label: t('banner_type'),
+      render: (v: string) => (
+        <div className="flex items-center gap-2">
+          {v === 'HERO' ? (
+            <Badge variant="default" className="gap-1.5 py-0.5 rounded-none font-bold tracking-tighter">
+              <MonitorPlay size={10} />
+              HERO
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="gap-1.5 py-0.5 rounded-none font-bold tracking-tighter border-black dark:border-white">
+              <LayoutPanelLeft size={10} />
+              CARD
+            </Badge>
+          )}
         </div>
-
-        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <DataTable
-            columns={[
-              { key: 'id', label: 'ID', align: 'center', sortable: true },
-              { key: 'title', label: t('banner_title'), sortable: true },
-              {
-                key: 'type',
-                label: t('banner_type'),
-                render: (v: any) =>
-                  v === 'HERO' ? (
-                    <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-semibold rounded">
-                      HERO BANNER
-                    </span>
-                  ) : (
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
-                      FEATURED CARD
-                    </span>
-                  ),
-              },
-              { key: 'carModelName', label: t('banner_car_model'), render: (v: any) => v || '—' },
-              { key: 'displayOrder', label: t('banner_display_order'), align: 'center' },
-              {
-                key: 'isActive',
-                label: t('status'),
-                align: 'center',
-                render: (v: any) =>
-                  v ? (
-                    <span className="text-green-600 font-semibold">{t('active')}</span>
-                  ) : (
-                    <span className="text-red-500 font-semibold">{t('inactive')}</span>
-                  ),
-              },
-              ...(isAdmin
-                ? [
-                    {
-                      key: 'actions' as keyof HomeBannerItem,
-                      label: t('actions'),
-                      align: 'center' as const,
-                      render: (value: any, row: any) => (
-                        <div className="flex gap-2 justify-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleOpenModal(row)
-                            }}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
-                            title={t('edit')}
-                          >
-                            <Edit2 size={16} className="text-mid-gray" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleOpenDeleteModal(row)
-                            }}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors"
-                            title={t('delete')}
-                          >
-                            <Trash2 size={16} className="text-brand-red" />
-                          </button>
-                        </div>
-                      ),
-                    },
-                  ]
-                : []),
-            ]}
-            data={banners}
-            loading={loading}
-            pagination={{
-              pageSize,
-              currentPage,
-              total: totalElements,
-              onPageChange: setCurrentPage,
-              onPageSizeChange: setPageSize,
+      )
+    },
+    {
+      key: 'carModelName',
+      label: t('banner_car_model'),
+      render: (v: string) => v ? (
+        <Badge variant="secondary" className="font-medium bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300">
+          {v}
+        </Badge>
+      ) : '—'
+    },
+    {
+      key: 'displayOrder',
+      label: t('banner_display_order'),
+      align: 'center' as const,
+      render: (v: number) => <span className="font-bold text-brand-red">{v}</span>
+    },
+    {
+      key: 'isActive',
+      label: t('status'),
+      align: 'center' as const,
+      render: (v: boolean) => (
+        <Badge variant={v ? 'success' : 'destructive'} className="uppercase text-[9px] tracking-widest font-bold">
+          {v ? t('active') : t('inactive')}
+        </Badge>
+      ),
+    },
+    ...(isAdmin ? [{
+      key: 'actions' as any,
+      label: t('actions'),
+      align: 'right' as const,
+      render: (_: any, row: any) => (
+        <div className="flex gap-1 justify-end">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-near-black dark:hover:text-white"
+            onClick={() => handleOpenModal(row)}
+          >
+            <Edit2 size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-brand-red"
+            onClick={() => {
+              setDeletingBanner(row)
+              setIsDeleteModalOpen(true)
             }}
-          />
+          >
+            <Trash2 size={14} />
+          </Button>
         </div>
+      )
+    }] : [])
+  ]
+
+  return (
+    <div className="space-y-6">
+      {!isAdmin && isAuthenticated && (
+        <div className="flex items-center gap-3 p-4 bg-brand-red/5 border border-brand-red/10 rounded-sm">
+          <ShieldAlert size={20} className="text-brand-red" />
+          <p className="text-sm font-medium text-brand-red italic">{t('no_permission')}</p>
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Input
+              placeholder={t('search_banners')}
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              className="pl-9 h-10"
+            />
+          </div>
+          <Select value={searchType} onValueChange={setSearchType}>
+            <SelectTrigger className="w-[140px] h-10">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="HERO">Hero Banner</SelectItem>
+              <SelectItem value="CARD">Featured Card</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {isAdmin && (
+          <Button variant="brand" onClick={() => handleOpenModal()} className="h-10 uppercase tracking-widest text-xs font-bold w-full sm:w-auto">
+            <Plus size={16} className="mr-2" />
+            {t('add_banner')}
+          </Button>
+        )}
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingBanner ? t('edit_banner') : t('add_banner')}
-        subtitle={editingBanner ? 'Update homepage banner details' : 'Add new homepage banner'}
-        size="lg"
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={saving}>
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm overflow-hidden shadow-sm">
+        <DataTable
+          columns={columns}
+          data={banners}
+          loading={loading}
+          pagination={{
+            pageSize,
+            currentPage,
+            total: totalElements,
+            onPageChange: setCurrentPage,
+            onPageSizeChange: setPageSize,
+          }}
+        />
+      </div>
+
+      {/* Add/Edit Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">
+              {editingBanner ? t('edit_banner') : t('add_banner')}
+            </DialogTitle>
+            <DialogDescription className="italic text-gray-400">
+              {editingBanner ? 'Update homepage banner details' : 'Add new homepage banner'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-6 py-6 font-porsche">
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Banner Title</Label>
+              <Input
+                placeholder="e.g. Cayenne S E-Hybrid."
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="font-bold uppercase h-11"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Banner Type</Label>
+                <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v as any })}>
+                  <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="HERO">Hero Banner (Full Screen)</SelectItem>
+                    <SelectItem value="CARD">Featured Card (Small)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Target Car Model</Label>
+                <Select 
+                  value={formData.carModelId?.toString() || ''} 
+                  onValueChange={(v) => setFormData({ ...formData, carModelId: v ? parseInt(v) : null })}
+                >
+                  <SelectTrigger className="h-11"><SelectValue placeholder={t('select_car_model')} /></SelectTrigger>
+                  <SelectContent>
+                    {carModels.map((m) => (
+                      <SelectItem key={m.id} value={m.id.toString()}>{m.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">
+                {formData.type === 'HERO' ? 'Video Path / Stream URL' : 'Image URL'}
+              </Label>
+              <div className="relative">
+                {formData.type === 'HERO' ? (
+                  <Video size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                ) : (
+                  <Image size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                )}
+                <Input
+                  className="pl-10 h-11 font-mono text-xs"
+                  placeholder={formData.type === 'HERO' ? '/home/porsche.mp4' : 'https://example.com/image.jpg'}
+                  value={formData.type === 'HERO' ? formData.videoUrl || '' : formData.imageUrl || ''}
+                  onChange={(e) => setFormData({ 
+                    ...formData, 
+                    [formData.type === 'HERO' ? 'videoUrl' : 'imageUrl']: e.target.value 
+                  })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 items-center">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Display Order</Label>
+                <Input
+                  type="number"
+                  value={formData.displayOrder}
+                  onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
+                  className="h-11 font-bold italic w-24"
+                />
+              </div>
+              <div className="flex items-center gap-3 mt-4">
+                <Switch 
+                  id="banner-active" 
+                  checked={formData.isActive}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                />
+                <Label htmlFor="banner-active" className="text-[10px] uppercase font-bold tracking-[0.2em] cursor-pointer">
+                  {formData.isActive ? 'Active' : 'Inactive'}
+                </Label>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="border-t pt-6">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs tracking-widest font-bold">
               {tCommon('cancel')}
             </Button>
-            <Button variant="primary" onClick={handleSave} loading={saving}>
-              {editingBanner ? t('update') : t('create')}
+            <Button variant="brand" onClick={handleSave} loading={saving} className="uppercase text-xs tracking-widest font-bold h-11 px-8">
+              {editingBanner ? tCommon('update') : tCommon('create')}
             </Button>
-          </>
-        }
-      >
-        <div className="space-y-4">
-          <FormInput
-            label={t('banner_title')}
-            placeholder="e.g. Cayenne S E-Hybrid. or Panamera GTS."
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            required
-          />
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Select
-              label={t('banner_type')}
-              options={[
-                { label: 'Hero Banner (Ảnh 1)', value: 'HERO' },
-                { label: 'Featured Card (Ảnh 2)', value: 'CARD' },
-              ]}
-              value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-              required
-            />
-            <Select
-              label={t('banner_car_model')}
-              placeholder={t('select_car_model')}
-              options={carModels.map((c) => ({ label: c.name, value: c.id }))}
-              value={formData.carModelId || ''}
-              onChange={(e) =>
-                setFormData({ ...formData, carModelId: e.target.value ? parseInt(e.target.value) : null })
-              }
-              required
-            />
-          </div>
-
-          {formData.type === 'HERO' ? (
-            <FormInput
-              label={t('banner_video_url')}
-              placeholder="e.g. /home/porsche.mp4 or YouTube video stream URL"
-              value={formData.videoUrl || ''}
-              onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-            />
-          ) : (
-            <FormInput
-              label={t('banner_image_url')}
-              placeholder="e.g. https://example.com/porsche.png"
-              value={formData.imageUrl || ''}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-            />
-          )}
-
-          <div className="grid grid-cols-2 gap-4">
-            <FormInput
-              label={t('banner_display_order')}
-              type="number"
-              value={formData.displayOrder}
-              onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
-              required
-            />
-            <Select
-              label={t('status')}
-              options={[
-                { label: t('active'), value: 'true' },
-                { label: t('inactive'), value: 'false' },
-              ]}
-              value={formData.isActive ? 'true' : 'false'}
-              onChange={(e) => setFormData({ ...formData, isActive: e.target.value === 'true' })}
-              required
-            />
-          </div>
-        </div>
-      </Modal>
-
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+      <ConfirmDialog
+        open={isDeleteModalOpen}
         title={t('banner_confirm_delete')}
-        size="sm"
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)} disabled={saving}>
-              {tCommon('cancel')}
-            </Button>
-            <Button variant="danger" onClick={handleConfirmDelete} loading={saving}>
-              {t('delete')}
-            </Button>
-          </>
-        }
-      >
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-brand-red" />
-          </div>
-          <div>
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('banner_confirm_delete_msg')}</p>
-            {deletingBanner && (
-              <p className="text-sm font-semibold text-near-black dark:text-white mt-2">{deletingBanner.title}</p>
-            )}
-          </div>
-        </div>
-      </Modal>
-    </>
+        description={t('banner_confirm_delete_msg')}
+        itemLabel={deletingBanner?.title}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        variant="destructive"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        loading={saving}
+      />
+    </div>
   )
 }

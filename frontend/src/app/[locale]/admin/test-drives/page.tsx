@@ -1,30 +1,31 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { Check, Loader2, X } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Badge } from '@/components/features/admin/badge'
+import { Check, X, Search, User, Mail, Calendar, Car } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
+
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { Button } from '@/components/base/ui/button'
+import { Input } from '@/components/base/ui/input'
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
-import { Alert } from '@/components/features/admin/alert'
 import { testDriveApi, TestDriveBookingResponse } from '@/services/test-drive-api'
 import { BookingStatus } from '@/constants/enums'
 
-const statusVariants = {
-  PENDING: 'warning',
-  APPROVED: 'success',
-  REJECTED: 'danger',
-} as const
-
 export default function TestDrivesPage() {
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
+
   const [requests, setRequests] = useState<TestDriveBookingResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+  const [searchKeyword, setSearchKeyword] = useState('')
   const [actionInProgress, setActionInProgress] = useState<{
     id: number
     type: 'approve' | 'reject'
   } | null>(null)
+  
   const isProcessingRef = useRef(false)
 
   const fetchBookings = async () => {
@@ -32,7 +33,7 @@ export default function TestDrivesPage() {
       const data = await testDriveApi.getAllBookingsForAdmin()
       setRequests(data)
     } catch (error) {
-      console.error('Failed to load test drive bookings', error)
+      toast.error('Failed to load test drive bookings')
     } finally {
       setLoading(false)
     }
@@ -48,12 +49,10 @@ export default function TestDrivesPage() {
     setActionInProgress({ id, type: 'approve' })
     try {
       await testDriveApi.approveBooking(id)
-      setAlertMessage('Test drive request approved')
-      setShowAlert(true)
-      setTimeout(() => setShowAlert(false), 4000)
+      toast.success(t('test_drive_approved'))
       await fetchBookings()
     } catch (error) {
-      console.error('Failed to approve request', error)
+      toast.error('Failed to approve request')
     } finally {
       setActionInProgress(null)
       isProcessingRef.current = false
@@ -66,12 +65,10 @@ export default function TestDrivesPage() {
     setActionInProgress({ id, type: 'reject' })
     try {
       await testDriveApi.rejectBooking(id)
-      setAlertMessage('Test drive request rejected')
-      setShowAlert(true)
-      setTimeout(() => setShowAlert(false), 4000)
+      toast.success(t('test_drive_rejected'))
       await fetchBookings()
     } catch (error) {
-      console.error('Failed to reject request', error)
+      toast.error('Failed to reject request')
     } finally {
       setActionInProgress(null)
       isProcessingRef.current = false
@@ -83,116 +80,151 @@ export default function TestDrivesPage() {
     subtitleKey: 'test_drive_subtitle',
   })
 
-  return (
-    <>
-      <div className="space-y-6">
-        {showAlert && (
-          <Alert
-            type="success"
-            message={alertMessage}
-            onClose={() => setShowAlert(false)}
-          />
-        )}
+  // Filter functionality
+  const filteredRequests = requests.filter(r => 
+    r.fullName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    r.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    r.carName.toLowerCase().includes(searchKeyword.toLowerCase())
+  )
 
-        <div className="relative bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          {actionInProgress && (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/20 dark:bg-black/40 backdrop-blur-sm">
-              <div className="flex items-center gap-3 border border-light-gray-surface dark:border-neutral-700 bg-white dark:bg-neutral-900 px-5 py-4 shadow-xl rounded-md">
-                <Loader2 size={18} className="animate-spin text-near-black dark:text-white" />
-                <span className="text-sm font-medium text-near-black dark:text-white">
-                  {actionInProgress.type === 'approve'
-                    ? 'Đang duyệt và gửi email...'
-                    : 'Đang từ chối yêu cầu...'}
-                </span>
-              </div>
-            </div>
-          )}
-          <DataTable
-            loading={loading}
-            columns={[
-              {
-                key: 'fullName',
-                label: 'Customer Name',
-                sortable: true,
-              },
-              {
-                key: 'email',
-                label: 'Email',
-                sortable: true,
-              },
-              {
-                key: 'carName',
-                label: 'Vehicle',
-                sortable: true,
-                render: (val, item: any) => `Porsche ${val}`
-              },
-              {
-                key: 'preferredDate',
-                label: 'Preferred Date',
-                align: 'center',
-                render: (val, item: any) => val ? `${val} / ${item.preferredTime || ''}` : '--'
-              },
-              {
-                key: 'status',
-                label: 'Status',
-                align: 'center',
-                render: (value) => (
-                  <Badge variant={statusVariants[value as keyof typeof statusVariants] || 'warning'}>
-                    {value}
-                  </Badge>
-                ),
-              },
-              {
-                key: 'actions',
-                label: 'Actions',
-                align: 'center',
-                render: (value) => {
-                  const request = requests.find((r) => r.id === value)
-                  const activeAction = actionInProgress
-                  if (request?.status !== BookingStatus.PENDING) {
-                    return <span className="text-xs text-mid-gray">No actions</span>
-                  }
-                  return (
-                    <div className="flex gap-2 justify-center">
-                      <button
-                        onClick={() => handleApprove(value)}
-                        disabled={Boolean(activeAction)}
-                        className="p-2 hover:bg-success-green/10 rounded transition-colors disabled:cursor-not-allowed disabled:opacity-40"
-                        aria-label="Approve test drive"
-                      >
-                        {activeAction?.id === value && activeAction?.type === 'approve' ? (
-                          <Loader2 size={16} className="animate-spin text-success-green" />
-                        ) : (
-                          <Check size={16} className="text-success-green" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => handleReject(value)}
-                        disabled={Boolean(activeAction)}
-                        className="p-2 hover:bg-brand-red/10 rounded transition-colors disabled:cursor-not-allowed disabled:opacity-40"
-                        aria-label="Reject test drive"
-                      >
-                        {activeAction?.id === value && activeAction?.type === 'reject' ? (
-                          <Loader2 size={16} className="animate-spin text-brand-red" />
-                        ) : (
-                          <X size={16} className="text-brand-red" />
-                        )}
-                      </button>
-                    </div>
-                  )
-                },
-              },
-            ]}
-            data={requests}
-            pagination={{
-              pageSize: 10,
-              currentPage,
-              total: requests.length,
-              onPageChange: setCurrentPage,
-            }}
+  const columns = [
+    {
+      key: 'fullName',
+      label: t('customer_name'),
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-2">
+          <User size={14} className="text-gray-400" />
+          <span className="font-medium text-near-black dark:text-white uppercase tracking-tight">{v}</span>
+        </div>
+      )
+    },
+    {
+      key: 'email',
+      label: t('email'),
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-2">
+          <Mail size={14} className="text-gray-400" />
+          <span className="text-sm text-gray-500 lowercase">{v}</span>
+        </div>
+      )
+    },
+    {
+      key: 'carName',
+      label: t('vehicle'),
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-2 font-bold uppercase tracking-tighter text-near-black dark:text-white">
+          <Car size={14} className="text-brand-red" />
+          <span>Porsche {v}</span>
+        </div>
+      )
+    },
+    {
+      key: 'preferredDate',
+      label: t('date'),
+      align: 'center' as const,
+      render: (v: string, item: any) => (
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500">
+            <Calendar size={12} />
+            {v}
+          </div>
+          <span className="text-[10px] uppercase text-gray-400 tracking-widest">{item.preferredTime || '--'}</span>
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      label: t('status'),
+      align: 'center' as const,
+      render: (v: string) => {
+        let variant: 'warning' | 'success' | 'destructive' | 'outline' = 'warning'
+        if (v === 'APPROVED') variant = 'success'
+        if (v === 'REJECTED') variant = 'destructive'
+        
+        return (
+          <Badge variant={variant}>
+            {v}
+          </Badge>
+        )
+      },
+    },
+    {
+      key: 'actions',
+      label: t('actions'),
+      align: 'right' as const,
+      render: (id: any, row: any) => {
+        const request = row as TestDriveBookingResponse
+        const isPending = request.status === BookingStatus.PENDING
+        
+        if (!isPending) {
+          return <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">{t('no_actions')}</span>
+        }
+
+        const isApproving = actionInProgress?.id === id && actionInProgress?.type === 'approve'
+        const isRejecting = actionInProgress?.id === id && actionInProgress?.type === 'reject'
+        const anyBusy = !!actionInProgress
+
+        return (
+          <div className="flex gap-1 justify-end">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 hover:bg-green-50 hover:text-green-600 hover:border-green-200"
+              onClick={() => handleApprove(id)}
+              loading={isApproving}
+              disabled={anyBusy && !isApproving}
+              title={tCommon('approve')}
+            >
+              <Check size={16} />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+              onClick={() => handleReject(id)}
+              loading={isRejecting}
+              disabled={anyBusy && !isRejecting}
+              title={tCommon('reject')}
+            >
+              <X size={16} />
+            </Button>
+          </div>
+        )
+      },
+    },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-2">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            id="test-drive-search"
+            placeholder={t('search_bookings')}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 w-64"
           />
         </div>
       </div>
-    </>
+
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm overflow-hidden">
+        <DataTable
+          loading={loading}
+          columns={columns}
+          data={filteredRequests}
+          pagination={{
+            pageSize: 10,
+            currentPage,
+            total: filteredRequests.length,
+            onPageChange: setCurrentPage,
+          }}
+        />
+      </div>
+    </div>
   )
 }

@@ -411,7 +411,7 @@ const AiAdvisoryBanner = () => {
             </div>
             <div>
               <div className="text-white text-lg font-light mb-1">Cố vấn AI Porsche</div>
-              <div className="text-white/40 text-xs tracking-wider">Được tích hợp Gemini AI</div>
+              <div className="text-white/40 text-xs tracking-wider">Được tích hợp AI RAG</div>
             </div>
             {/* Fake chat preview */}
             <div className="flex flex-col gap-2 w-full max-w-xs">

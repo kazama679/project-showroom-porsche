@@ -2,11 +2,14 @@
 
 import { useLocale, useTranslations } from 'next-intl'
 import { useRouter, usePathname } from '@/i18n/navigation'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Globe, CheckCircle2, Info } from 'lucide-react'
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
+import { Card, CardContent } from '@/components/base/ui/card'
+import { Badge } from '@/components/base/ui/badge'
 
 export function LanguageSettings() {
   const t = useTranslations('navigation')
+  const tAdmin = useTranslations('admin')
   const locale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
@@ -20,102 +23,120 @@ export function LanguageSettings() {
     subtitleKey: 'settings_subtitle',
   })
 
+  const languages = [
+    {
+      code: 'vi',
+      label: 'Tiếng Việt',
+      description: 'Vietnamese - Ngôn ngữ mặc định',
+      flag: '🇻🇳'
+    },
+    {
+      code: 'en',
+      label: 'English',
+      description: 'English - Default Language',
+      flag: '🇬🇧'
+    }
+  ]
+
   return (
-    <div className="min-h-screen bg-white dark:bg-dark-surface">
+    <div className="max-w-4xl space-y-12 pb-20 font-porsche">
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Badge variant="brand" className="h-6 w-6 rounded-none p-0 flex items-center justify-center">
+            <Globe size={12} />
+          </Badge>
+          <h2 className="uppercase tracking-[0.2em] text-xs font-bold text-gray-400">
+            {tAdmin('select_language') || 'Select Regional Language Settings'}
+          </h2>
+        </div>
 
-      {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-6 md:px-16 py-12">
-        <div className="space-y-4">
-          {/* Vietnamese Option */}
-          <button
-            onClick={() => setLanguage('vi')}
-            className={`w-full p-6 rounded-sm border-2 transition-all duration-300 ${
-              locale === 'vi'
-                ? 'border-black bg-black text-white'
-                : 'border-gray-200 bg-white text-black hover:border-black'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="text-left">
-                <h3 className="text-xl font-light mb-2">Tiếng Việt</h3>
-                <p className="text-sm opacity-75">Vietnamese - Ngôn ngữ mặc định</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    locale === 'vi'
-                      ? 'border-white bg-white'
-                      : 'border-gray-300'
-                  }`}
-                >
-                  {locale === 'vi' && (
-                    <div className="w-3 h-3 rounded-full bg-black" />
-                  )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {languages.map((lang) => {
+            const isSelected = locale === lang.code
+            return (
+              <button
+                key={lang.code}
+                onClick={() => setLanguage(lang.code)}
+                className={`group relative text-left p-8 border transition-all duration-500 overflow-hidden ${
+                  isSelected
+                    ? 'border-brand-red bg-white dark:bg-neutral-900 shadow-xl'
+                    : 'border-light-gray-surface dark:border-neutral-800 bg-white/50 dark:bg-dark-surface/50 hover:border-near-black dark:hover:border-white'
+                }`}
+              >
+                {isSelected && (
+                  <div className="absolute top-0 right-0 p-4">
+                    <CheckCircle2 size={24} className="text-brand-red" />
+                  </div>
+                )}
+                
+                <div className="space-y-4">
+                  <span className="text-4xl block group-hover:scale-110 transition-transform duration-500">{lang.flag}</span>
+                  <div>
+                    <h3 className={`text-2xl font-black uppercase italic tracking-tighter transition-colors ${
+                      isSelected ? 'text-near-black dark:text-white' : 'text-gray-400 group-hover:text-near-black dark:group-hover:text-white'
+                    }`}>
+                      {lang.label}
+                    </h3>
+                    <p className="text-[10px] uppercase font-bold tracking-[0.1em] text-gray-400 mt-1">
+                      {lang.description}
+                    </p>
+                  </div>
                 </div>
-                {locale === 'vi' && <ChevronRight size={24} />}
-              </div>
-            </div>
-          </button>
 
-          {/* English Option */}
-          <button
-            onClick={() => setLanguage('en')}
-            className={`w-full p-6 rounded-sm border-2 transition-all duration-300 ${
-              locale === 'en'
-                ? 'border-black bg-black text-white'
-                : 'border-gray-200 bg-white text-black hover:border-black'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="text-left">
-                <h3 className="text-xl font-light mb-2">English</h3>
-                <p className="text-sm opacity-75">English - Default Language</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    locale === 'en'
-                      ? 'border-white bg-white'
-                      : 'border-gray-300'
-                  }`}
-                >
-                  {locale === 'en' && (
-                    <div className="w-3 h-3 rounded-full bg-black" />
-                  )}
+                <div className={`mt-8 flex items-center gap-2 text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 ${
+                  isSelected ? 'text-brand-red' : 'text-transparent group-hover:text-near-black dark:group-hover:text-white translate-x-[-10px] group-hover:translate-x-0'
+                }`}>
+                  {isSelected ? tAdmin('currently_selected') || 'Currently Selected' : tAdmin('switch_to') || 'Switch to Language'}
+                  <ChevronRight size={14} />
                 </div>
-                {locale === 'en' && <ChevronRight size={24} />}
-              </div>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Info Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card className="rounded-none border-none bg-gray-50 dark:bg-neutral-900/50">
+          <CardContent className="p-8 space-y-4">
+            <div className="flex items-center gap-2 text-brand-red">
+              <Info size={16} />
+              <h3 className="uppercase tracking-widest text-[10px] font-bold">
+                {locale === 'vi' ? 'Thông tin' : 'Information'}
+              </h3>
             </div>
-          </button>
-        </div>
+            <div className="space-y-4 text-xs font-bold uppercase tracking-widest leading-relaxed text-gray-500">
+              <p>
+                {locale === 'vi'
+                  ? 'Khi bạn chọn một ngôn ngữ, toàn bộ trang web sẽ thay đổi thành ngôn ngữ đó. Tùy chọn ngôn ngữ của bạn sẽ được lưu lại và áp dụng cho lần truy cập tiếp theo.'
+                  : 'When you select a language, the entire website will change to that language. Your language preference will be saved and applied on your next visit.'}
+              </p>
+              <p>
+                {locale === 'vi'
+                  ? 'Bạn có thể thay đổi ngôn ngữ bất kỳ lúc nào bằng cách quay lại trang này.'
+                  : 'You can change the language at any time by returning to this page.'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Info Section */}
-        <div className="mt-12 p-8 bg-gray-50 rounded-sm space-y-4">
-          <h3 className="text-lg font-light">
-            {locale === 'vi' ? 'Thông tin' : 'Information'}
-          </h3>
-          <p className="text-sm text-gray-600 font-light leading-relaxed">
-            {locale === 'vi'
-              ? 'Khi bạn chọn một ngôn ngữ, toàn bộ trang web sẽ thay đổi thành ngôn ngữ đó. Tùy chọn ngôn ngữ của bạn sẽ được lưu lại và áp dụng cho lần truy cập tiếp theo.'
-              : 'When you select a language, the entire website will change to that language. Your language preference will be saved and applied on your next visit.'}
-          </p>
-          <p className="text-sm text-gray-600 font-light leading-relaxed">
-            {locale === 'vi'
-              ? 'Bạn có thể thay đổi ngôn ngữ bất kỳ lúc nào bằng cách quay lại trang này.'
-              : 'You can change the language at any time by returning to this page.'}
-          </p>
-        </div>
-
-        {/* Current Language Display */}
-        <div className="mt-8 p-6 border border-gray-200 rounded-sm">
-          <p className="text-sm text-gray-600 mb-2">
-            {locale === 'vi' ? 'Ngôn ngữ hiện tại' : 'Current Language'}:
-          </p>
-          <p className="text-2xl font-light">
-            {locale === 'vi' ? 'Tiếng Việt 🇻🇳' : 'English 🇬🇧'}
+        <div className="p-8 border border-light-gray-surface dark:border-neutral-800 flex flex-col justify-center gap-6">
+          <div className="space-y-1">
+            <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">
+              {locale === 'vi' ? 'Ngôn ngữ hiện tại' : 'Current Language'}
+            </p>
+            <p className="text-4xl font-black italic uppercase tracking-tighter text-near-black dark:text-white">
+              {locale === 'vi' ? 'Tiếng Việt' : 'English'}
+            </p>
+          </div>
+          <div className="h-[2px] w-12 bg-brand-red" />
+          <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400 leading-loose">
+            {locale === 'vi' 
+              ? 'Trải nghiệm cá nhân hóa theo vùng lãnh thổ của bạn.' 
+              : 'Personalized experience based on your regional settings.'}
           </p>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

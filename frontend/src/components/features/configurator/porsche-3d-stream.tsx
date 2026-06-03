@@ -1,12 +1,25 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent } from 'react'
 import { AlertCircle, Loader2 } from 'lucide-react'
 
 type Porsche3DStreamProps = {
   modelCode: string
   className?: string
+  productPayload?: PorscheProductPayload | null
+  initialCamera?: string
+  hideUpdateOverlay?: boolean
+  onBusyChange?: (busy: boolean) => void
+}
+
+type PorscheProductPayload = {
+  id: string
+  options: {
+    config: string[]
+    country: string
+    modelYear: number
+  }
 }
 
 type PorscheSessionResponse = {
@@ -138,10 +151,19 @@ function buildStreamerMessage(name: StreamerMessageName, values: Array<number | 
   return view.buffer
 }
 
-export function Porsche3DStream({ modelCode, className }: Porsche3DStreamProps) {
+export function Porsche3DStream({
+  modelCode,
+  className,
+  productPayload,
+  initialCamera,
+  hideUpdateOverlay = false,
+  onBusyChange,
+}: Porsche3DStreamProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const inputLayerRef = useRef<HTMLDivElement | null>(null)
   const dataChannelRef = useRef<RTCDataChannel | null>(null)
+  const lastPayloadRef = useRef<string | null>(null)
+  const lastCameraRef = useRef<string | null>(null)
   const [status, setStatus] = useState('Dang khoi tao 3D stream...')
   const [error, setError] = useState<string | null>(null)
   const [inputReady, setInputReady] = useState(false)
@@ -152,13 +174,13 @@ export function Porsche3DStream({ modelCode, className }: Porsche3DStreamProps) 
     RigGasCapR: false,
   })
 
-  const sendInputMessage = (name: StreamerMessageName, values: Array<number | string> = []) => {
+  const sendInputMessage = useCallback((name: StreamerMessageName, values: Array<number | string> = []) => {
     const channel = dataChannelRef.current
     if (channel?.readyState !== 'open') return
     channel.send(buildStreamerMessage(name, values))
-  }
+  }, [])
 
-  const sendUiInteraction = (messageType: string, data: Record<string, unknown>) => {
+  const sendUiInteraction = useCallback((messageType: string, data: Record<string, unknown>) => {
     const traceId =
       typeof crypto !== 'undefined' && 'randomUUID' in crypto
         ? crypto.randomUUID()
@@ -171,7 +193,39 @@ export function Porsche3DStream({ modelCode, className }: Porsche3DStreamProps) 
       },
     })
     sendInputMessage('UIInteraction', [payload])
-  }
+  }, [sendInputMessage])
+
+  useEffect(() => {
+    onBusyChange?.(!inputReady)
+  }, [inputReady, onBusyChange])
+
+  useEffect(() => {
+    if (!inputReady || !productPayload) return
+
+    const serializedPayload = JSON.stringify(productPayload)
+    if (lastPayloadRef.current === serializedPayload) return
+    lastPayloadRef.current = serializedPayload
+
+    onBusyChange?.(true)
+    sendUiInteraction('updateconfiguration', {
+      product: productPayload,
+    })
+
+    const timer = window.setTimeout(() => {
+      onBusyChange?.(false)
+    }, 1200)
+
+    return () => window.clearTimeout(timer)
+  }, [inputReady, onBusyChange, productPayload, sendUiInteraction])
+
+  useEffect(() => {
+    if (!inputReady || !initialCamera || lastCameraRef.current === initialCamera) return
+
+    lastCameraRef.current = initialCamera
+    sendUiInteraction('setcamera', {
+      id: initialCamera,
+    })
+  }, [initialCamera, inputReady, sendUiInteraction])
 
   const toggleAnimation = (control: (typeof ANIMATION_CONTROLS)[number]) => {
     if (!inputReady) return
@@ -495,7 +549,7 @@ export function Porsche3DStream({ modelCode, className }: Porsche3DStreamProps) 
         })}
       </div>
 
-      {!error && (
+      {!error && !hideUpdateOverlay && (
         <div className="pointer-events-none absolute left-4 top-4 z-20 flex items-center gap-2 rounded-full bg-black/65 px-3 py-2 text-xs text-white">
           {!inputReady && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           <span>{inputReady ? 'Keo chuot de xoay, cuon de zoom' : status}</span>

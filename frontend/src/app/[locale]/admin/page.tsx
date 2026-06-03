@@ -1,19 +1,24 @@
 'use client'
 
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { TrendingUp, Users, Car, Calendar, Clock } from 'lucide-react'
-import { KPICard } from '@/components/features/admin/kpi-card'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Badge } from '@/components/features/admin/badge'
-import { useAdminPage } from '@/components/features/admin/admin-page-context'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { 
+  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
+  Legend, ResponsiveContainer, PieChart, Pie, Cell 
+} from 'recharts'
+import { TrendingUp, Users, Car, Calendar, Clock, DollarSign, Activity, PieChart as PieIcon } from 'lucide-react'
+
+import { useAdminPage } from '@/components/features/admin/admin-page-context'
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/ui/card'
 
 // Mock data
 const kpiData = [
-  { label: 'Total Users', value: '2,847', unit: 'accounts', trend: 12, icon: <Users size={24} /> },
-  { label: 'Active Bookings', value: '156', unit: 'bookings', trend: 28, icon: <Calendar size={24} /> },
-  { label: 'Inventory', value: '186', unit: 'vehicles', trend: 5, icon: <Car size={24} /> },
-  { label: 'Pending Reviews', value: '24', unit: 'pending', trend: -8, icon: <Clock size={24} /> },
+  { label: 'Total Users', value: '2,847', unit: 'accounts', trend: 12, icon: <Users size={20} /> },
+  { label: 'Active Bookings', value: '156', unit: 'bookings', trend: 28, icon: <Calendar size={20} /> },
+  { label: 'Inventory', value: '186', unit: 'vehicles', trend: 5, icon: <Car size={20} /> },
+  { label: 'Pending Reviews', value: '24', unit: 'pending', trend: -8, icon: <Clock size={20} /> },
 ]
 
 const trendData = [
@@ -78,14 +83,8 @@ const recentBookings = [
 
 const colors = ['#DA291C', '#4C98B9', '#03904A', '#F6E500', '#8F8F8F']
 
-const statusVariants = {
-  confirmed: 'success',
-  pending: 'warning',
-  completed: 'success',
-  cancelled: 'danger',
-} as const
-
 export default function DashboardPage() {
+  const t = useTranslations('admin')
   const [currentPage, setCurrentPage] = useState(1)
 
   useAdminPage({
@@ -94,117 +93,188 @@ export default function DashboardPage() {
   })
 
   return (
-    <>
-      <div className="space-y-8">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {kpiData.map((kpi) => (
-            <KPICard key={kpi.label} {...kpi} variant="default" />
-          ))}
-        </div>
+    <div className="space-y-8 font-porsche">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpiData.map((kpi) => (
+          <Card key={kpi.label} className="rounded-none border-light-gray-surface dark:border-neutral-800 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-1 h-full bg-brand-red opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="p-2 bg-gray-50 dark:bg-neutral-900 border rounded-sm text-brand-red">
+                  {kpi.icon}
+                </div>
+                {kpi.trend > 0 ? (
+                  <Badge variant="success" className="text-[10px] py-0 px-1.5 h-5">+ {kpi.trend}%</Badge>
+                ) : (
+                  <Badge variant="destructive" className="text-[10px] py-0 px-1.5 h-5">{kpi.trend}%</Badge>
+                )}
+              </div>
+              <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400 mb-1">{kpi.label}</p>
+              <div className="flex flex-col">
+                <span className="text-3xl font-black italic tracking-tighter text-near-black dark:text-white leading-none">
+                  {kpi.value}
+                </span>
+                <span className="text-[10px] uppercase font-bold text-gray-500 mt-2 tracking-widest">{kpi.unit}</span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Trend Chart */}
-          <div className="lg:col-span-2 bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-            <h3 className="text-porsche-subheading mb-6 text-near-black dark:text-white">
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Trend Chart */}
+        <Card className="lg:col-span-2 rounded-none border-light-gray-surface dark:border-neutral-800 shadow-sm overflow-hidden">
+          <CardHeader className="border-b bg-gray-50/30">
+            <CardTitle className="uppercase tracking-tighter text-xl font-black italic flex items-center gap-2">
+              <Activity size={18} className="text-brand-red" />
               Bookings & Test Drives Trend
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trendData}>
-                <CartesianGrid stroke="#D2D2D2" strokeDasharray="0" />
-                <XAxis stroke="#8F8F8F" style={{ fontSize: '12px' }} />
-                <YAxis stroke="#8F8F8F" style={{ fontSize: '12px' }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#303030',
-                    border: '1px solid #404040',
-                    borderRadius: '2px',
-                    color: '#fff',
-                  }}
-                />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="bookings"
-                  stroke="#DA291C"
-                  dot={{ fill: '#DA291C', r: 4 }}
-                  strokeWidth={2}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="testDrives"
-                  stroke="#4C98B9"
-                  dot={{ fill: '#4C98B9', r: 4 }}
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trendData}>
+                  <CartesianGrid stroke="#f0f0f0" vertical={false} />
+                  <XAxis 
+                    dataKey="month" 
+                    stroke="#8F8F8F" 
+                    axisLine={false}
+                    tickLine={false}
+                    style={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase' }} 
+                  />
+                  <YAxis 
+                    stroke="#8F8F8F" 
+                    axisLine={false}
+                    tickLine={false}
+                    style={{ fontSize: '10px', fontWeight: 'bold' }} 
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1a1a1a',
+                      border: 'none',
+                      borderRadius: '0',
+                      color: '#fff',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                    }}
+                    labelStyle={{ display: 'none' }}
+                  />
+                  <Legend iconType="rect" formatter={(val) => <span className="text-[10px] uppercase font-bold tracking-widest text-gray-500">{val}</span>} />
+                  <Line
+                    type="monotone"
+                    dataKey="bookings"
+                    stroke="#DA291C"
+                    dot={{ fill: '#DA291C', r: 4, strokeWidth: 0 }}
+                    strokeWidth={3}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="testDrives"
+                    stroke="#000"
+                    dot={{ fill: '#000', r: 4, strokeWidth: 0 }}
+                    strokeWidth={3}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Category Distribution */}
-          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-            <h3 className="text-porsche-subheading mb-6 text-near-black dark:text-white">
+        {/* Category Distribution */}
+        <Card className="rounded-none border-light-gray-surface dark:border-neutral-800 shadow-sm overflow-hidden">
+          <CardHeader className="border-b bg-gray-50/30">
+            <CardTitle className="uppercase tracking-tighter text-xl font-black italic flex items-center gap-2">
+              <PieIcon size={18} className="text-brand-red" />
               Vehicle Distribution
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={carCategoryData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name} (${value})`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {carCategoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={carCategoryData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {carCategoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={colors[index % colors.length]} className="outline-none" />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap justify-center gap-4 mt-4">
+                {carCategoryData.map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-2 h-2" style={{ backgroundColor: colors[i % colors.length] }} />
+                    <span className="text-[9px] uppercase font-bold tracking-widest text-gray-500">{item.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        {/* Recent Bookings Table */}
-        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <h3 className="text-porsche-subheading mb-6 text-near-black dark:text-white">
+      {/* Recent Bookings Table */}
+      <Card className="rounded-none border-light-gray-surface dark:border-neutral-800 shadow-sm overflow-hidden">
+        <CardHeader className="border-b bg-gray-50/30 flex flex-row items-center justify-between">
+          <CardTitle className="uppercase tracking-tighter text-xl font-black italic flex items-center gap-2">
+            <TrendingUp size={18} className="text-brand-red" />
             Recent Bookings
-          </h3>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
           <DataTable
             columns={[
               {
                 key: 'customer',
                 label: 'Customer',
-                sortable: true,
+                render: (val: string) => <span className="font-bold uppercase text-near-black dark:text-white break-all">{val}</span>
               },
               {
                 key: 'car',
                 label: 'Vehicle',
-                sortable: true,
+                render: (val: string) => (
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black uppercase text-near-black dark:text-white italic tracking-tighter">{val}</span>
+                  </div>
+                )
               },
               {
                 key: 'date',
                 label: 'Date',
-                sortable: true,
-                align: 'center',
+                render: (v: string) => <span className="font-mono text-[10px] text-gray-400 font-bold uppercase">{v}</span>
               },
               {
                 key: 'status',
                 label: 'Status',
                 align: 'center',
-                render: (value) => (
-                  <Badge variant={statusVariants[value as keyof typeof statusVariants]}>
-                    {value.charAt(0).toUpperCase() + value.slice(1)}
-                  </Badge>
-                ),
+                render: (val: string) => {
+                  const variants: Record<string, any> = {
+                    confirmed: 'success',
+                    pending: 'warning',
+                    completed: 'success',
+                    cancelled: 'destructive',
+                  }
+                  return (
+                    <Badge variant={variants[val] || 'default'} className="uppercase text-[9px] tracking-widest font-bold">
+                      {val}
+                    </Badge>
+                  )
+                },
               },
               {
                 key: 'amount',
                 label: 'Amount',
                 align: 'right',
+                render: (v: string) => <span className="font-black text-near-black dark:text-white">{v}</span>
               },
             ]}
             data={recentBookings}
@@ -215,8 +285,8 @@ export default function DashboardPage() {
               onPageChange: setCurrentPage,
             }}
           />
-        </div>
-      </div>
-    </>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

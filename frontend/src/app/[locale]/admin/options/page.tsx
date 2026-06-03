@@ -1,20 +1,32 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
-import { FormInput } from '@/components/features/admin/form-input'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, Layers, Hash } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
+
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Input } from '@/components/base/ui/input'
+import { Label } from '@/components/base/ui/label'
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
-import { Alert } from '@/components/features/admin/alert'
-import { useTranslations } from 'next-intl';
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+
 import { optionCategoryService, OptionCategory, OptionCategoryFormData } from '@/services/option-category'
 import { authService, getErrorMessage } from '@/services/auth'
 
 export default function OptionsPage() {
-  const t = useTranslations('admin');
-  const tCommon = useTranslations('common');
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
 
   const [options, setOptions] = useState<OptionCategory[]>([])
   const [totalElements, setTotalElements] = useState(0)
@@ -29,10 +41,6 @@ export default function OptionsPage() {
   const [deletingOption, setDeletingOption] = useState<OptionCategory | null>(null)
   const [saving, setSaving] = useState(false)
 
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>('success')
-
   const [formData, setFormData] = useState<OptionCategoryFormData>({
     name: '',
     displayOrder: 0,
@@ -41,33 +49,20 @@ export default function OptionsPage() {
   const isAdmin = authService.isAdmin()
   const isAuthenticated = authService.isAuthenticated()
 
-  const showAlertMessage = (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
-    setAlertMessage(message); setAlertType(type); setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 5000)
-  }
-
   const fetchOptions = useCallback(async () => {
     setLoading(true)
     try {
       const data = await optionCategoryService.findAll(searchKeyword, currentPage - 1, pageSize)
       setOptions(data.content)
       setTotalElements(data.totalElements)
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setLoading(false) }
   }, [searchKeyword, currentPage, pageSize])
 
   useEffect(() => { fetchOptions() }, [fetchOptions])
 
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
-  const handleSearchChange = (value: string) => {
-    setSearchKeyword(value)
-    if (searchTimeout) clearTimeout(searchTimeout)
-    const timeout = setTimeout(() => { setCurrentPage(1) }, 400)
-    setSearchTimeout(timeout)
-  }
-
   const handleOpenModal = (item?: OptionCategory) => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
+    if (!isAdmin) { toast.warning(t('no_permission')); return }
     if (item) {
       setEditingOption(item)
       setFormData({ name: item.name, displayOrder: item.displayOrder || 0 })
@@ -78,27 +73,24 @@ export default function OptionsPage() {
     setIsModalOpen(true)
   }
 
-  const handleSave = async () => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
-    if (!formData.name.trim()) { showAlertMessage(t('fill_required'), 'error'); return }
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!isAdmin) { toast.warning(t('no_permission')); return }
+    if (!formData.name.trim()) { toast.error(t('fill_required')); return }
 
     setSaving(true)
     try {
       if (editingOption) {
         await optionCategoryService.update(editingOption.id, formData)
-        showAlertMessage(t('option_updated'), 'success')
+        toast.success(t('option_updated'))
       } else {
         await optionCategoryService.create(formData)
-        showAlertMessage(t('option_created'), 'success')
+        toast.success(t('option_created'))
       }
-      setIsModalOpen(false); fetchOptions()
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+      setIsModalOpen(false)
+      fetchOptions()
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setSaving(false) }
-  }
-
-  const handleOpenDeleteModal = (item: OptionCategory) => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
-    setDeletingOption(item); setIsDeleteModalOpen(true)
   }
 
   const handleConfirmDelete = async () => {
@@ -106,119 +98,190 @@ export default function OptionsPage() {
     setSaving(true)
     try {
       await optionCategoryService.delete(deletingOption.id)
-      showAlertMessage(t('option_deleted'), 'success')
-      setIsDeleteModalOpen(false); setDeletingOption(null); fetchOptions()
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+      toast.success(t('option_deleted'))
+      setIsDeleteModalOpen(false)
+      setDeletingOption(null)
+      fetchOptions()
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setSaving(false) }
   }
+
+  const columns = useMemo(() => [
+    { 
+      key: 'id', 
+      label: 'ID', 
+      align: 'center' as const,
+      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+    },
+    { 
+      key: 'name', 
+      label: t('option_name'), 
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-2">
+          <Layers size={14} className="text-brand-red" />
+          <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{v}</span>
+        </div>
+      )
+    },
+    { 
+      key: 'displayOrder', 
+      label: t('option_display_order'), 
+      align: 'center' as const, 
+      render: (v: number) => (
+        <Badge variant="secondary" className="font-mono text-[10px]">
+          {v ?? '—'}
+        </Badge>
+      )
+    },
+    ...(isAdmin ? [{
+      key: 'actions' as keyof OptionCategory, 
+      label: t('actions'), 
+      align: 'right' as const,
+      render: (_: any, row: OptionCategory) => (
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-near-black dark:hover:text-white"
+            onClick={() => handleOpenModal(row)}
+          >
+            <Edit2 size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-brand-red"
+            onClick={() => {
+              setDeletingOption(row)
+              setIsDeleteModalOpen(true)
+            }}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      ),
+    }] : []),
+  ], [isAdmin, t])
 
   useAdminPage({
     titleKey: 'options_management',
     subtitleKey: 'options_subtitle',
-    actions: (
-      <div className="flex items-center gap-3">
-        <div className="relative hidden sm:block">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
-          <input
-            type="text"
-            placeholder={t('search_options')}
+  })
+
+  return (
+    <div className="space-y-6">
+      {isAuthenticated && !isAdmin && (
+        <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
+          <ShieldAlert size={20} className="flex-shrink-0" />
+          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="relative w-full sm:w-64">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder={t('search_options') || 'Search options...'}
             value={searchKeyword}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64"
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 h-10"
           />
         </div>
         {isAdmin && (
-          <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
+          <Button
+            variant="brand"
+            onClick={() => handleOpenModal()}
+            className="uppercase tracking-widest text-xs font-bold w-full sm:w-auto h-10 px-6"
+          >
+            <Plus size={16} className="mr-2" />
             {t('add_option')}
           </Button>
         )}
       </div>
-    ),
-  })
 
-  return (
-    <>
-      <div className="space-y-6">
-        {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
-            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('no_permission')}</p>
-          </div>
-        )}
-        {showAlert && <Alert type={alertType} message={alertMessage} onClose={() => setShowAlert(false)} />}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-5">
-            <p className="text-xs font-medium text-mid-gray dark:text-light-gray-surface uppercase tracking-wider">{t('option_total')}</p>
-            <p className="text-2xl font-bold text-near-black dark:text-white mt-2">{totalElements}</p>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <DataTable
-            columns={[
-              { key: 'id', label: 'ID', align: 'center', sortable: true },
-              { key: 'name', label: t('option_name'), sortable: true },
-              { key: 'displayOrder', label: t('option_display_order'), align: 'center', render: (v: any) => v ?? '—' },
-              ...(isAdmin ? [{
-                key: 'actions' as keyof OptionCategory, label: t('actions'), align: 'center' as const,
-                render: (value: any, row: any) => (
-                  <div className="flex gap-2 justify-center">
-                    <button onClick={(e) => { e.stopPropagation(); handleOpenModal(row) }}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('edit')}>
-                      <Edit2 size={16} className="text-mid-gray" />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleOpenDeleteModal(row) }}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('delete')}>
-                      <Trash2 size={16} className="text-brand-red" />
-                    </button>
-                  </div>
-                ),
-              }] : []),
-            ]}
-            data={options} loading={loading}
-            pagination={{
-              pageSize,
-              currentPage,
-              total: totalElements,
-              onPageChange: setCurrentPage,
-              onPageSizeChange: setPageSize
-            }}
-          />
-        </div>
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-800 rounded-none overflow-hidden shadow-sm">
+        <DataTable
+          columns={columns}
+          data={options}
+          loading={loading}
+          pagination={{
+            pageSize,
+            currentPage,
+            total: totalElements,
+            onPageChange: setCurrentPage,
+            onPageSizeChange: setPageSize
+          }}
+        />
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
-        title={editingOption ? t('edit_option') : t('add_new_option')}
-        subtitle={editingOption ? t('update_option_info') : t('add_option_subtitle')}
-        size="md"
-        footer={<>
-          <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={saving}>{tCommon('cancel')}</Button>
-          <Button variant="primary" onClick={handleSave} loading={saving}>{editingOption ? t('update') : t('create')}</Button>
-        </>}>
-        <div className="space-y-4">
-          <FormInput label={t('option_name')} placeholder={t('option_placeholder_name')} value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
-          <FormInput label={t('option_display_order')} type="number" placeholder={t('option_placeholder_order')}
-            value={formData.displayOrder || ''} onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })} />
-        </div>
-      </Modal>
+      {/* Create/Edit Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0 rounded-none border-none overflow-hidden font-porsche">
+          <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
+            <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
+              {editingOption ? t('edit_option') : t('add_new_option')}
+            </DialogTitle>
+            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+              {editingOption ? t('update_option_info') : t('add_option_subtitle')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSave} className="p-8 space-y-6">
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_name')} *</Label>
+              <div className="relative">
+                <Layers size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder={t('option_placeholder_name')}
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="pl-9 uppercase font-bold h-11"
+                  required
+                />
+              </div>
+            </div>
 
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title={t('option_confirm_delete')} size="sm"
-        footer={<>
-          <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)} disabled={saving}>{tCommon('cancel')}</Button>
-          <Button variant="danger" onClick={handleConfirmDelete} loading={saving}>{t('delete')}</Button>
-        </>}>
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-brand-red" />
-          </div>
-          <div>
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('option_confirm_delete_msg')}</p>
-            {deletingOption && <p className="text-sm font-semibold text-near-black dark:text-white mt-2">{deletingOption.name}</p>}
-          </div>
-        </div>
-      </Modal>
-    </>
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_display_order')}</Label>
+              <div className="relative">
+                <Hash size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Input
+                  type="number"
+                  placeholder={t('option_placeholder_order')}
+                  value={formData.displayOrder || ''}
+                  onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })}
+                  className="pl-9 font-mono h-11"
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="pt-4 gap-3">
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
+                {tCommon('cancel')}
+              </Button>
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-10 italic font-black shadow-lg">
+                {editingOption ? t('update') : t('create')}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={isDeleteModalOpen}
+        title={t('option_confirm_delete')}
+        description={t('option_confirm_delete_msg')}
+        itemLabel={deletingOption?.name}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false)
+          setDeletingOption(null)
+        }}
+        loading={saving}
+      />
+    </div>
   )
 }

@@ -1,0 +1,20 @@
+
+> my-project@0.1.0 dev
+> next dev --webpack -p 3000
+
+▲ Next.js 16.2.0 (webpack)
+- Local:         http://localhost:3000
+- Network:       http://26.63.247.161:3000
+✓ Ready in 463ms
+
+○ Compiling proxy ...
+○ Compiling /[locale]/models/[id] ...
+ GET /vi/models/test 200 in 21.0s (next.js: 19.7s, proxy.ts: 694ms, application-code: 610ms)
+ GET /vi/models/1 200 in 370ms (next.js: 51ms, proxy.ts: 210ms, application-code: 108ms)
+ GET /vi/models/test 200 in 206ms (next.js: 16ms, proxy.ts: 12ms, application-code: 178ms)
+ GET /vi/models/test 200 in 204ms (next.js: 51ms, proxy.ts: 16ms, application-code: 136ms)
+ GET /vi/admin/series 200 in 3.5s (next.js: 3.2s, proxy.ts: 21ms, application-code: 322ms)
+ GET /vi/auth/login 200 in 1733ms (next.js: 1506ms, proxy.ts: 15ms, application-code: 211ms)
+ GET /vi/configurator/1 200 in 2.3s (next.js: 2.0s, proxy.ts: 9ms, application-code: 238ms)
+ GET /vi/models/test 200 in 200ms (next.js: 104ms, proxy.ts: 13ms, application-code: 83ms)
+[?25h

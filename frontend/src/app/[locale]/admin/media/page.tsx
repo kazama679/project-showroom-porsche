@@ -1,24 +1,36 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Image from 'next/image'
-import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, FileText } from 'lucide-react'
-import { DataTable } from '@/components/features/admin/data-table'
-import { Badge } from '@/components/features/admin/badge'
-import { Button } from '@/components/features/admin/button'
-import { Modal } from '@/components/features/admin/modal'
-import { FormInput } from '@/components/features/admin/form-input'
-import { Select } from '@/components/features/admin/select'
+import { Plus, Edit2, Trash2, Search, AlertTriangle, ShieldAlert, FileText, ImageIcon, Settings2, Car, Layers, CheckCircle2, XCircle, UploadCloud } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
+
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { Button } from '@/components/base/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Input } from '@/components/base/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/base/ui/select'
+import { Checkbox } from '@/components/base/ui/checkbox'
+import { Label } from '@/components/base/ui/label'
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
-import { Alert } from '@/components/features/admin/alert'
-import { useTranslations } from 'next-intl';
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
+
 import { carImageService, CarImage, CarImageFormData } from '@/services/car-image'
 import { carModelService, CarModelItem } from '@/services/car-model'
 import { authService, getErrorMessage } from '@/services/auth'
 
 export default function MediaPage() {
-  const t = useTranslations('admin');
-  const tCommon = useTranslations('common');
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
 
   const [mediaList, setMediaList] = useState<CarImage[]>([])
   const [modelsList, setModelsList] = useState<CarModelItem[]>([])
@@ -34,10 +46,6 @@ export default function MediaPage() {
   const [deletingMedia, setDeletingMedia] = useState<CarImage | null>(null)
   const [saving, setSaving] = useState(false)
 
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>('success')
-
   const [formData, setFormData] = useState<CarImageFormData>({
     image: null,
     imageType: 'exterior',
@@ -46,13 +54,10 @@ export default function MediaPage() {
     carModelId: null,
   })
 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
   const isAdmin = authService.isAdmin()
   const isAuthenticated = authService.isAuthenticated()
-
-  const showAlertMessage = (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
-    setAlertMessage(message); setAlertType(type); setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 5000)
-  }
 
   const fetchMedia = useCallback(async () => {
     setLoading(true)
@@ -60,7 +65,7 @@ export default function MediaPage() {
       const data = await carImageService.findAll(searchKeyword, currentPage - 1, pageSize)
       setMediaList(data.content)
       setTotalElements(data.totalElements)
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setLoading(false) }
   }, [searchKeyword, currentPage, pageSize])
 
@@ -68,22 +73,14 @@ export default function MediaPage() {
     try {
       const data = await carModelService.findAll('', 0, 100)
       setModelsList(data.content)
-    } catch (error) { /* ignore */ }
+    } catch (error) { console.error('Failed to fetch models') }
   }, [])
 
   useEffect(() => { fetchMedia() }, [fetchMedia])
   useEffect(() => { fetchModels() }, [fetchModels])
 
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
-  const handleSearchChange = (value: string) => {
-    setSearchKeyword(value)
-    if (searchTimeout) clearTimeout(searchTimeout)
-    const timeout = setTimeout(() => { setCurrentPage(1) }, 400)
-    setSearchTimeout(timeout)
-  }
-
   const handleOpenModal = (item?: CarImage) => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
+    if (!isAdmin) { toast.warning(t('no_permission')); return }
     if (item) {
       setEditingMedia(item)
       setFormData({
@@ -93,37 +90,46 @@ export default function MediaPage() {
         isDefault: item.isDefault || false,
         carModelId: item.carModelId || null,
       })
+      setPreviewUrl(item.imageUrl)
     } else {
       setEditingMedia(null)
       setFormData({
         image: null, imageType: 'exterior', sortOrder: 0, isDefault: false,
         carModelId: modelsList.length > 0 ? modelsList[0].id : null,
       })
+      setPreviewUrl(null)
     }
     setIsModalOpen(true)
   }
 
-  const handleSave = async () => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
-    if (!formData.imageType.trim() || (!editingMedia && !formData.image)) { showAlertMessage(t('fill_required'), 'error'); return }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null
+    setFormData({ ...formData, image: file })
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => setPreviewUrl(reader.result as string)
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!isAdmin) { toast.warning(t('no_permission')); return }
+    if (!formData.imageType.trim() || (!editingMedia && !formData.image)) { toast.error(t('fill_required')); return }
 
     setSaving(true)
     try {
       if (editingMedia) {
         await carImageService.update(editingMedia.id, formData)
-        showAlertMessage(t('media_updated'), 'success')
+        toast.success(t('media_updated'))
       } else {
         await carImageService.create(formData)
-        showAlertMessage(t('media_created'), 'success')
+        toast.success(t('media_created'))
       }
-      setIsModalOpen(false); fetchMedia()
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+      setIsModalOpen(false)
+      fetchMedia()
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setSaving(false) }
-  }
-
-  const handleOpenDeleteModal = (item: CarImage) => {
-    if (!isAdmin) { showAlertMessage(t('no_permission'), 'warning'); return }
-    setDeletingMedia(item); setIsDeleteModalOpen(true)
   }
 
   const handleConfirmDelete = async () => {
@@ -131,155 +137,287 @@ export default function MediaPage() {
     setSaving(true)
     try {
       await carImageService.delete(deletingMedia.id)
-      showAlertMessage(t('media_deleted'), 'success')
-      setIsDeleteModalOpen(false); setDeletingMedia(null); fetchMedia()
-    } catch (error) { showAlertMessage(getErrorMessage(error), 'error') }
+      toast.success(t('media_deleted'))
+      setIsDeleteModalOpen(false)
+      setDeletingMedia(null)
+      fetchMedia()
+    } catch (error) { toast.error(getErrorMessage(error)) }
     finally { setSaving(false) }
   }
+
+  const columns = useMemo(() => [
+    { 
+      key: 'id', 
+      label: 'ID', 
+      align: 'center' as const,
+      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+    },
+    { 
+      key: 'imageUrl', 
+      label: t('media_image_url'),
+      render: (value: string) => (
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-gray-100 dark:bg-neutral-800 border dark:border-neutral-700 flex items-center justify-center flex-shrink-0 overflow-hidden group relative">
+            {value ? (
+              <Image 
+                src={value} 
+                alt="" 
+                width={48} 
+                height={48} 
+                unoptimized 
+                className="w-full h-full object-cover transition-transform group-hover:scale-110"
+              />
+            ) : <ImageIcon size={20} className="text-gray-400" />}
+          </div>
+          <span className="truncate max-w-[150px] font-mono text-[10px] text-gray-400 group-hover:text-near-black dark:group-hover:text-white transition-colors">
+            {value?.split('/').pop() || '—'}
+          </span>
+        </div>
+      ),
+    },
+    { 
+      key: 'imageType', 
+      label: t('media_image_type'), 
+      sortable: true,
+      render: (v: string) => <Badge variant="secondary" className="uppercase text-[9px] font-bold tracking-widest">{v}</Badge>
+    },
+    { 
+      key: 'carModelName', 
+      label: t('media_car_model'), 
+      render: (v: string) => (
+        <div className="flex items-center gap-2">
+          <Car size={14} className="text-gray-400" />
+          <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{v || '—'}</span>
+        </div>
+      )
+    },
+    { 
+      key: 'isDefault', 
+      label: t('media_is_default'), 
+      align: 'center' as const,
+      render: (v: boolean) => (
+        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-[9px] tracking-widest font-bold">
+          {v ? (
+            <span className="flex items-center gap-1.5"><CheckCircle2 size={10} /> {tCommon('yes')}</span>
+          ) : (
+            <span className="flex items-center gap-1.5"><XCircle size={10} /> {tCommon('no')}</span>
+          )}
+        </Badge>
+      ),
+    },
+    ...(isAdmin ? [{
+      key: 'actions' as keyof CarImage, 
+      label: t('actions'), 
+      align: 'right' as const,
+      render: (_: any, row: CarImage) => (
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-near-black dark:hover:text-white"
+            onClick={() => handleOpenModal(row)}
+          >
+            <Edit2 size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-brand-red"
+            onClick={() => {
+              setDeletingMedia(row)
+              setIsDeleteModalOpen(true)
+            }}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      ),
+    }] : []),
+  ], [isAdmin, t, tCommon])
 
   useAdminPage({
     titleKey: 'media_management',
     subtitleKey: 'media_subtitle',
-    actions: (
-      <div className="flex items-center gap-3">
-        <div className="relative hidden sm:block">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-mid-gray" />
-          <input type="text" placeholder={t('search_media')} value={searchKeyword}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9 pr-4 py-2 text-sm border border-light-gray-surface dark:border-neutral-700 rounded-sm bg-white dark:bg-dark-surface text-near-black dark:text-white placeholder-mid-gray outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors w-64" />
+  })
+
+  return (
+    <div className="space-y-6">
+      {isAuthenticated && !isAdmin && (
+        <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
+          <ShieldAlert size={20} className="flex-shrink-0" />
+          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="relative w-full sm:w-64">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder={t('search_media') || 'Search media...'}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 h-10"
+          />
         </div>
         {isAdmin && (
-          <Button variant="primary" icon={<Plus size={18} />} onClick={() => handleOpenModal()}>
+          <Button
+            variant="brand"
+            onClick={() => handleOpenModal()}
+            className="uppercase tracking-widest text-xs font-bold w-full sm:w-auto h-10 px-6"
+          >
+            <Plus size={16} className="mr-2" />
             {t('add_media')}
           </Button>
         )}
       </div>
-    ),
-  })
 
-  return (
-    <>
-      <div className="space-y-6">
-        {isAuthenticated && !isAdmin && (
-          <div className="flex items-center gap-3 p-4 rounded-sm border border-modena-yellow/30 bg-modena-yellow/10 dark:bg-modena-yellow/20">
-            <ShieldAlert size={20} className="text-yellow-600 flex-shrink-0" />
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('no_permission')}</p>
-          </div>
-        )}
-        {showAlert && <Alert type={alertType} message={alertMessage} onClose={() => setShowAlert(false)} />}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-5">
-            <p className="text-xs font-medium text-mid-gray dark:text-light-gray-surface uppercase tracking-wider">{t('media_total')}</p>
-            <p className="text-2xl font-bold text-near-black dark:text-white mt-2">{totalElements}</p>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm p-6">
-          <DataTable
-            columns={[
-              { key: 'id', label: 'ID', align: 'center', sortable: true },
-              { key: 'imageUrl', label: t('media_image_url'),
-                render: (value: any) => (
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-red/10 rounded-sm flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {value ? (
-                        <Image src={value} alt="" width={40} height={40} unoptimized className="w-full h-full object-cover"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DA291C" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/></svg>' }} />
-                      ) : <FileText size={16} className="text-brand-red" />}
-                    </div>
-                    <span className="truncate max-w-[200px] text-xs">{value}</span>
-                  </div>
-                ),
-              },
-              { key: 'imageType', label: t('media_image_type'), sortable: true },
-              { key: 'carModelName', label: t('media_car_model'), render: (v: any) => v || '—' },
-              { key: 'isDefault', label: t('media_is_default'), align: 'center',
-                render: (v: any) => (
-                  <Badge variant={v ? 'success' : 'default'}>
-                    {v ? t('yes') : t('no')}
-                  </Badge>
-                ),
-              },
-              ...(isAdmin ? [{
-                key: 'actions' as keyof CarImage, label: t('actions'), align: 'center' as const,
-                render: (value: any, row: any) => (
-                  <div className="flex gap-2 justify-center">
-                    <button onClick={(e) => { e.stopPropagation(); handleOpenModal(row) }}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('edit')}>
-                      <Edit2 size={16} className="text-mid-gray" />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleOpenDeleteModal(row) }}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded transition-colors" title={t('delete')}>
-                      <Trash2 size={16} className="text-brand-red" />
-                    </button>
-                  </div>
-                ),
-              }] : []),
-            ]}
-            data={mediaList} loading={loading}
-            pagination={{
-              pageSize,
-              currentPage,
-              total: totalElements,
-              onPageChange: setCurrentPage,
-              onPageSizeChange: setPageSize
-            }}
-          />
-        </div>
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-neutral-800 rounded-none overflow-hidden shadow-sm">
+        <DataTable
+          columns={columns}
+          data={mediaList}
+          loading={loading}
+          pagination={{
+            pageSize,
+            currentPage,
+            total: totalElements,
+            onPageChange: setCurrentPage,
+            onPageSizeChange: setPageSize
+          }}
+        />
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
-        title={editingMedia ? t('edit_media') : t('add_new_media')}
-        subtitle={editingMedia ? t('update_media_info') : t('add_media_subtitle')}
-        size="md"
-        footer={<>
-          <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={saving}>{tCommon('cancel')}</Button>
-          <Button variant="primary" onClick={handleSave} loading={saving}>{editingMedia ? t('update') : t('create')}</Button>
-        </>}>
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-near-black dark:text-light-gray-surface">Image (Cloudinary) *</label>
-            {editingMedia?.imageUrl && !formData.image && (
-              <div className="mb-2">
-                <Image src={editingMedia.imageUrl} alt="Current Media" width={128} height={128} unoptimized className="object-contain bg-gray-100 dark:bg-neutral-900 rounded p-2" />
+      {/* Create/Edit Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[550px] p-0 rounded-none border-none overflow-hidden font-porsche">
+          <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
+            <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
+              {editingMedia ? t('edit_media') : t('add_new_media')}
+            </DialogTitle>
+            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+              {editingMedia ? t('update_media_info') : t('add_media_subtitle')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSave} className="p-8 space-y-6">
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Image Asset *</Label>
+              <div className="space-y-4">
+                {previewUrl && (
+                  <div className="relative aspect-video w-full overflow-hidden bg-gray-100 dark:bg-neutral-900 border dark:border-neutral-800 p-2">
+                    <Image 
+                      src={previewUrl} 
+                      alt="Preview" 
+                      fill 
+                      unoptimized 
+                      className="object-contain" 
+                    />
+                  </div>
+                )}
+                <div className="relative group cursor-pointer">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="border-2 border-dashed border-gray-300 dark:border-neutral-700 p-8 flex flex-col items-center justify-center gap-3 group-hover:border-brand-red group-hover:bg-brand-red/5 transition-all">
+                    <UploadCloud size={32} className="text-gray-400 group-hover:text-brand-red transition-colors" />
+                    <p className="text-xs uppercase font-bold tracking-widest text-gray-500 group-hover:text-near-black dark:group-hover:text-white">
+                      {formData.image ? formData.image.name : 'Select file or drag & drop'}
+                    </p>
+                  </div>
+                </div>
               </div>
-            )}
-            <input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
-              className="w-full text-sm text-mid-gray file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 dark:file:bg-neutral-700 file:text-near-black dark:file:text-white hover:file:bg-neutral-200 dark:hover:file:bg-[#505050] transition-colors" />
-          </div>
-          <FormInput label={t('media_image_type')} placeholder={t('media_placeholder_type')} value={formData.imageType}
-            onChange={(e) => setFormData({ ...formData, imageType: e.target.value })} required />
-          <Select label={t('media_car_model')} placeholder={t('select_model')}
-            options={modelsList.map(m => ({ label: m.name, value: m.id }))}
-            value={formData.carModelId || ''}
-            onChange={(e) => setFormData({ ...formData, carModelId: parseInt(e.target.value) })} required />
-          <div className="grid grid-cols-2 gap-4">
-            <FormInput label={t('media_sort_order')} type="number" value={formData.sortOrder || ''}
-              onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })} />
-            <Select label={t('media_is_default')}
-              options={[{ label: t('yes'), value: 'true' }, { label: t('no'), value: 'false' }]}
-              value={formData.isDefault ? 'true' : 'false'}
-              onChange={(e) => setFormData({ ...formData, isDefault: e.target.value === 'true' })} />
-          </div>
-        </div>
-      </Modal>
+            </div>
 
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title={t('media_confirm_delete')} size="sm"
-        footer={<>
-          <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)} disabled={saving}>{tCommon('cancel')}</Button>
-          <Button variant="danger" onClick={handleConfirmDelete} loading={saving}>{t('delete')}</Button>
-        </>}>
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-brand-red/10 dark:bg-brand-red/20 flex-shrink-0">
-            <AlertTriangle size={24} className="text-brand-red" />
-          </div>
-          <div>
-            <p className="text-sm text-near-black dark:text-light-gray-surface">{t('media_confirm_delete_msg')}</p>
-            {deletingMedia && <p className="text-sm font-semibold text-near-black dark:text-white mt-2">{deletingMedia.imageUrl}</p>}
-          </div>
-        </div>
-      </Modal>
-    </>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('media_image_type')} *</Label>
+                <div className="relative">
+                  <Layers size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder={t('media_placeholder_type')}
+                    value={formData.imageType}
+                    onChange={(e) => setFormData({ ...formData, imageType: e.target.value })}
+                    className="pl-9 uppercase font-bold h-11 text-[10px]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('media_car_model')} *</Label>
+                <Select
+                  value={formData.carModelId?.toString() || ''}
+                  onValueChange={(val) => setFormData({ ...formData, carModelId: parseInt(val) })}
+                >
+                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                    <SelectValue placeholder={t('select_model')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {modelsList.map((m) => (
+                      <SelectItem key={m.id} value={m.id.toString()} className="uppercase font-bold text-[10px]">
+                        {m.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('media_sort_order')}</Label>
+                <div className="relative">
+                  <Settings2 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="number"
+                    value={formData.sortOrder || ''}
+                    onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                    className="pl-9 font-mono h-11"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2 pb-3">
+                <Checkbox 
+                  id="isDefault" 
+                  checked={formData.isDefault} 
+                  onCheckedChange={(checked) => setFormData({ ...formData, isDefault: !!checked })}
+                  className="rounded-none border-gray-300 data-[state=checked]:bg-brand-red data-[state=checked]:border-brand-red"
+                />
+                <Label htmlFor="isDefault" className="text-xs font-bold uppercase tracking-widest cursor-pointer">
+                  {t('media_is_default')}
+                </Label>
+              </div>
+            </div>
+
+            <DialogFooter className="pt-4 gap-3">
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
+                {tCommon('cancel')}
+              </Button>
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-12 italic italic font-black shadow-lg">
+                {editingMedia ? t('update') : t('create')}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={isDeleteModalOpen}
+        title={t('media_confirm_delete')}
+        description={t('media_confirm_delete_msg')}
+        itemLabel={deletingMedia?.imageUrl?.split('/').pop()}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false)
+          setDeletingMedia(null)
+        }}
+        loading={saving}
+      />
+    </div>
   )
 }

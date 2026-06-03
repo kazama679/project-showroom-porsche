@@ -1,10 +1,26 @@
 'use client'
 
-import { useState } from 'react'
-import { useTranslations } from 'next-intl';
-import { Plus, Edit2, Trash2, X } from 'lucide-react'
-import { Button } from '@/components/features/admin/button'
+import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
+import { Plus, Edit2, Trash2, User as UserIcon, Mail, Phone, Calendar, ShieldCheck, Search } from 'lucide-react'
+import { toast } from 'sonner'
+
 import { useAdminPage } from '@/components/features/admin/admin-page-context'
+import { Button } from '@/components/base/ui/button'
+import { Input } from '@/components/base/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/base/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/base/ui/dialog'
+import { Label } from '@/components/base/ui/label'
+import { DataTable } from '@/components/base/admin/data-table'
+import { Badge } from '@/components/base/ui/badge'
+import { ConfirmDialog } from '@/components/base/admin/confirm-dialog'
 
 interface User {
   id: number
@@ -65,14 +81,16 @@ const mockUsers: User[] = [
 ]
 
 export default function UsersPage() {
-  const t = useTranslations('admin');
-  const tCommon = useTranslations('common');
+  const t = useTranslations('admin')
+  const tCommon = useTranslations('common')
+  
   const [users, setUsers] = useState<User[]>(mockUsers)
+  const [searchKeyword, setSearchKeyword] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null)
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+  const [deletingUser, setDeletingUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -81,6 +99,15 @@ export default function UsersPage() {
     role: 'customer',
     status: 'active' as 'active' | 'inactive',
   })
+
+  const filteredUsers = useMemo(() => 
+    users.filter(u => 
+      u.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      u.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      u.phone.includes(searchKeyword)
+    ),
+    [users, searchKeyword]
+  )
 
   const handleOpenModal = (user?: User) => {
     if (user) {
@@ -105,13 +132,15 @@ export default function UsersPage() {
     setIsModalOpen(true)
   }
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.name || !formData.email) {
-      setAlertMessage(tCommon('submit'))
-      setShowAlert(true)
+      toast.error(t('fill_required'))
       return
     }
+    
+    setLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 800))
 
     if (editingUser) {
       setUsers(
@@ -128,6 +157,7 @@ export default function UsersPage() {
             : user
         )
       )
+      toast.success(tCommon('update_success'))
     } else {
       const newUser: User = {
         id: Math.max(...users.map((u) => u.id), 0) + 1,
@@ -139,261 +169,262 @@ export default function UsersPage() {
         status: formData.status,
       }
       setUsers([newUser, ...users])
+      toast.success(tCommon('create_success'))
     }
 
+    setLoading(false)
     setIsModalOpen(false)
-    setTimeout(() => setShowAlert(false), 3000)
   }
 
-  const handleDelete = (id: number) => {
-    setUsers(users.filter((user) => user.id !== id))
-    setDeleteConfirmId(null)
+  const handleDelete = async () => {
+    if (!deletingUser) return
+    setLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 500))
+    setUsers(users.filter((user) => user.id !== deletingUser.id))
+    toast.success(tCommon('delete_success'))
+    setIsDeleteModalOpen(false)
+    setDeletingUser(null)
+    setLoading(false)
   }
 
-  const getRoleLabel = (role: string) => {
-    const roleMap: Record<string, string> = {
-      customer: t('customer'),
-      staff: t('staff'),
-      admin: t('admin'),
-    }
-    return roleMap[role] || role
-  }
-
-  const getStatusLabel = (status: string) => {
-    return status === 'active' ? t('active') : t('inactive')
-  }
+  const columns = [
+    {
+      key: 'name',
+      label: t('full_name'),
+      sortable: true,
+      render: (val: string) => (
+        <div className="flex items-center gap-2">
+          <UserIcon size={14} className="text-gray-400" />
+          <span className="font-bold uppercase tracking-tight text-near-black dark:text-white">{val}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'email',
+      label: t('email_address'),
+      sortable: true,
+      render: (val: string) => (
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <Mail size={12} className="text-gray-400" />
+          {val}
+        </div>
+      )
+    },
+    {
+      key: 'role',
+      label: t('role'),
+      render: (val: string) => (
+        <Badge variant="outline" className="uppercase text-[9px] tracking-widest font-bold border-gray-200 dark:border-neutral-800">
+          {val}
+        </Badge>
+      )
+    },
+    {
+      key: 'joinDate',
+      label: t('join_date'),
+      sortable: true,
+      render: (v: string) => (
+        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-gray-400">
+          <Calendar size={12} />
+          {v}
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      label: t('status'),
+      align: 'center' as const,
+      render: (val: string) => (
+        <Badge variant={val === 'active' ? 'success' : 'destructive'} className="uppercase text-[9px] tracking-widest font-bold">
+          {val}
+        </Badge>
+      ),
+    },
+    {
+      key: 'actions',
+      label: t('actions'),
+      align: 'right' as const,
+      render: (_: any, row: User) => (
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-near-black dark:hover:text-white"
+            onClick={() => handleOpenModal(row)}
+          >
+            <Edit2 size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-gray-400 hover:text-brand-red"
+            onClick={() => {
+              setDeletingUser(row)
+              setIsDeleteModalOpen(true)
+            }}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      ),
+    },
+  ]
 
   useAdminPage({
     titleKey: 'manage_users',
     subtitleKey: 'users_subtitle',
-    actions: (
-      <Button
-        variant="primary"
-        icon={<Plus size={18} />}
-        onClick={() => handleOpenModal()}
-      >
-        {t('add_user')}
-      </Button>
-    ),
   })
 
   return (
     <div className="space-y-6">
-
-      {/* Success Alert */}
-      {showAlert && (
-        <div className="p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-sm border border-green-200 dark:border-green-900/50">
-          {alertMessage}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="relative w-full sm:w-64">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder={t('search_users')}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="pl-9 h-10"
+          />
         </div>
-      )}
-
-      {/* Table */}
-      <div className="overflow-x-auto bg-white dark:bg-neutral-900 rounded-sm border border-gray-200 dark:border-dark-surface">
-        <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-neutral-800 border-b border-gray-200 dark:border-dark-surface">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('name')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('email')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('phone_number')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('role')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('join_date')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('status')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                {t('actions')}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-dark-surface">
-            {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
-                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">{user.name}</td>
-                <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{user.email}</td>
-                <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{user.phone}</td>
-                <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{getRoleLabel(user.role)}</td>
-                <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{user.joinDate}</td>
-                <td className="px-6 py-4 text-sm">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.status === 'active'
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    {getStatusLabel(user.status)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-sm flex items-center gap-2">
-                  <button
-                    onClick={() => handleOpenModal(user)}
-                    className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
-                    title={t('edit')}
-                  >
-                    <Edit2 size={16} />
-                  </button>
-                  <button
-                    onClick={() => setDeleteConfirmId(user.id)}
-                    className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
-                    title={t('delete')}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Button
+          variant="brand"
+          onClick={() => handleOpenModal()}
+          className="uppercase tracking-widest text-xs font-bold w-full sm:w-auto h-10 px-6"
+        >
+          <Plus size={16} className="mr-2" />
+          {t('add_user')}
+        </Button>
       </div>
 
-      {/* Add/Edit Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-neutral-900 rounded-sm w-full max-w-md shadow-lg max-h-96 overflow-y-auto hide-scrollbar">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-dark-surface">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {editingUser ? t('edit_user') : t('add_new_user')}
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  {editingUser ? '' : t('create_new_user')}
-                </p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-                aria-label="Close"
-              >
-                <X size={20} />
-              </button>
+      <div className="bg-white dark:bg-dark-surface border border-light-gray-surface dark:border-dark-surface rounded-sm overflow-hidden shadow-sm">
+        <DataTable 
+          columns={columns} 
+          data={filteredUsers} 
+          pagination={{
+              currentPage: 1,
+              pageSize: 10,
+              total: filteredUsers.length,
+              onPageChange: () => {},
+          }}
+        />
+      </div>
+
+      {/* User Form Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">
+              {editingUser ? t('edit_user') : t('add_new_user')}
+            </DialogTitle>
+            <DialogDescription className="italic text-gray-400">
+              {editingUser ? 'Update user account information' : 'Create a new administrative or customer account'}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSave} className="space-y-6 py-6 font-porsche">
+            <div className="grid gap-2">
+              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('full_name')} *</Label>
+              <Input
+                placeholder={t('placeholder_fullname')}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="font-bold uppercase h-11"
+                required
+              />
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('full_name')} *
-                </label>
-                <input
-                  type="text"
-                  placeholder={t('placeholder_fullname')}
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
-                />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('email_address')} *</Label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="email"
+                    placeholder={t('placeholder_email')}
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="pl-10 h-11 italic text-xs"
+                    required
+                  />
+                </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('email_address')} *
-                </label>
-                <input
-                  type="email"
-                  placeholder={t('placeholder_email')}
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
-                />
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('phone_number')}</Label>
+                <div className="relative">
+                  <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="tel"
+                    placeholder={t('placeholder_phone')}
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="pl-10 h-11 text-xs"
+                  />
+                </div>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('phone_number')}
-                </label>
-                <input
-                  type="tel"
-                  placeholder={t('placeholder_phone')}
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('role')}
-                </label>
-                <select
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('role')}</Label>
+                <Select
                   value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  aria-label={t('role')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
+                  onValueChange={(val) => setFormData({ ...formData, role: val })}
                 >
-                  <option value="customer">{t('customer')}</option>
-                  <option value="staff">{t('staff')}</option>
-                  <option value="admin">{t('admin')}</option>
-                </select>
+                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="customer" className="uppercase text-[10px] font-bold">{t('customer')}</SelectItem>
+                    <SelectItem value="staff" className="uppercase text-[10px] font-bold">{t('staff')}</SelectItem>
+                    <SelectItem value="admin" className="uppercase text-[10px] font-bold">{t('admin')}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('status')}
-                </label>
-                <select
+              <div className="grid gap-2">
+                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('status')}</Label>
+                <Select
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
-                  aria-label={t('status')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-dark-surface rounded-sm bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-red"
+                  onValueChange={(val: any) => setFormData({ ...formData, status: val })}
                 >
-                  <option value="active">{t('active')}</option>
-                  <option value="inactive">{t('inactive')}</option>
-                </select>
+                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active" className="uppercase text-[10px] font-bold text-green-600">{t('active')}</SelectItem>
+                    <SelectItem value="inactive" className="uppercase text-[10px] font-bold text-red-600">{t('inactive')}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-dark-surface">
-                <button
-                  type="submit"
-                  className="flex-1 bg-brand-red hover:bg-red-700 text-white font-medium py-2 rounded-sm transition-colors"
-                >
-                  {tCommon('save')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 bg-gray-200 dark:bg-dark-surface hover:bg-gray-300 dark:hover:bg-neutral-700 text-gray-900 dark:text-white font-medium py-2 rounded-sm transition-colors"
-                >
-                  {tCommon('cancel')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {deleteConfirmId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-neutral-900 rounded-sm w-full max-w-sm shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('confirm_delete')}</h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">{t('are_you_sure')}</p>
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => handleDelete(deleteConfirmId)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-sm transition-colors"
-              >
-                {t('delete')}
-              </button>
-              <button
-                onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 bg-gray-200 dark:bg-dark-surface hover:bg-gray-300 dark:hover:bg-neutral-700 text-gray-900 dark:text-white font-medium py-2 rounded-sm transition-colors"
-              >
-                {tCommon('cancel')}
-              </button>
             </div>
-          </div>
-        </div>
-      )}
+
+            <DialogFooter className="border-t pt-6 gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="uppercase text-xs font-bold tracking-widest">
+                {tCommon('cancel')}
+              </Button>
+              <Button type="submit" variant="brand" loading={loading} className="uppercase text-xs font-bold tracking-widest h-11 px-8">
+                {tCommon('save')}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={isDeleteModalOpen}
+        title={t('confirm_delete')}
+        description={t('are_you_sure')}
+        itemLabel={deletingUser?.name}
+        confirmLabel={t('delete')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={handleDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false)
+          setDeletingUser(null)
+        }}
+        loading={loading}
+      />
     </div>
   )
 }
