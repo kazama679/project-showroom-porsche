@@ -100,28 +100,28 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
     <div className="min-h-screen bg-white">
       <SiteHeader className="z-50 bg-transparent absolute top-0 w-full border-none" />
       {/* Back Link */}
-      <div className="max-w-[1400px] mx-auto px-6 pt-20 pb-5">
-        <Link href="/inventory" className="inline-flex items-center gap-2 text-[15px] text-gray-900 hover:text-gray-600 transition-colors">
+      <div className="max-w-page mx-auto px-6 pt-20 pb-5">
+        <Link href="/inventory" className="inline-flex items-center gap-2 text-body-sm text-gray-900 hover:text-gray-600 transition-colors">
           <ArrowLeft className="w-4 h-4" />
           {t('back_link')}
         </Link>
       </div>
 
       {/* ═══════════════════ IMAGE GALLERY ═══════════════════ */}
-      <div className="max-w-[1400px] mx-auto px-6 mb-10">
+      <div className="max-w-page mx-auto px-6 mb-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Main Image */}
-          <div className="lg:col-span-2 relative rounded-2xl overflow-hidden bg-gray-100 aspect-[16/10] cursor-pointer group" onClick={() => setGalleryOpen(true)}>
+          <div className="lg:col-span-2 relative rounded-2xl overflow-hidden bg-gray-100 aspect-showcase cursor-pointer group" onClick={() => setGalleryOpen(true)}>
             <Image src={mainImage} alt="Main" fill unoptimized className="object-cover" />
             {/* Badges */}
             <div className="absolute top-5 left-5 flex gap-2 z-10">
-              <span className="bg-black/80 backdrop-blur-sm text-white text-[12px] font-medium px-4 py-2 rounded-full">{t('badge_video')}</span>
-              <span className="bg-black/80 backdrop-blur-sm text-white text-[12px] font-medium px-4 py-2 rounded-full">{t('badge_audio')}</span>
-              <span className="bg-black/80 backdrop-blur-sm text-white text-[12px] font-medium px-4 py-2 rounded-full">{images.length} {t('badge_images')}</span>
+              <span className="bg-black/80 backdrop-blur-sm text-white text-xs font-medium px-4 py-2 rounded-full">{t('badge_video')}</span>
+              <span className="bg-black/80 backdrop-blur-sm text-white text-xs font-medium px-4 py-2 rounded-full">{t('badge_audio')}</span>
+              <span className="bg-black/80 backdrop-blur-sm text-white text-xs font-medium px-4 py-2 rounded-full">{images.length} {t('badge_images')}</span>
             </div>
             {/* Open Gallery Button */}
             <button
-              className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-sm text-gray-900 text-[13px] font-semibold px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-white transition-colors z-10 shadow-md"
+              className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-sm text-gray-900 text-caption font-semibold px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-white transition-colors z-10 shadow-md"
               onClick={(e) => { e.stopPropagation(); setGalleryOpen(true) }}
             >
               <Mail className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
           </div>
 
           {/* Side Grid (4 images) */}
-          <div className="grid grid-cols-2 gap-3 max-h-[500px]">
+          <div className="grid grid-cols-2 gap-3 max-h-editorial-media">
             {[1, 2, 3, 4].map(i => (
               <div
                 key={i}
@@ -151,32 +151,32 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       </div>
 
       {/* ═══════════════════ CONTENT AREA ═══════════════════ */}
-      <div className="max-w-[1400px] mx-auto px-6 pb-16">
+      <div className="max-w-page mx-auto px-6 pb-16">
         <div className="flex flex-col lg:flex-row gap-10">
           
           {/* ─── LEFT COLUMN (Main Info) ─── */}
           <div className="flex-1 min-w-0">
             
             {/* Title & Condition */}
-            <h1 className="text-[32px] lg:text-[38px] font-normal text-gray-900 leading-tight mb-2">
+            <h1 className="text-3xl lg:text-inventory-title font-normal text-gray-900 leading-tight mb-2">
               Porsche {car.model} {car.trimLevel} {car.modelYear}
             </h1>
-            <p className="text-blue-600 text-[16px] font-medium mb-8">{conditionLabel}</p>
+            <p className="text-blue-600 text-base font-medium mb-8">{conditionLabel}</p>
 
             {/* Color Swatches */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-md bg-gray-400 border border-gray-300 flex-shrink-0 shadow-inner" />
                 <div>
-                  <p className="text-[13px] text-gray-500 mb-0.5">{t('ext_color_label')}</p>
-                  <p className="text-[15px] text-gray-900 font-medium">{car.exteriorColor || 'Standard'}</p>
+                  <p className="text-caption text-gray-500 mb-0.5">{t('ext_color_label')}</p>
+                  <p className="text-body-sm text-gray-900 font-medium">{car.exteriorColor || 'Standard'}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-md bg-gray-900 border border-gray-300 flex-shrink-0 shadow-inner" />
                 <div>
-                  <p className="text-[13px] text-gray-500 mb-0.5">{t('int_color_label')}</p>
-                  <p className="text-[15px] text-gray-900 font-medium">{car.interiorColor || 'Standard'}</p>
+                  <p className="text-caption text-gray-500 mb-0.5">{t('int_color_label')}</p>
+                  <p className="text-body-sm text-gray-900 font-medium">{car.interiorColor || 'Standard'}</p>
                 </div>
               </div>
             </div>
@@ -184,42 +184,42 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
             {/* Specs Grid Row 1 */}
             <div className="grid grid-cols-3 border-t border-gray-200">
               <div className="py-6 pr-6 border-b border-gray-200">
-                <p className="text-[12px] text-gray-500 mb-2">{t('spec_warranty')}</p>
-                <p className="text-[20px] font-semibold text-gray-900">48 {t('spec_warranty_months')}</p>
+                <p className="text-xs text-gray-500 mb-2">{t('spec_warranty')}</p>
+                <p className="text-xl font-semibold text-gray-900">48 {t('spec_warranty_months')}</p>
               </div>
               <div className="py-6 px-6 border-b border-l border-gray-200">
-                <p className="text-[12px] text-gray-500 mb-2">{t('spec_engine')}</p>
-                <p className="text-[20px] font-semibold text-gray-900">{fuelLabel}</p>
+                <p className="text-xs text-gray-500 mb-2">{t('spec_engine')}</p>
+                <p className="text-xl font-semibold text-gray-900">{fuelLabel}</p>
               </div>
               <div className="py-6 pl-6 border-b border-l border-gray-200">
-                <p className="text-[12px] text-gray-500 mb-2">{t('spec_transmission')}</p>
-                <p className="text-[20px] font-semibold text-gray-900">{transLabel}</p>
+                <p className="text-xs text-gray-500 mb-2">{t('spec_transmission')}</p>
+                <p className="text-xl font-semibold text-gray-900">{transLabel}</p>
               </div>
             </div>
 
             {/* Specs Grid Row 2 */}
             <div className="grid grid-cols-3 border-b border-gray-200">
               <div className="py-6 pr-6">
-                <p className="text-[12px] text-gray-500 mb-2">{t('spec_drivetrain')}</p>
-                <p className="text-[16px] font-semibold text-gray-900">{driveLabel}</p>
+                <p className="text-xs text-gray-500 mb-2">{t('spec_drivetrain')}</p>
+                <p className="text-base font-semibold text-gray-900">{driveLabel}</p>
               </div>
               <div className="py-6 px-6 border-l border-gray-200">
-                <p className="text-[12px] text-gray-500 mb-2">{t('spec_max_power')}</p>
-                <p className="text-[16px] font-semibold text-gray-900">493 {t('spec_hp')} / 363 {t('spec_kw')}</p>
+                <p className="text-xs text-gray-500 mb-2">{t('spec_max_power')}</p>
+                <p className="text-base font-semibold text-gray-900">493 {t('spec_hp')} / 363 {t('spec_kw')}</p>
               </div>
               <div className="py-6 pl-6 border-l border-gray-200">
-                <p className="text-[12px] text-gray-500 mb-2 leading-tight">{t('spec_accel')}</p>
-                <p className="text-[16px] font-semibold text-gray-900">4,2 {t('spec_accel_unit')}</p>
+                <p className="text-xs text-gray-500 mb-2 leading-tight">{t('spec_accel')}</p>
+                <p className="text-base font-semibold text-gray-900">4,2 {t('spec_accel_unit')}</p>
               </div>
             </div>
 
             {/* ─── Important Resources ─── */}
             <div className="mt-14 mb-14">
-              <h2 className="text-[26px] font-normal text-gray-900 mb-6">{t('resources_title')}</h2>
-              <div className="bg-[#e8f0fe] rounded-2xl p-6 flex items-center justify-between cursor-pointer hover:bg-[#d6e5fd] transition-colors group">
+              <h2 className="text-heading font-normal text-gray-900 mb-6">{t('resources_title')}</h2>
+              <div className="bg-inventory-info-surface rounded-2xl p-6 flex items-center justify-between cursor-pointer hover:bg-inventory-info-surface-hover transition-colors group">
                 <div>
-                  <h3 className="text-[17px] font-bold text-gray-900 mb-2">{t('resources_window_sticker')}</h3>
-                  <p className="text-[14px] text-gray-700 leading-relaxed max-w-lg">{t('resources_window_sticker_desc')}</p>
+                  <h3 className="text-ui-lg font-bold text-gray-900 mb-2">{t('resources_window_sticker')}</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed max-w-lg">{t('resources_window_sticker_desc')}</p>
                 </div>
                 <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform flex-shrink-0" />
               </div>
@@ -227,8 +227,8 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
 
             {/* ─── Warranty ─── */}
             <div className="mb-14">
-              <h2 className="text-[26px] font-normal text-gray-900 mb-3">{t('warranty_title')}</h2>
-              <p className="text-[14px] text-gray-600 mb-6">{t('warranty_subtitle')}</p>
+              <h2 className="text-heading font-normal text-gray-900 mb-3">{t('warranty_title')}</h2>
+              <p className="text-sm text-gray-600 mb-6">{t('warranty_subtitle')}</p>
               
               <div className="flex items-start gap-12">
                 {/* Left: warranty badge */}
@@ -237,15 +237,15 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                     <Image src={PORSCHE_CREST} alt="Porsche" fill unoptimized className="object-contain" />
                   </div>
                   <div>
-                    <p className="text-[16px] font-bold text-gray-900">{t('warranty_new_car')}</p>
-                    <p className="text-[14px] text-gray-600">48 {t('spec_warranty_months')}</p>
+                    <p className="text-base font-bold text-gray-900">{t('warranty_new_car')}</p>
+                    <p className="text-sm text-gray-600">48 {t('spec_warranty_months')}</p>
                   </div>
                 </div>
                 
                 {/* Right: extended warranty info */}
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 flex-1">
-                  <p className="text-[14px] text-gray-700 mb-3 leading-relaxed">{t('warranty_extended_text')}</p>
-                  <a href="#" className="inline-flex items-center gap-2 text-[14px] text-gray-900 font-medium hover:underline">
+                  <p className="text-sm text-gray-700 mb-3 leading-relaxed">{t('warranty_extended_text')}</p>
+                  <a href="#" className="inline-flex items-center gap-2 text-sm text-gray-900 font-medium hover:underline">
                     <ExternalLink className="w-4 h-4" />
                     {t('warranty_extended_link')}
                   </a>
@@ -255,7 +255,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
 
             {/* ─── Technical Specifications ─── */}
             <div className="mb-14">
-              <h2 className="text-[26px] font-normal text-gray-900 mb-6">{t('tech_specs_title')}</h2>
+              <h2 className="text-heading font-normal text-gray-900 mb-6">{t('tech_specs_title')}</h2>
               <div className="divide-y divide-gray-200 border-t border-gray-200">
                 {[
                   { key: 'engine', label: t('tech_engine') },
@@ -268,7 +268,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                       onClick={() => toggleSpec(section.key)}
                       className="w-full flex items-center justify-between py-5 text-left group"
                     >
-                      <span className="text-[16px] font-bold text-gray-900">{section.label}</span>
+                      <span className="text-base font-bold text-gray-900">{section.label}</span>
                       {expandedSpecs.includes(section.key)
                         ? <ChevronUp className="w-5 h-5 text-gray-500" />
                         : <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -277,23 +277,23 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                     {expandedSpecs.includes(section.key) && (
                       <div className="pb-6 pl-2">
                         {section.key === 'engine' && (
-                          <div className="grid grid-cols-2 gap-4 text-[14px]">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
                             <div><span className="text-gray-500">{t('spec_engine')}:</span> <span className="font-medium">{fuelLabel}</span></div>
                             <div><span className="text-gray-500">{t('spec_max_power')}:</span> <span className="font-medium">493 {t('spec_hp')} / 363 {t('spec_kw')}</span></div>
                           </div>
                         )}
                         {section.key === 'performance' && (
-                          <div className="grid grid-cols-2 gap-4 text-[14px]">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
                             <div><span className="text-gray-500">{t('spec_accel')}:</span> <span className="font-medium">4,2 {t('spec_accel_unit')}</span></div>
                             <div><span className="text-gray-500">{t('spec_transmission')}:</span> <span className="font-medium">{transLabel}</span></div>
                             <div><span className="text-gray-500">{t('spec_drivetrain')}:</span> <span className="font-medium">{driveLabel}</span></div>
                           </div>
                         )}
                         {section.key === 'body' && (
-                          <p className="text-[14px] text-gray-600">—</p>
+                          <p className="text-sm text-gray-600">—</p>
                         )}
                         {section.key === 'noise' && (
-                          <p className="text-[14px] text-gray-600">—</p>
+                          <p className="text-sm text-gray-600">—</p>
                         )}
                       </div>
                     )}
@@ -305,48 +305,48 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
           </div>
 
           {/* ─── RIGHT COLUMN (Sticky Sidebar) ─── */}
-          <div className="w-full lg:w-[380px] flex-shrink-0">
+          <div className="w-full lg:w-96 flex-shrink-0">
             <div className="lg:sticky lg:top-6 bg-white border border-gray-200 rounded-2xl p-7 shadow-sm">
               
               {/* Price */}
-              <p className="text-[32px] font-medium text-gray-900 leading-none mb-1">
+              <p className="text-3xl font-medium text-gray-900 leading-none mb-1">
                 {formatPrice(car.askingPrice)} {t('price_suffix')}
               </p>
-              <p className="text-[13px] text-gray-500 mb-1">{t('price_desc')}</p>
-              <a href="#" className="text-[13px] text-blue-600 underline underline-offset-2 mb-5 inline-block">{t('price_details')}</a>
+              <p className="text-caption text-gray-500 mb-1">{t('price_desc')}</p>
+              <a href="#" className="text-caption text-blue-600 underline underline-offset-2 mb-5 inline-block">{t('price_details')}</a>
 
               {/* MSRP breakdown */}
               <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-[14px]">
+                <div className="flex justify-between text-sm">
                   <span className="text-gray-600">{t('price_msrp')}</span>
                   <span className="text-gray-900">{formatPrice(msrpPrice)} {t('price_suffix')}</span>
                 </div>
-                <div className="flex justify-between text-[14px]">
+                <div className="flex justify-between text-sm">
                   <span className="text-gray-600">{t('price_dealer_fee')}</span>
                   <span className="text-gray-900">699,00 {t('price_suffix')}</span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <Link href={`/inventory/${car.id}/contact`} className="w-full bg-gray-900 text-white font-medium text-[15px] py-4 rounded-lg mb-3 hover:bg-black transition-colors block text-center">
+              <Link href={`/inventory/${car.id}/contact`} className="w-full bg-gray-900 text-white font-medium text-body-sm py-4 rounded-lg mb-3 hover:bg-black transition-colors block text-center">
                 {t('btn_contact_dealer')}
               </Link>
-              <button className="w-full bg-white border border-gray-300 text-gray-900 font-medium text-[14px] py-4 rounded-lg mb-3 hover:bg-gray-50 transition-colors leading-snug px-4">
+              <button className="w-full bg-white border border-gray-300 text-gray-900 font-medium text-sm py-4 rounded-lg mb-3 hover:bg-gray-50 transition-colors leading-snug px-4">
                 {t('btn_payment_trade')}
               </button>
               <button 
                 onClick={() => handleToggleListing(car.id)} 
-                className={`w-full border border-gray-300 text-gray-900 font-medium text-[15px] py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors ${isSaved(car.id) ? 'bg-gray-100' : 'bg-white'}`}
+                className={`w-full border border-gray-300 text-gray-900 font-medium text-body-sm py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors ${isSaved(car.id) ? 'bg-gray-100' : 'bg-white'}`}
               >
                 <Bookmark className={`w-5 h-5 ${isSaved(car.id) ? 'fill-current' : ''}`} />
                 {isSaved(car.id) ? t('saved') : t('btn_save')}
               </button>
 
               {/* Disclaimer */}
-              <p className="text-[11px] text-gray-500 leading-relaxed mt-6 mb-6">{t('price_disclaimer')}</p>
+              <p className="text-micro-label text-gray-500 leading-relaxed mt-6 mb-6">{t('price_disclaimer')}</p>
 
               {/* Dealer Name */}
-              <p className="text-[15px] font-bold text-gray-900">
+              <p className="text-body-sm font-bold text-gray-900">
                 {car.sellerFullName || 'Porsche Monmouth'}
               </p>
             </div>
@@ -358,11 +358,11 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       {/* ═══════════════════ SIMILAR LISTINGS ═══════════════════ */}
       {similarCars.length > 0 && (
         <div className="border-t border-gray-200 bg-white py-14">
-          <div className="max-w-[1400px] mx-auto px-6">
+          <div className="max-w-page mx-auto px-6">
             <div className="flex items-start justify-between mb-8">
               <div>
-                <h2 className="text-[28px] font-normal text-gray-900 mb-2">{t('similar_title')}</h2>
-                <Link href="/inventory" className="inline-flex items-center gap-2 text-[14px] text-gray-900 underline underline-offset-4 hover:text-gray-600">
+                <h2 className="text-section font-normal text-gray-900 mb-2">{t('similar_title')}</h2>
+                <Link href="/inventory" className="inline-flex items-center gap-2 text-sm text-gray-900 underline underline-offset-4 hover:text-gray-600">
                   <ArrowRight className="w-4 h-4" />
                   {t('similar_show_all')}
                 </Link>
@@ -397,21 +397,21 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                     <Link
                       key={sc.id}
                       href={`/inventory/${sc.id}`}
-                      className="w-[260px] flex-shrink-0 group"
+                      className="w-64 flex-shrink-0 group"
                     >
-                      <div className="aspect-[4/3] relative rounded-2xl overflow-hidden bg-gray-100 mb-4">
+                      <div className="aspect-photo relative rounded-2xl overflow-hidden bg-gray-100 mb-4">
                         <Image src={scImage} alt={sc.model || 'Car'} fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       </div>
-                      <h3 className="text-[15px] font-semibold text-gray-900 mb-1">
+                      <h3 className="text-body-sm font-semibold text-gray-900 mb-1">
                         Porsche {sc.model} {sc.trimLevel} {sc.modelYear}
                       </h3>
-                      <p className="text-blue-600 text-[13px] font-medium mb-2">{scIsNew ? t('condition_new') : t('condition_used')}</p>
-                      <p className="text-[13px] text-gray-500 mb-2">
+                      <p className="text-blue-600 text-caption font-medium mb-2">{scIsNew ? t('condition_new') : t('condition_used')}</p>
+                      <p className="text-caption text-gray-500 mb-2">
                         {sc.exteriorColor || '—'} <span className="mx-1">·</span> {sc.interiorColor || '—'}
                       </p>
-                      <p className="text-[16px] font-medium text-gray-900 mb-0.5">{formatPrice(sc.askingPrice)} {t('price_suffix')}</p>
-                      <p className="text-[12px] text-gray-500 mb-2">{t('price_desc')}</p>
-                      <p className="text-[13px] font-bold text-gray-900">{sc.sellerFullName || 'Porsche Dealer'}</p>
+                      <p className="text-base font-medium text-gray-900 mb-0.5">{formatPrice(sc.askingPrice)} {t('price_suffix')}</p>
+                      <p className="text-xs text-gray-500 mb-2">{t('price_desc')}</p>
+                      <p className="text-caption font-bold text-gray-900">{sc.sellerFullName || 'Porsche Dealer'}</p>
                     </Link>
                   )
                 })}
@@ -428,12 +428,12 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
           <div className="flex items-center justify-between px-6 py-4">
             <button
               onClick={() => setGalleryOpen(false)}
-              className="text-white text-[14px] flex items-center gap-2 hover:text-gray-300 transition-colors"
+              className="text-white text-sm flex items-center gap-2 hover:text-gray-300 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               Back
             </button>
-            <p className="text-white text-[14px]">{selectedImageIndex + 1} / {images.length}</p>
+            <p className="text-white text-sm">{selectedImageIndex + 1} / {images.length}</p>
           </div>
 
           {/* Gallery Main */}
@@ -445,7 +445,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
-            <div className="relative w-full max-w-5xl aspect-[16/10]">
+            <div className="relative w-full max-w-5xl aspect-showcase">
               <Image src={images[selectedImageIndex]} alt="Gallery" fill unoptimized className="object-contain" />
             </div>
             <button

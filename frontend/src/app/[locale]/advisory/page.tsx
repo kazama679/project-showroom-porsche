@@ -200,10 +200,10 @@ export default function AdvisoryPage() {
     <div className="flex h-screen overflow-hidden bg-black text-white">
       <aside
         className={`${
-          sidebarOpen ? "w-[320px]" : "w-0"
-        } shrink-0 overflow-hidden border-r border-white/10 bg-[#050505] transition-[width] duration-200`}
+          sidebarOpen ? "w-advisory-sidebar" : "w-0"
+        } shrink-0 overflow-hidden border-r border-white/10 bg-advisory-ink transition-[width] duration-200`}
       >
-        <div className="flex h-full w-[320px] flex-col">
+        <div className="flex h-full w-advisory-sidebar flex-col">
           <div className="flex items-center justify-between px-4 py-4">
             <Link href={`/${locale}`} className="text-xl font-semibold">
               Porsche AI
@@ -303,10 +303,10 @@ export default function AdvisoryPage() {
               {messages.map((message, index) => (
                 <div key={index} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
                   <div
-                    className={`max-w-[85%] rounded-2xl px-5 py-3 text-sm leading-6 ${
+                    className={`max-w-chat-bubble rounded-2xl px-5 py-3 text-sm leading-6 ${
                       message.role === "user"
                         ? "bg-white text-black"
-                        : "bg-[#181818] text-white"
+                        : "bg-near-black text-white"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{message.text}</p>
@@ -319,20 +319,20 @@ export default function AdvisoryPage() {
                             href={modelHref(source)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group w-full max-w-[460px] overflow-hidden rounded-lg border border-white/10 bg-black/35 transition hover:bg-black/45"
+                            className="group w-full max-w-chat-card overflow-hidden rounded-lg border border-white/10 bg-black/35 transition hover:bg-black/45"
                           >
                             {source.imageUrl ? (
-                              <div className="relative aspect-[16/8.2] w-full bg-[#111]">
+                              <div className="relative aspect-advisory-card w-full bg-advisory-surface">
                                 <Image
                                   src={source.imageUrl}
                                   alt={source.title}
                                   fill
                                   sizes="(max-width: 640px) 85vw, 460px"
-                                  className="object-contain transition group-hover:scale-[1.02]"
+                                  className="object-contain transition group-hover:scale-105"
                                 />
                               </div>
                             ) : (
-                              <div className="flex aspect-[16/8.2] w-full items-center justify-center bg-neutral-950 text-sm text-white/40">
+                              <div className="flex aspect-advisory-card w-full items-center justify-center bg-neutral-950 text-sm text-white/40">
                                 Chưa có ảnh
                               </div>
                             )}
@@ -373,7 +373,7 @@ export default function AdvisoryPage() {
           </div>
 
           <div className="px-4 pb-5">
-            <div className="mx-auto flex max-w-4xl items-center gap-2 rounded-3xl border border-white/10 bg-[#1f1f1f] px-4 py-3">
+            <div className="mx-auto flex max-w-4xl items-center gap-2 rounded-3xl border border-white/10 bg-advisory-elevated px-4 py-3">
               <button
                 type="button"
                 onClick={handleNewChat}
@@ -409,7 +409,7 @@ export default function AdvisoryPage() {
 
       {loginModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-[480px] rounded-3xl bg-[#262626] p-7 text-center shadow-2xl">
+          <div className="w-full max-w-dialog rounded-3xl bg-advisory-modal p-7 text-center shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <div />
               <h2 className="text-2xl font-semibold">Xóa đoạn chat hiện tại?</h2>

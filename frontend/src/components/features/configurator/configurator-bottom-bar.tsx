@@ -23,12 +23,12 @@ export function ConfiguratorBottomBar({
   const t = useTranslations('configurator')
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-neutral-200 bg-white/95 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] backdrop-blur">
-      <div className="mx-auto max-w-[1760px] px-4 py-3 md:px-8 md:py-4">
+    <div className="fixed bottom-0 left-0 right-0 z-toolbar border-t border-neutral-200 bg-white/95 shadow-configurator-bar backdrop-blur">
+      <div className="mx-auto max-w-showroom px-4 py-3 md:px-8 md:py-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="hidden min-w-[180px] md:block">
+          <div className="hidden min-w-toolbar-price md:block">
             <p className="text-2xl font-light text-near-black">{formatPrice(totalPrice, locale)}</p>
-            <p className="line-clamp-1 max-w-[220px] text-[10px] font-light text-neutral-400">
+            <p className="line-clamp-1 max-w-bottom-bar-model text-eyebrow font-light text-neutral-400">
               {MSRP_DISCLAIMER.slice(0, 60)}...
             </p>
           </div>
@@ -37,7 +37,7 @@ export function ConfiguratorBottomBar({
             type="button"
             className="flex min-w-0 items-center gap-3 rounded-full bg-gray-100 px-5 py-2.5 transition-colors hover:bg-neutral-200"
           >
-            <div className="h-5 w-8 flex-shrink-0 rounded-sm bg-[#ddd]" aria-hidden="true" />
+            <div className="h-5 w-8 flex-shrink-0 rounded-sm bg-placeholder-swatch" aria-hidden="true" />
             <span className="truncate text-sm font-light text-near-black">{modelName}</span>
           </button>
 

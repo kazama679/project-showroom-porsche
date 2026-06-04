@@ -49,7 +49,7 @@ function ColorSwatch({
       aria-label={option.name}
       title={option.name}
       onClick={onSelect}
-      className={`relative h-12 w-12 overflow-hidden rounded-[3px] border transition-all hover:border-black sm:h-14 sm:w-14 ${
+      className={`relative h-12 w-12 overflow-hidden rounded-swatch border transition-all hover:border-black sm:h-14 sm:w-14 ${
         selected ? 'border-black ring-1 ring-black ring-offset-2' : 'border-neutral-300'
       }`}
       style={!option.image ? { backgroundColor: option.color ?? '#ccc' } : undefined}
@@ -87,11 +87,11 @@ function OptionCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`flex h-full flex-col overflow-hidden rounded-[6px] border bg-white text-left transition-all ${
-        selected ? 'border-black ring-1 ring-black' : 'border-gray-200 hover:border-[#9d9d9d]'
+      className={`flex h-full flex-col overflow-hidden rounded-compact border bg-white text-left transition-all ${
+        selected ? 'border-black ring-1 ring-black' : 'border-gray-200 hover:border-silver-gray'
       }`}
     >
-      <div className="relative aspect-[4/3] w-full border-b border-neutral-100 bg-[#f6f6f6]">
+      <div className="relative aspect-photo w-full border-b border-neutral-100 bg-panel-surface">
         <Image
           src={option.image || 'https://configurator.porsche.com/public/fallback-D2RQp9E7.webp'}
           alt={option.name}
@@ -114,24 +114,24 @@ function OptionCard({
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-3">
-        <p className="line-clamp-3 min-h-[2.75rem] text-[13px] font-light leading-snug text-near-black">
+        <p className="line-clamp-3 min-h-option-description text-caption font-light leading-snug text-near-black">
           {option.name}
         </p>
         {option.description && (
-          <p className="-mt-1 line-clamp-2 text-[11px] font-light text-neutral-500">
+          <p className="-mt-1 line-clamp-2 text-micro-label font-light text-neutral-500">
             {option.description}
           </p>
         )}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1">
           <span
-            className={`text-[13px] font-light leading-none ${
+            className={`text-caption font-light leading-none ${
               option.isStandard ? 'text-neutral-500' : 'text-near-black'
             }`}
           >
             {getOptionPriceLabel(option, locale)}
           </span>
           <span
-            className={`flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-[3px] border ${
+            className={`flex h-check-sm w-check-sm flex-shrink-0 items-center justify-center rounded-swatch border ${
               selected ? 'border-black bg-black' : 'border-neutral-400 bg-white'
             }`}
             aria-hidden="true"
@@ -331,7 +331,7 @@ export function ConfiguratorOptionsPanel({
   return (
     <div className="flex h-full min-h-0 flex-col bg-white">
       <div className="border-b border-neutral-200 pb-4">
-        <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500">{t('configure')}</p>
+        <p className="text-micro-label uppercase tracking-porsche text-neutral-500">{t('configure')}</p>
         <h2 className="mt-1 text-2xl font-light text-near-black">{t('yourModel', { model: modelName })}</h2>
 
         <div className="relative mt-5">
@@ -343,7 +343,7 @@ export function ConfiguratorOptionsPanel({
             placeholder={t('searchEquipment')}
             aria-label={t('searchEquipment')}
             id="configurator-option-search"
-            className="w-full rounded-[4px] border border-neutral-300 py-3 pl-10 pr-4 text-sm font-light transition-colors focus:border-black focus:outline-none"
+            className="w-full rounded-input border border-neutral-300 py-3 pl-10 pr-4 text-sm font-light transition-colors focus:border-black focus:outline-none"
           />
         </div>
       </div>
@@ -361,7 +361,7 @@ export function ConfiguratorOptionsPanel({
                   className="flex w-full items-center justify-between py-5 text-left transition-colors hover:bg-neutral-50"
                 >
                   <div className="min-w-0 pr-4">
-                    <p className="text-[11px] text-neutral-400">{String(index + 1).padStart(2, '0')}</p>
+                    <p className="text-micro-label text-neutral-400">{String(index + 1).padStart(2, '0')}</p>
                     <h2 className="truncate text-base font-light text-near-black">{section.title}</h2>
                   </div>
                   <span className="text-xl font-light leading-none text-neutral-400">

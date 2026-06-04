@@ -137,18 +137,18 @@ export default function SellYourCarPage() {
     return (
       <div className="min-h-screen bg-gray-100 text-near-black">
         <SiteHeader logoHref="/" />
-        <main className="max-w-[1200px] mx-auto px-4 md:px-8 py-16">
-          <div className="bg-white p-8 md:p-12 rounded-[20px] shadow-sm max-w-2xl mx-auto text-center">
+        <main className="max-w-content mx-auto px-4 md:px-8 py-16">
+          <div className="bg-white p-8 md:p-12 rounded-panel shadow-sm max-w-2xl mx-auto text-center">
             <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8">
               <Check size={32} className="text-green-600" strokeWidth={2} />
             </div>
-            <h1 className="text-[2rem] font-light mb-4">{t('success_title')}</h1>
-            <p className="text-[15px] font-light text-neutral-600 mb-8 leading-relaxed">
+            <h1 className="text-3xl font-light mb-4">{t('success_title')}</h1>
+            <p className="text-body-sm font-light text-neutral-600 mb-8 leading-relaxed">
               {t('success_desc')}
             </p>
             <Link 
               href="/"
-              className="inline-block bg-black text-white px-8 py-4 rounded-lg text-[15px] font-medium hover:bg-black/90 transition-colors"
+              className="inline-block bg-black text-white px-8 py-4 rounded-lg text-body-sm font-medium hover:bg-black/90 transition-colors"
             >
               {t('back_home')}
             </Link>
@@ -162,7 +162,7 @@ export default function SellYourCarPage() {
     <div className="min-h-screen bg-gray-100 text-near-black pb-24">
       <SiteHeader logoHref="/" />
       
-      <main className="max-w-[1200px] mx-auto px-4 md:px-8 py-8">
+      <main className="max-w-content mx-auto px-4 md:px-8 py-8">
         
         <Link 
           href="/"
@@ -173,7 +173,7 @@ export default function SellYourCarPage() {
         </Link>
 
         <div className="mb-12">
-          <h1 className="text-[2rem] md:text-[2.5rem] font-light mb-2 leading-[1.2]">
+          <h1 className="text-3xl md:text-4xl font-light mb-2 leading-tight">
             {t('title')}
           </h1>
           <p className="text-base text-neutral-600 font-light">
@@ -181,10 +181,10 @@ export default function SellYourCarPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-sell-sidebar gap-8 items-start">
           
           {/* Left Column: Form Content */}
-          <div className="bg-white p-6 md:p-10 rounded-[20px] shadow-sm">
+          <div className="bg-white p-6 md:p-10 rounded-panel shadow-sm">
             
             {/* Step 1: General & VIN */}
             {currentStep === 1 && (
@@ -388,7 +388,7 @@ export default function SellYourCarPage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="inline-flex items-center gap-2 bg-black text-white px-8 py-3 rounded-lg text-[15px] font-medium hover:bg-black/90 transition-colors"
+                  className="inline-flex items-center gap-2 bg-black text-white px-8 py-3 rounded-lg text-body-sm font-medium hover:bg-black/90 transition-colors"
                 >
                   {t('btn_next')} <ChevronRight size={18} strokeWidth={2} />
                 </button>
@@ -397,7 +397,7 @@ export default function SellYourCarPage() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 bg-black text-white px-8 py-3 rounded-lg text-[15px] font-medium hover:bg-black/90 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 bg-black text-white px-8 py-3 rounded-lg text-body-sm font-medium hover:bg-black/90 transition-colors disabled:opacity-50"
                 >
                   {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
                   {t('btn_submit')}
@@ -408,8 +408,8 @@ export default function SellYourCarPage() {
           </div>
 
           {/* Right Column: Sticky Summary */}
-          <div className="lg:sticky lg:top-[5.5rem] hidden lg:block">
-            <div className="bg-white rounded-[20px] shadow-sm p-8 border border-gray-200 space-y-6">
+          <div className="lg:sticky lg:top-form-side-rail hidden lg:block">
+            <div className="bg-white rounded-panel shadow-sm p-8 border border-gray-200 space-y-6">
               <div>
                 <p className="text-sm text-neutral-500 mb-2">Step {currentStep} of {STEPS}</p>
                 <div className="w-full bg-gray-100 rounded-full h-1.5 mb-6">
@@ -502,7 +502,7 @@ function ImageUploadCard({ label, type, images, onAdd, onRemove, required, sensi
 
   return (
     <div className="flex flex-col gap-2 h-full">
-      <div className="text-xs font-medium text-neutral-700 min-h-[48px] flex items-end pb-1">
+      <div className="text-xs font-medium text-neutral-700 min-h-12 flex items-end pb-1">
         <span>{label} {required && <span className="text-red-500 ml-1">*</span>}</span>
       </div>
       
@@ -523,7 +523,7 @@ function ImageUploadCard({ label, type, images, onAdd, onRemove, required, sensi
           className="aspect-square w-full rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-gray-400 transition-colors group p-4 text-center"
         >
           <UploadCloud className="text-gray-400 group-hover:text-black mb-2 transition-colors" size={24} />
-          <span className="text-[11px] text-gray-500 group-hover:text-black font-medium transition-colors">
+          <span className="text-micro-label text-gray-500 group-hover:text-black font-medium transition-colors">
             {sensitive ? 'Upload Private' : 'Upload Image'}
           </span>
         </div>

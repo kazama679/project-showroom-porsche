@@ -277,7 +277,7 @@ function CompareModelsContent() {
   const renderModelCard = (data: ModelData | null, slot: 1 | 2) => {
     if (!data) {
       return (
-        <div className="bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 h-full min-h-[500px]">
+        <div className="bg-white rounded-xl shadow-card p-8 h-full min-h-editorial-media">
           <div className="h-64 bg-gray-50/50 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors group" onClick={() => setShowModal(slot)}>
             <div className="bg-white w-12 h-12 rounded-full shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform mb-3">
               <span className="text-2xl text-gray-600">+</span>
@@ -290,11 +290,11 @@ function CompareModelsContent() {
 
     const { model, specs } = data
     return (
-      <div className="bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 h-full relative group transition-all hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)]">
+      <div className="bg-white rounded-xl shadow-card p-8 h-full relative group transition-all hover:shadow-card-hover">
         <button onClick={() => handleRemoveModel(slot)} className="absolute top-4 right-4 p-2 bg-gray-100 text-gray-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 hover:text-gray-800 z-10">
           <X size={16} />
         </button>
-        <div className="relative w-full h-56 mb-8 mt-4 group-hover:scale-[1.02] transition-transform duration-300">
+        <div className="relative w-full h-56 mb-8 mt-4 group-hover:scale-105 transition-transform duration-300">
           <Image src={model.imageUrl || 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600&h=400&fit=crop'} alt={model.name} fill unoptimized className="object-contain" />
         </div>
         <h2 className="text-3xl font-bold tracking-tight mb-2 line-clamp-1 text-gray-900">{model.name}</h2>
@@ -308,10 +308,10 @@ function CompareModelsContent() {
         )}
 
         <div className="flex gap-4 mt-8">
-          <button onClick={() => router.push(`/configurator/${model.id}`)} className="flex-1 bg-black text-white py-3.5 font-bold text-sm rounded-[8px] hover:bg-gray-800 active:scale-[0.98] transition-all">
+          <button onClick={() => router.push(`/configurator/${model.id}`)} className="flex-1 bg-black text-white py-3.5 font-bold text-sm rounded-control hover:bg-gray-800 active:scale-95 transition-all">
             {tl.buildPorsche}
           </button>
-          <button onClick={() => router.push(`/models/${model.id}`)} className="flex-1 bg-gray-100 text-black py-3.5 font-bold text-sm rounded-[8px] hover:bg-gray-200 active:scale-[0.98] transition-all">
+          <button onClick={() => router.push(`/models/${model.id}`)} className="flex-1 bg-gray-100 text-black py-3.5 font-bold text-sm rounded-control hover:bg-gray-200 active:scale-95 transition-all">
             {tl.discoverStock}
           </button>
         </div>
@@ -328,10 +328,10 @@ function CompareModelsContent() {
       <SiteHeader logoHref="/" />
 
       {/* Main Content */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-16">
+      <div className="max-w-compare mx-auto px-6 md:px-12 py-16">
         {/* Hero Section */}
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <h1 className="text-[44px] md:text-[56px] leading-tight font-normal text-black tracking-tight mb-6">{tl.compareModels}</h1>
+          <h1 className="text-display-md md:text-display-lg leading-tight font-normal text-black tracking-tight mb-6">{tl.compareModels}</h1>
           <p className="text-lg text-gray-600 mb-8 font-medium">{tl.helpDeciding}</p>
           <button onClick={() => setShowModal(m1Data ? 2 : 1)} className="text-black font-bold underline underline-offset-4 hover:text-gray-600 transition-colors">
             {tl.changeModel}
@@ -345,7 +345,7 @@ function CompareModelsContent() {
         </div>
 
         {/* Comparison Questions */}
-        <div className="bg-white rounded-xl p-10 md:p-14 mb-16 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+        <div className="bg-white rounded-xl p-10 md:p-14 mb-16 shadow-card-soft border border-gray-100">
           <h2 className="text-3xl md:text-4xl font-normal mb-12 text-center tracking-tight">{tl.differences}</h2>
 
           <div className="space-y-2">
@@ -374,16 +374,16 @@ function CompareModelsContent() {
 
         {/* Specs Comparison Table */}
         {expandedSections.specs && (m1Data || m2Data) && (
-          <div className="bg-white rounded-xl p-10 md:p-14 mb-20 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+          <div className="bg-white rounded-xl p-10 md:p-14 mb-20 shadow-card-soft border border-gray-100">
             <h3 className="text-2xl font-bold mb-12 text-center tracking-tight">{tl.compareSpecs}</h3>
 
             <div className="flex gap-8 mb-12 pb-8 border-b border-gray-100">
               <div className="flex items-center gap-4 w-1/2">
-                <div className="w-8 h-5 bg-black rounded-[3px]"></div>
+                <div className="w-8 h-5 bg-black rounded-swatch"></div>
                 <span className="text-lg font-bold tracking-tight line-clamp-1">{m1Data?.model?.name || tl.chooseModel}</span>
               </div>
               <div className="flex items-center gap-4 w-1/2">
-                <div className="w-8 h-5 bg-gray-300 rounded-[3px]"></div>
+                <div className="w-8 h-5 bg-gray-300 rounded-swatch"></div>
                 <span className="text-lg font-bold tracking-tight line-clamp-1">{m2Data?.model?.name || tl.chooseModel}</span>
               </div>
             </div>
@@ -393,8 +393,8 @@ function CompareModelsContent() {
               <div className="space-y-0">
                 {visibleSpecs.map(s => (
                   <div key={s.label} className="border-b border-gray-200 py-6">
-                    <p className="text-gray-500 text-[13px] mb-3">{s.label}</p>
-                    <p className={`text-[17px] font-normal tracking-tight ${s.v1 === '-' ? 'text-gray-300' : 'text-gray-900'}`}>{s.v1}</p>
+                    <p className="text-gray-500 text-caption mb-3">{s.label}</p>
+                    <p className={`text-ui-lg font-normal tracking-tight ${s.v1 === '-' ? 'text-gray-300' : 'text-gray-900'}`}>{s.v1}</p>
                   </div>
                 ))}
               </div>
@@ -403,9 +403,9 @@ function CompareModelsContent() {
               <div className="space-y-0">
                 {visibleSpecs.map(s => (
                   <div key={s.label} className="border-b border-gray-200 py-6">
-                    <p className="text-gray-500 text-[13px] mb-3 md:hidden">{s.label}</p>
-                    <p className="text-gray-500 text-[13px] mb-3 hidden md:block opacity-0 select-none pb-0">{s.label}</p>
-                    <p className={`text-[17px] font-normal tracking-tight ${s.v2 === '-' ? 'text-gray-300' : 'text-gray-900'}`}>{s.v2}</p>
+                    <p className="text-gray-500 text-caption mb-3 md:hidden">{s.label}</p>
+                    <p className="text-gray-500 text-caption mb-3 hidden md:block opacity-0 select-none pb-0">{s.label}</p>
+                    <p className={`text-ui-lg font-normal tracking-tight ${s.v2 === '-' ? 'text-gray-300' : 'text-gray-900'}`}>{s.v2}</p>
                   </div>
                 ))}
               </div>
@@ -414,18 +414,18 @@ function CompareModelsContent() {
         )}
 
         {(m1Equipment.length > 0 || m2Equipment.length > 0) && (
-          <div className="bg-white rounded-xl p-10 md:p-14 mb-20 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
-            <h3 className="text-[32px] font-normal mb-12 text-center tracking-tight">{tl.standardEquipment}</h3>
+          <div className="bg-white rounded-xl p-10 md:p-14 mb-20 shadow-card-soft border border-gray-100">
+            <h3 className="text-3xl font-normal mb-12 text-center tracking-tight">{tl.standardEquipment}</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
               {/* Left Column - Model 1 */}
               <div>
                 {m1Equipment.map((item: any, idx: number) => (
                   <div key={`m1-${idx}`} className="border-b border-gray-200 py-6 flex items-center gap-6">
-                    <div className="w-[100px] h-[56px] relative flex-shrink-0 bg-gray-50 rounded overflow-hidden">
+                    <div className="w-equipment-thumb h-equipment-thumb relative flex-shrink-0 bg-gray-50 rounded overflow-hidden">
                       <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                     </div>
-                    <p className="text-[17px] font-normal tracking-tight text-gray-900 leading-tight pr-4">{item.name}</p>
+                    <p className="text-ui-lg font-normal tracking-tight text-gray-900 leading-tight pr-4">{item.name}</p>
                   </div>
                 ))}
                 {m1Equipment.length === 0 && (
@@ -437,10 +437,10 @@ function CompareModelsContent() {
               <div>
                 {m2Equipment.map((item: any, idx: number) => (
                   <div key={`m2-${idx}`} className="border-b border-gray-200 py-6 flex items-center gap-6">
-                    <div className="w-[100px] h-[56px] relative flex-shrink-0 bg-gray-50 rounded overflow-hidden">
+                    <div className="w-equipment-thumb h-equipment-thumb relative flex-shrink-0 bg-gray-50 rounded overflow-hidden">
                       <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                     </div>
-                    <p className="text-[17px] font-normal tracking-tight text-gray-900 leading-tight pr-4">{item.name}</p>
+                    <p className="text-ui-lg font-normal tracking-tight text-gray-900 leading-tight pr-4">{item.name}</p>
                   </div>
                 ))}
                 {m2Equipment.length === 0 && (
@@ -455,7 +455,7 @@ function CompareModelsContent() {
       {/* Model Selection Modal */}
       {showModal !== null && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-6 opacity-100">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-[0.98] duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-modal-screen flex flex-col overflow-hidden animate-in fade-in zoom-in-[0.98] duration-200">
             <div className="flex items-center justify-between p-6 px-8 border-b border-gray-100 bg-white">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">{tl.selectTwoModels}</h2>
@@ -485,7 +485,7 @@ function CompareModelsContent() {
 
               <div className="flex-1 p-6 px-8 overflow-y-auto bg-gray-50/30">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                  <h3 className="text-[28px] font-normal tracking-tight">{selectedModalSeries ? allSeries.find(s => s.id === selectedModalSeries)?.name : tl.allSeries}</h3>
+                  <h3 className="text-section font-normal tracking-tight">{selectedModalSeries ? allSeries.find(s => s.id === selectedModalSeries)?.name : tl.allSeries}</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
@@ -496,16 +496,16 @@ function CompareModelsContent() {
                       className="bg-white rounded-xl p-5 border border-gray-200 cursor-pointer hover:border-black hover:shadow-lg transition-all group relative"
                     >
                       <div className="flex items-center gap-2 mb-4">
-                        {model.fuelType && <span className="px-2.5 py-1 bg-gray-100 rounded-sm text-[11px] font-bold tracking-wider text-gray-700 uppercase">{model.fuelType}</span>}
-                        <span className="px-2.5 py-1 bg-gray-100 rounded-sm text-[11px] font-bold tracking-wider text-gray-700 uppercase">{model.year}</span>
+                        {model.fuelType && <span className="px-2.5 py-1 bg-gray-100 rounded-sm text-micro-label font-bold tracking-wider text-gray-700 uppercase">{model.fuelType}</span>}
+                        <span className="px-2.5 py-1 bg-gray-100 rounded-sm text-micro-label font-bold tracking-wider text-gray-700 uppercase">{model.year}</span>
                       </div>
-                      <div className="w-full h-32 relative mb-6 group-hover:scale-[1.03] transition-transform duration-300">
+                      <div className="w-full h-32 relative mb-6 group-hover:scale-105 transition-transform duration-300">
                         <Image src={model.imageUrl || 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600&h=400&fit=crop'} alt={model.name} fill unoptimized className="object-contain" />
                       </div>
                       <h4 className="text-lg font-bold mb-1 leading-tight tracking-tight line-clamp-1">{model.name}</h4>
                       <p className="text-sm text-gray-600 font-medium mb-6">{tl.from} ${model.basePrice?.toLocaleString()}</p>
                       
-                      <button className="w-full py-3 bg-gray-50 text-[13px] font-bold tracking-wide uppercase text-gray-900 rounded-[6px] group-hover:bg-black group-hover:text-white transition-colors">
+                      <button className="w-full py-3 bg-gray-50 text-caption font-bold tracking-wide uppercase text-gray-900 rounded-compact group-hover:bg-black group-hover:text-white transition-colors">
                         {tl.selectText}
                       </button>
                     </div>
@@ -520,12 +520,12 @@ function CompareModelsContent() {
             </div>
             
             {/* Bottom Floating Bar */}
-            <div className="absolute bottom-0 left-0 lg:left-[25%] right-0 bg-white border-t border-gray-100 p-4 px-8 flex justify-between items-center rounded-b-xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+            <div className="absolute bottom-0 left-0 lg:left-1/4 right-0 bg-white border-t border-gray-100 p-4 px-8 flex justify-between items-center rounded-b-xl shadow-bottom-bar">
                <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
                   <span className="text-sm font-semibold text-gray-700">{tl.pickingForSlot} {showModal}</span>
                </div>
-               <button onClick={() => setShowModal(null)} className="px-6 py-2.5 text-sm font-bold border border-gray-300 rounded-[6px] hover:bg-gray-100 transition-colors">
+               <button onClick={() => setShowModal(null)} className="px-6 py-2.5 text-sm font-bold border border-gray-300 rounded-compact hover:bg-gray-100 transition-colors">
                  {tl.close}
                </button>
             </div>
@@ -536,7 +536,7 @@ function CompareModelsContent() {
       {/* Feedback Button */}
       <button 
         onClick={() => router.push('/advisory')}
-        className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-purple-600 text-white px-4 py-8 rounded-l-[8px] font-bold tracking-wide uppercase text-[15px] hover:bg-purple-700 hover:pr-6 transition-all z-40 hidden md:block shadow-lg"
+        className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-purple-600 text-white px-4 py-8 rounded-l-control font-bold tracking-wide uppercase text-body-sm hover:bg-purple-700 hover:pr-6 transition-all z-40 hidden md:block shadow-lg"
       >
         <span className="[writing-mode:vertical-rl] block">{tl.getAdvice}</span>
       </button>

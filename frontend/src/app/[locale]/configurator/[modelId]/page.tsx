@@ -9,7 +9,6 @@ import { SiteHeader } from '@/components/features/layout/site-header'
 import { ConfiguratorToolbar } from '@/components/features/configurator/configurator-toolbar'
 import { ConfiguratorViewer } from '@/components/features/configurator/configurator-viewer'
 import { CarModel3DViewer } from '@/components/features/configurator/car-model-3d-viewer'
-import { Porsche3DStream } from '@/components/features/configurator/porsche-3d-stream'
 import { useSiteHeaderVisible } from '@/hooks/use-site-header-visible'
 import { cn } from '@/utils/cn'
 import { ConfiguratorOptionsPanel } from '@/components/features/configurator/configurator-options-panel'
@@ -79,7 +78,7 @@ function SavedModal({
   onViewSaved: () => void
 }) {
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
@@ -142,7 +141,7 @@ function ConfiguratorContent() {
   const searchParams = useSearchParams()
   const modelIdParam = params?.modelId as string
   const isPorscheCode = modelIdParam && isNaN(Number(modelIdParam))
-  
+
   const [modelId, setModelId] = useState<number>(!isPorscheCode ? Number(modelIdParam) : 0)
 
   const [loading, setLoading] = useState(true)
@@ -563,13 +562,13 @@ function ConfiguratorContent() {
       />
 
       <main className="pb-28">
-        <div className="mx-auto max-w-[1760px] px-4 md:px-8">
+        <div className="mx-auto max-w-showroom px-4 md:px-8">
           {sections.length === 0 ? (
             <p className="text-center text-dark-gray font-light py-24">
               No options configured for this model yet. Assign options in Admin → Car Model Options.
             </p>
           ) : (
-            <div className="mt-5 grid min-h-[calc(100vh-10rem)] grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_430px] xl:grid-cols-[minmax(0,1fr)_500px]">
+            <div className="mt-5 grid min-h-configurator-main grid-cols-1 gap-6 lg:grid-configurator-shell xl:grid-configurator-shell-xl">
               <ConfiguratorViewer
                 images={galleryImages}
                 activeIndex={activeImageIndex}
@@ -577,7 +576,6 @@ function ConfiguratorContent() {
                 modelName={model.name}
                 year={model.year}
                 onOpen360={() => setShow360(true)}
-                porscheModelCode={porscheModelCode}
                 local3dModelUrl={local3dModelUrl}
                 selectedPaintOption={selectedPaintOption}
                 selectedWheelOption={selectedWheelOption}
@@ -586,9 +584,9 @@ function ConfiguratorContent() {
               <div
                 className={cn(
                   'flex flex-col border-l border-neutral-200 pl-0 transition-all duration-200 lg:sticky lg:overflow-hidden lg:pl-6',
-                  siteHeaderVisible 
-                    ? 'lg:top-[7.25rem] lg:h-[calc(100vh-7.25rem)]' 
-                    : 'lg:top-[4.5rem] lg:h-[calc(100vh-4.5rem)]'
+                  siteHeaderVisible
+                    ? 'lg:top-configurator-top-visible lg:h-configurator-sticky-visible'
+                    : 'lg:top-configurator-top-compact lg:h-configurator-sticky-compact'
                 )}
               >
                 <ConfiguratorOptionsPanel
@@ -666,8 +664,6 @@ function ConfiguratorContent() {
                   wheelVariantKey={selectedWheelOption?.meshName || selectedWheelOption?.name}
                   className="absolute inset-0"
                 />
-              ) : porscheModelCode ? (
-                <Porsche3DStream modelCode={porscheModelCode} className="absolute inset-0" />
               ) : (
                 <Image
                   src={galleryImages[activeImageIndex]?.src ?? galleryImages[0].src}

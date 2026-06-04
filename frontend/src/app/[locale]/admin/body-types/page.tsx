@@ -217,7 +217,7 @@ export default function BodyTypesPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-modal">
           <DialogHeader>
             <DialogTitle>
               {editingItem ? t('edit_body_design') : t('add_body_design')}

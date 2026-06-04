@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormCarModel;
 import com.ra.base_spring_boot.dto.response.CarModelResponseDTO;
 import com.ra.base_spring_boot.service.ICarModelService;
@@ -40,7 +41,7 @@ public class CarModelController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(models)
+                        .data(PageResponse.from(models))
                         .build()
         );
     }

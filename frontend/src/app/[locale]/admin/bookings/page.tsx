@@ -204,7 +204,7 @@ export default function BookingsPage() {
           </div>
           <div className="flex flex-col">
             <span className="font-black text-near-black dark:text-white uppercase tracking-tight italic">{val}</span>
-            <span className="text-[10px] text-gray-500 lowercase flex items-center gap-1 font-bold">
+            <span className="text-eyebrow text-gray-500 lowercase flex items-center gap-1 font-bold">
               <Mail size={10} /> {row.email}
             </span>
           </div>
@@ -226,12 +226,12 @@ export default function BookingsPage() {
       label: t('bookings_duration'),
       render: (_: any, row: any) => (
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-near-black dark:text-white">
+          <div className="flex items-center gap-2 text-eyebrow font-black uppercase tracking-widest text-near-black dark:text-white">
             <Calendar size={12} className="text-gray-400" />
             <span>{row.startDate}</span>
           </div>
           {row.endDate && (
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            <div className="flex items-center gap-2 text-eyebrow font-bold uppercase tracking-widest text-gray-400">
               <Clock size={12} />
               <span>{row.endDate}</span>
             </div>
@@ -262,7 +262,7 @@ export default function BookingsPage() {
           cancelled: 'destructive',
         }
         return (
-          <Badge variant={variantMap[val] || 'secondary'} className="rounded-none uppercase text-[9px] font-black tracking-[0.2em] px-3 py-1 border-none shadow-sm">
+          <Badge variant={variantMap[val] || 'secondary'} className="rounded-none uppercase text-micro font-black tracking-porsche-wide px-3 py-1 border-none shadow-sm">
             {val}
           </Badge>
         )
@@ -302,7 +302,7 @@ export default function BookingsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 flex items-center gap-2">
+          <h2 className="text-eyebrow font-black uppercase tracking-spacious text-gray-400 flex items-center gap-2">
             <ShieldCheck size={14} className="text-brand-red" />
             {t('bookings_overview')}
           </h2>
@@ -332,12 +332,12 @@ export default function BookingsPage() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[550px] p-0 border-none rounded-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-xl p-0 border-none rounded-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingBooking ? t('bookings_edit') : t('bookings_create')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingBooking ? t('bookings_update_info') : t('bookings_create_info')}
             </DialogDescription>
           </DialogHeader>
@@ -345,7 +345,7 @@ export default function BookingsPage() {
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="customerName" className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('full_name')} *</Label>
+                <Label htmlFor="customerName" className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('full_name')} *</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                   <Input
@@ -360,7 +360,7 @@ export default function BookingsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email" className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('email_address')} *</Label>
+                <Label htmlFor="email" className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('email_address')} *</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                   <Input
@@ -377,9 +377,9 @@ export default function BookingsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('bookings_vehicle')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('bookings_vehicle')} *</Label>
               <Select value={formData.carModel} onValueChange={(val) => setFormData({ ...formData, carModel: val })}>
-                <SelectTrigger className="h-11 font-black uppercase text-[10px] tracking-widest italic">
+                <SelectTrigger className="h-11 font-black uppercase text-eyebrow tracking-widest italic">
                   <div className="flex items-center">
                     <Car className="mr-3 text-brand-red" size={16} />
                     <SelectValue />
@@ -387,7 +387,7 @@ export default function BookingsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {carOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value} className="uppercase font-bold text-[10px] tracking-widest">
+                    <SelectItem key={opt.value} value={opt.value} className="uppercase font-bold text-eyebrow tracking-widest">
                       {opt.label}
                     </SelectItem>
                   ))}
@@ -397,7 +397,7 @@ export default function BookingsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Start Date *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Start Date *</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                   <Input
@@ -410,7 +410,7 @@ export default function BookingsPage() {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">End Date</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">End Date</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                   <Input
@@ -425,7 +425,7 @@ export default function BookingsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('bookings_total_price')} (USD) *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('bookings_total_price')} (USD) *</Label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-red" size={14} />
                   <Input
@@ -440,16 +440,16 @@ export default function BookingsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('bookings_status')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('bookings_status')} *</Label>
                 <Select value={formData.status} onValueChange={(val) => setFormData({ ...formData, status: val })}>
-                  <SelectTrigger className="h-11 font-black uppercase text-[10px] tracking-widest">
+                  <SelectTrigger className="h-11 font-black uppercase text-eyebrow tracking-widest">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending" className="uppercase font-bold text-[10px]">Pending</SelectItem>
-                    <SelectItem value="confirmed" className="uppercase font-bold text-[10px]">Confirmed</SelectItem>
-                    <SelectItem value="completed" className="uppercase font-bold text-[10px]">Completed</SelectItem>
-                    <SelectItem value="cancelled" className="uppercase font-bold text-[10px]">Cancelled</SelectItem>
+                    <SelectItem value="pending" className="uppercase font-bold text-eyebrow">Pending</SelectItem>
+                    <SelectItem value="confirmed" className="uppercase font-bold text-eyebrow">Confirmed</SelectItem>
+                    <SelectItem value="completed" className="uppercase font-bold text-eyebrow">Completed</SelectItem>
+                    <SelectItem value="cancelled" className="uppercase font-bold text-eyebrow">Cancelled</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -459,7 +459,7 @@ export default function BookingsPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-10 italic font-black shadow-lg flex-1">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-10 italic font-black shadow-lg flex-1">
                 {editingBooking ? tCommon('update') : tCommon('create')}
               </Button>
             </DialogFooter>

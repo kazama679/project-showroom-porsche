@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OptionCategoryServiceImpl implements IOptionCategoryService
 {
     private final IOptionCategoryRepository optionCategoryRepository;

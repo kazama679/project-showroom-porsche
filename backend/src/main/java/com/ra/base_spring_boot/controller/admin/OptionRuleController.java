@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormOptionRule;
 import com.ra.base_spring_boot.dto.response.OptionRuleResponseDTO;
 import com.ra.base_spring_boot.service.IOptionRuleService;
@@ -36,7 +37,7 @@ public class OptionRuleController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(rules)
+                        .data(PageResponse.from(rules))
                         .build()
         );
     }

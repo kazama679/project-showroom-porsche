@@ -132,7 +132,7 @@ export default function OptionRulesPage() {
       key: 'id', 
       label: 'ID', 
       align: 'center' as const,
-      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: number) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     { 
       key: 'sourceOptionName', 
@@ -149,11 +149,11 @@ export default function OptionRulesPage() {
       render: (v: string) => (
         <div className="flex flex-col items-center gap-1">
           {v === 'REQUIRES' ? (
-            <Badge variant="success" className="uppercase text-[9px] font-black tracking-widest px-3 py-1 bg-green-500/10 text-green-600 border-none">
+            <Badge variant="success" className="uppercase text-micro font-black tracking-widest px-3 py-1 bg-green-500/10 text-green-600 border-none">
               Requires ➕
             </Badge>
           ) : (
-            <Badge variant="destructive" className="uppercase text-[9px] font-black tracking-widest px-3 py-1 bg-brand-red/10 text-brand-red border-none">
+            <Badge variant="destructive" className="uppercase text-micro font-black tracking-widest px-3 py-1 bg-brand-red/10 text-brand-red border-none">
               Conflicts ⛔
             </Badge>
           )}
@@ -209,7 +209,7 @@ export default function OptionRulesPage() {
       {isAuthenticated && !isAdmin && (
         <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
           <ShieldAlert size={20} className="flex-shrink-0" />
-          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+          <p className="text-eyebrow uppercase font-bold tracking-widest">{t('no_permission')}</p>
         </div>
       )}
 
@@ -252,29 +252,29 @@ export default function OptionRulesPage() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-modal p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingRule ? t('edit_option_rule') : t('add_option_rule')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingRule ? t('update_option_info') : t('add_option_rule_subtitle')}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('source_option')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('source_option')} *</Label>
               <Select
                 value={formData.sourceOptionId?.toString() || ''}
                 onValueChange={(val) => setFormData({ ...formData, sourceOptionId: parseInt(val) })}
               >
-                <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                   <SelectValue placeholder={t('source_option')} />
                 </SelectTrigger>
                 <SelectContent>
                   {optionItems.map((opt) => (
-                    <SelectItem key={opt.id} value={opt.id.toString()} className="uppercase font-bold text-[10px]">
+                    <SelectItem key={opt.id} value={opt.id.toString()} className="uppercase font-bold text-eyebrow">
                       {opt.name}
                     </SelectItem>
                   ))}
@@ -283,13 +283,13 @@ export default function OptionRulesPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('rule_type')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('rule_type')} *</Label>
               <div className="grid grid-cols-2 gap-4">
                 <Button
                   type="button"
                   variant={formData.ruleType === 'REQUIRES' ? 'brand' : 'outline'}
                   onClick={() => setFormData({ ...formData, ruleType: 'REQUIRES' })}
-                  className="uppercase text-[9px] font-black h-11"
+                  className="uppercase text-micro font-black h-11"
                 >
                   <Zap size={14} className="mr-2" />
                   Requires
@@ -298,7 +298,7 @@ export default function OptionRulesPage() {
                   type="button"
                   variant={formData.ruleType === 'CONFLICTS' ? 'destructive' : 'outline'}
                   onClick={() => setFormData({ ...formData, ruleType: 'CONFLICTS' })}
-                  className="uppercase text-[9px] font-black h-11"
+                  className="uppercase text-micro font-black h-11"
                 >
                   <AlertCircle size={14} className="mr-2" />
                   Conflicts
@@ -307,17 +307,17 @@ export default function OptionRulesPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('target_option')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('target_option')} *</Label>
               <Select
                 value={formData.targetOptionId?.toString() || ''}
                 onValueChange={(val) => setFormData({ ...formData, targetOptionId: parseInt(val) })}
               >
-                <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                   <SelectValue placeholder={t('target_option')} />
                 </SelectTrigger>
                 <SelectContent>
                   {optionItems.map((opt) => (
-                    <SelectItem key={opt.id} value={opt.id.toString()} className="uppercase font-bold text-[10px]">
+                    <SelectItem key={opt.id} value={opt.id.toString()} className="uppercase font-bold text-eyebrow">
                       {opt.name}
                     </SelectItem>
                   ))}
@@ -329,7 +329,7 @@ export default function OptionRulesPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-10 italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-10 italic font-black shadow-lg">
                 {editingRule ? t('update') : t('create')}
               </Button>
             </DialogFooter>

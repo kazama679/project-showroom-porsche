@@ -42,7 +42,7 @@ export default function SettingsPage() {
           
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Site Name</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Site Name</Label>
               <Input
                 placeholder="Porsche Admin"
                 defaultValue="Porsche Admin"
@@ -51,7 +51,7 @@ export default function SettingsPage() {
             </div>
             
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Administrator Email</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Administrator Email</Label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -64,7 +64,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Support Email</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Support Email</Label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -89,7 +89,7 @@ export default function SettingsPage() {
 
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Max Upload Size (MB)</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Max Upload Size (MB)</Label>
               <div className="relative">
                 <HardDrive size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -102,7 +102,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Timezone</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Timezone</Label>
               <Input
                 placeholder="UTC+7"
                 defaultValue="UTC+7"
@@ -111,10 +111,10 @@ export default function SettingsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Security Mode</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Security Mode</Label>
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-neutral-900 border rounded-sm">
                 <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Encrypted Transactions</span>
-                <Badge variant="success" className="uppercase text-[9px] font-bold">Enabled</Badge>
+                <Badge variant="success" className="uppercase text-micro font-bold">Enabled</Badge>
               </div>
             </div>
           </div>
@@ -126,14 +126,14 @@ export default function SettingsPage() {
           variant="brand" 
           onClick={handleSave} 
           loading={saving}
-          className="uppercase tracking-[0.2em] text-xs font-black italic h-12 px-10 shadow-lg"
+          className="uppercase tracking-porsche-wide text-xs font-black italic h-12 px-10 shadow-lg"
         >
           <Save size={18} className="mr-2" />
           {tCommon('save')}
         </Button>
         <Button 
           variant="outline" 
-          className="uppercase tracking-[0.2em] text-xs font-bold h-12 px-10 border-2"
+          className="uppercase tracking-porsche-wide text-xs font-bold h-12 px-10 border-2"
         >
           <RotateCcw size={18} className="mr-2" />
           Reset to Defaults

@@ -5,12 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-red disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 transition-colors",
+  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-red disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        brand: 'bg-brand-red text-white hover:bg-red-700 active:bg-red-800',
+        primary: 'bg-brand-red text-white hover:bg-dark-red active:bg-deep-red',
+        brand: 'bg-brand-red text-white hover:bg-dark-red active:bg-deep-red',
+        dark: 'bg-near-black text-white hover:bg-dark-surface active:bg-absolute-black',
+        pill: 'rounded-full bg-near-black px-5 text-white hover:bg-dark-surface active:bg-absolute-black',
+        toolbar: 'rounded-full bg-gray-100 px-3 text-near-black hover:bg-neutral-200',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
@@ -23,13 +27,14 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-10 px-4 py-2',
+        md: 'h-10 px-4 py-2',
         sm: 'h-8 px-3 text-xs',
         lg: 'h-12 px-8 text-base',
         icon: 'size-10',
       },
     },
     defaultVariants: {
-      variant: 'brand',
+      variant: 'primary',
       size: 'default',
     },
   },

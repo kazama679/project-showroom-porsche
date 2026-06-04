@@ -180,7 +180,7 @@ export default function SeriesPage() {
       )
     },
     { key: 'brandName', label: t('series_brand'), render: (v: any) => <span className="text-sm text-gray-500">{v || '—'}</span> },
-    { key: 'description', label: t('series_description'), render: (v: any) => <span className="text-sm line-clamp-1 max-w-[200px]">{v || '—'}</span> },
+    { key: 'description', label: t('series_description'), render: (v: any) => <span className="text-sm line-clamp-1 max-w-toolbar-code">{v || '—'}</span> },
     { 
       key: 'isActive', 
       label: t('series_status'), 
@@ -264,7 +264,7 @@ export default function SeriesPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>{editingSeries ? t('edit_series') : t('add_new_series')}</DialogTitle>
             <DialogDescription>
@@ -321,7 +321,7 @@ export default function SeriesPage() {
                     type="file" 
                     accept="image/*" 
                     onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
-                    className="cursor-pointer file:bg-transparent file:border-0 file:text-[10px] h-8"
+                    className="cursor-pointer file:bg-transparent file:border-0 file:text-eyebrow h-8"
                   />
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function SeriesPage() {
                     type="file" 
                     accept="video/*" 
                     onChange={(e) => setFormData({ ...formData, video: e.target.files?.[0] || null })}
-                    className="cursor-pointer file:bg-transparent file:border-0 file:text-[10px] h-8"
+                    className="cursor-pointer file:bg-transparent file:border-0 file:text-eyebrow h-8"
                   />
                 </div>
               </div>

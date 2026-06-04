@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image'
 import { ChevronUp } from 'lucide-react'
-
+  
 interface GalleryImage {
   id: string
   src: string
@@ -77,7 +77,7 @@ export default function CarGallery({ params }: { params: { id: string } }) {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-page mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/" className="text-2xl font-bold">PORSCHE</Link>
           </div>
@@ -92,7 +92,7 @@ export default function CarGallery({ params }: { params: { id: string } }) {
         </div>
       </header>
 
-      <div className="max-w-[1400px] mx-auto px-6 py-8">
+      <div className="max-w-page mx-auto px-6 py-8">
         {/* Back Link */}
         <Link href={`/inventory/${params.id}`} className="flex items-center gap-2 text-gray-700 hover:text-black mb-8 text-sm">
           ← Back to Vehicle Details
@@ -139,7 +139,7 @@ export default function CarGallery({ params }: { params: { id: string } }) {
         <div className="grid grid-cols-3 gap-4 mb-12">
           {/* Main Image */}
           <div className="col-span-2">
-            <div className="bg-gray-100 aspect-[4/3] rounded-lg overflow-hidden">
+            <div className="bg-gray-100 aspect-photo rounded-lg overflow-hidden">
               <Image
                 src={currentImage.src}
                 alt={currentImage.alt}

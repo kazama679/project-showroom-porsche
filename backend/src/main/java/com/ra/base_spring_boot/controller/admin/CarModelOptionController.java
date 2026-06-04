@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormCarModelOption;
 import com.ra.base_spring_boot.dto.response.CarModelOptionResponseDTO;
 import com.ra.base_spring_boot.service.ICarModelOptionService;
@@ -37,7 +38,7 @@ public class CarModelOptionController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(options)
+                        .data(PageResponse.from(options))
                         .build()
         );
     }
@@ -57,7 +58,7 @@ public class CarModelOptionController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(options)
+                        .data(PageResponse.from(options))
                         .build()
         );
     }

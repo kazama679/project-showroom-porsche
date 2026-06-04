@@ -186,7 +186,7 @@ export default function BlogPage() {
       render: (val: string) => (
         <div className="flex items-center gap-2">
           <Tag size={12} className="text-brand-red" />
-          <span className="text-[10px] uppercase font-bold text-gray-500 tracking-widest">{val}</span>
+          <span className="text-eyebrow uppercase font-bold text-gray-500 tracking-widest">{val}</span>
         </div>
       )
     },
@@ -195,7 +195,7 @@ export default function BlogPage() {
       label: t('author') || 'Author',
       align: 'center' as const,
       render: (val: string) => (
-        <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase font-bold text-gray-400">
+        <div className="flex items-center justify-center gap-1.5 text-eyebrow uppercase font-bold text-gray-400">
           <User size={12} />
           {val}
         </div>
@@ -206,7 +206,7 @@ export default function BlogPage() {
       label: t('date') || 'Published',
       align: 'center' as const,
       render: (val: string) => (
-        <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase font-bold text-gray-400">
+        <div className="flex items-center justify-center gap-1.5 text-eyebrow uppercase font-bold text-gray-400">
           <Calendar size={12} />
           {val}
         </div>
@@ -217,7 +217,7 @@ export default function BlogPage() {
       label: t('views') || 'Views',
       align: 'center' as const,
       render: (val: number) => (
-        <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase font-bold text-gray-400">
+        <div className="flex items-center justify-center gap-1.5 text-eyebrow uppercase font-bold text-gray-400">
           <Clock size={12} />
           {val.toLocaleString()}
         </div>
@@ -228,7 +228,7 @@ export default function BlogPage() {
       label: t('status') || 'Status',
       align: 'center' as const,
       render: (val: string) => (
-        <Badge variant={val === 'published' ? 'success' : 'warning'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={val === 'published' ? 'success' : 'warning'} className="uppercase text-micro tracking-widest font-bold">
           {val}
         </Badge>
       ),
@@ -305,19 +305,19 @@ export default function BlogPage() {
 
       {/* Create/Edit Post Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[700px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-3xl p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingPost ? 'Edit Post' : 'Create New Post'}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingPost ? 'Update existing content' : 'Write a new masterpiece for the community'}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('title') || 'Post Title'} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('title') || 'Post Title'} *</Label>
               <Input
                 placeholder="The Evolution of Porsche Performance"
                 value={formData.title}
@@ -329,50 +329,50 @@ export default function BlogPage() {
 
             <div className="grid grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('category') || 'Category'}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('category') || 'Category'}</Label>
                 <Select
                   value={formData.category}
                   onValueChange={(val) => setFormData({ ...formData, category: val })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="performance" className="uppercase text-[10px] font-bold">Performance</SelectItem>
-                    <SelectItem value="features" className="uppercase text-[10px] font-bold">Features</SelectItem>
-                    <SelectItem value="news" className="uppercase text-[10px] font-bold">News</SelectItem>
-                    <SelectItem value="sustainability" className="uppercase text-[10px] font-bold">Sustainability</SelectItem>
-                    <SelectItem value="lifestyle" className="uppercase text-[10px] font-bold">Lifestyle</SelectItem>
-                    <SelectItem value="technology" className="uppercase text-[10px] font-bold">Technology</SelectItem>
+                    <SelectItem value="performance" className="uppercase text-eyebrow font-bold">Performance</SelectItem>
+                    <SelectItem value="features" className="uppercase text-eyebrow font-bold">Features</SelectItem>
+                    <SelectItem value="news" className="uppercase text-eyebrow font-bold">News</SelectItem>
+                    <SelectItem value="sustainability" className="uppercase text-eyebrow font-bold">Sustainability</SelectItem>
+                    <SelectItem value="lifestyle" className="uppercase text-eyebrow font-bold">Lifestyle</SelectItem>
+                    <SelectItem value="technology" className="uppercase text-eyebrow font-bold">Technology</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('status') || 'Status'}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('status') || 'Status'}</Label>
                 <Select
                   value={formData.status}
                   onValueChange={(val: any) => setFormData({ ...formData, status: val })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="published" className="uppercase text-[10px] font-bold text-green-600">Published</SelectItem>
-                    <SelectItem value="draft" className="uppercase text-[10px] font-bold text-amber-600">Draft</SelectItem>
-                    <SelectItem value="archived" className="uppercase text-[10px] font-bold text-gray-600">Archived</SelectItem>
+                    <SelectItem value="published" className="uppercase text-eyebrow font-bold text-green-600">Published</SelectItem>
+                    <SelectItem value="draft" className="uppercase text-eyebrow font-bold text-amber-600">Draft</SelectItem>
+                    <SelectItem value="archived" className="uppercase text-eyebrow font-bold text-gray-600">Archived</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('content') || 'Content'}</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('content') || 'Content'}</Label>
               <Textarea
                 placeholder="Write your article content here..."
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="min-h-[250px] font-serif text-base resize-none rounded-none border-gray-200"
+                className="min-h-blog-editor font-serif text-base resize-none rounded-none border-gray-200"
               />
             </div>
 
@@ -380,7 +380,7 @@ export default function BlogPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={loading} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-12 italic italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={loading} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-12 italic italic font-black shadow-lg">
                 {editingPost ? 'Update' : 'Publish'} Post
               </Button>
             </DialogFooter>

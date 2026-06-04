@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OptionRuleServiceImpl implements IOptionRuleService
 {
     private final IOptionRuleRepository optionRuleRepository;

@@ -101,7 +101,7 @@ export default function AiKnowledgePage() {
 
   return (
     <div className="space-y-6">
-      <section className="grid gap-4 lg:grid-cols-[420px_1fr]">
+      <section className="grid gap-4 lg:grid-ai-knowledge">
         <div className="rounded-sm border border-light-gray-surface bg-white p-5 dark:border-dark-surface dark:bg-dark-surface">
           <div className="mb-4 flex items-center gap-2 font-semibold uppercase tracking-tight">
             <Plus size={18} className="text-brand-red" />

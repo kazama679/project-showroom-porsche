@@ -34,6 +34,17 @@
   --absolute-black: #000000;
   --dark-surface: #303030;
   --light-gray-surface: #D2D2D2;
+  --subtle-surface: #F2F2F2;
+  --soft-surface: #F0F0F0;
+  --panel-surface: #F6F6F6;
+  --soft-border: #E0E0E0;
+  --inventory-info-surface: #E8F0FE;
+  --inventory-info-surface-hover: #D6E5FD;
+  --advisory-ink: #050505;
+  --advisory-surface: #111111;
+  --advisory-elevated: #1F1F1F;
+  --advisory-modal: #262626;
+  --placeholder-swatch: #DDDDDD;
   
   /* Text & Neutrals */
   --near-black: #181818;
@@ -168,6 +179,17 @@
   --color-absolute-black: var(--absolute-black);
   --color-dark-surface: var(--dark-surface);
   --color-light-gray-surface: var(--light-gray-surface);
+  --color-subtle-surface: var(--subtle-surface);
+  --color-soft-surface: var(--soft-surface);
+  --color-panel-surface: var(--panel-surface);
+  --color-soft-border: var(--soft-border);
+  --color-inventory-info-surface: var(--inventory-info-surface);
+  --color-inventory-info-surface-hover: var(--inventory-info-surface-hover);
+  --color-advisory-ink: var(--advisory-ink);
+  --color-advisory-surface: var(--advisory-surface);
+  --color-advisory-elevated: var(--advisory-elevated);
+  --color-advisory-modal: var(--advisory-modal);
+  --color-placeholder-swatch: var(--placeholder-swatch);
   --color-near-black: var(--near-black);
   --color-dark-gray: var(--dark-gray);
   --color-mid-gray: var(--mid-gray);
@@ -178,6 +200,189 @@
   --color-link-blue: var(--link-blue);
   --color-racing-yellow: var(--racing-yellow);
   --color-modena-yellow: var(--modena-yellow);
+
+  /* Layout containers */
+  --container-showroom: 110rem;
+  --container-page: 87.5rem;
+  --container-page-wide: 100rem;
+  --container-compare: 90rem;
+  --container-content: 75rem;
+  --container-modal: 31.25rem;
+  --container-modal-wide: 32.5rem;
+  --container-modal-xl: 40rem;
+  --container-account-modal: 56.25rem;
+  --container-dialog: 30rem;
+  --container-chat-card: 28.75rem;
+  --container-comment-preview: 18.75rem;
+  --container-code-card: 20rem;
+  --container-compact-action: 17.5rem;
+  --container-model-image: 35rem;
+  --container-model-card: 21.25rem;
+  --container-model-pill: 7.5rem;
+  --container-inventory-sidebar: 21.25rem;
+  --container-inventory-image: 30rem;
+  --container-contact-sidebar: 22.5rem;
+  --container-contact-reason: 7.5rem;
+  --container-select-compact: 8.75rem;
+  --container-toast: 26.25rem;
+  --container-dialog-safe: calc(100% - 2rem);
+  --container-menu: 8rem;
+  --container-menu-wide: 12rem;
+  --container-toolbar-code: 12.5rem;
+  --container-toolbar-price: 11.25rem;
+  --container-mobile-model-name: 50%;
+  --container-bottom-bar-model: 13.75rem;
+  --container-header-side: 5.5rem;
+  --container-form-control: 12.5rem;
+  --container-equipment-thumb: 6.25rem;
+  --container-advisory-sidebar: 20rem;
+  --container-chat-bubble: 85%;
+
+  /* Fixed sizing */
+  --spacing-header-side: 5.5rem;
+  --spacing-form-control: 12.5rem;
+  --spacing-equipment-thumb: 6.25rem;
+  --spacing-advisory-sidebar: 20rem;
+  --spacing-editorial-media: 31.25rem;
+  --spacing-compact-action: 17.5rem;
+  --spacing-model-card: 21.25rem;
+  --spacing-model-car: 90%;
+  --spacing-model-card-image: 92%;
+  --spacing-model-pill: 7.5rem;
+  --spacing-inventory-sidebar: 21.25rem;
+  --spacing-inventory-image: 30rem;
+  --spacing-contact-sidebar: 22.5rem;
+  --spacing-contact-reason: 7.5rem;
+  --spacing-select-compact: 8.75rem;
+  --spacing-side-rail: 2.5rem;
+  --spacing-sidebar-icon-floating: calc(var(--sidebar-width-icon) + 1rem);
+  --spacing-sidebar-icon-floating-padded: calc(var(--sidebar-width-icon) + 1rem + 2px);
+  --spacing-check: 1.375rem;
+  --spacing-check-sm: 1.125rem;
+  --spacing-dot: 0.625rem;
+  --spacing-menu: 8rem;
+  --spacing-menu-wide: 12rem;
+  --spacing-configurator-top-visible: 7.25rem;
+  --spacing-configurator-top-compact: 4.5rem;
+  --spacing-form-side-rail: 5.5rem;
+  --spacing-model-card-row: 9.375rem;
+  --spacing-model-card-offset: 5rem;
+  --spacing-model-card-pad-top: 7.1875rem;
+  --spacing-model-image-float: 5.9375rem;
+  --spacing-model-related-pad-top: 5.625rem;
+
+  /* Typography */
+  --text-micro: 0.5625rem;
+  --text-micro--line-height: 0.75rem;
+  --text-micro-label: 0.6875rem;
+  --text-micro-label--line-height: 0.875rem;
+  --text-heading: 1.625rem;
+  --text-heading--line-height: 1.2;
+  --text-subheading: 1.125rem;
+  --text-subheading--line-height: 1.2;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+  --text-eyebrow: 0.625rem;
+  --text-eyebrow--line-height: 0.875rem;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.5;
+  --text-ui-lg: 1.0625rem;
+  --text-ui-lg--line-height: 1.4;
+  --text-code: 1.375rem;
+  --text-code--line-height: 1.2;
+  --text-section: 1.75rem;
+  --text-section--line-height: 1.2;
+  --text-display-sm: 2.125rem;
+  --text-display-sm--line-height: 1.1;
+  --text-display-md: 2.75rem;
+  --text-display-md--line-height: 1.1;
+  --text-display-lg: 3.5rem;
+  --text-display-lg--line-height: 1.1;
+  --text-model-title: 1.375rem;
+  --text-model-title--line-height: 1.2;
+  --text-inventory-title: 2.375rem;
+  --text-inventory-title--line-height: 1.1;
+  --text-hero-watermark: 9.375rem;
+  --text-hero-watermark--line-height: 1;
+  --text-hero-watermark-desktop: 15.625rem;
+  --text-hero-watermark-desktop--line-height: 1;
+
+  /* Letter spacing */
+  --tracking-porsche: 0.16em;
+  --tracking-porsche-wide: 0.2em;
+  --tracking-porsche-tight: 0.08em;
+  --tracking-form-label: 0.1em;
+  --tracking-section-label: 0.12em;
+  --tracking-label: 0.0625rem;
+  --tracking-button: 0.09375rem;
+  --tracking-cta: 0.08rem;
+  --tracking-spacious: 0.3em;
+
+  /* Z-index */
+  --z-base: 1;
+  --z-toolbar: 40;
+  --z-overlay: 50;
+  --z-modal: 60;
+  --z-toast: 100;
+  --z-site-menu: 200;
+  --z-site-modal: 1000;
+
+  /* 3D viewer sizing */
+  --height-viewer-mobile: 22.5rem;
+  --height-viewer-desktop: 35rem;
+  --height-state-screen: 60vh;
+  --height-feature-card: 18.75rem;
+  --height-hero: 37.5rem;
+  --height-editorial-media: 31.25rem;
+  --height-card-image: 13.75rem;
+  --height-form-field-lg: 3.25rem;
+  --height-equipment-thumb: 3.5rem;
+  --height-card-summary: 10rem;
+  --height-review-textarea: 6.25rem;
+  --height-account-state: 25rem;
+  --height-model-image: 11.25rem;
+  --height-model-strip: 5rem;
+  --height-model-hero-card: 32.5rem;
+  --height-compact-header: 4.5rem;
+  --height-inventory-card-mobile: 17.5rem;
+  --height-inventory-card-desktop: 20rem;
+  --height-side-rail: 5.5rem;
+  --height-model-related-image: 8.75rem;
+  --height-blog-editor: 15.625rem;
+  --height-model-options-list: 15rem;
+  --height-model-options-list-lg: 17.5rem;
+  --height-reject-reason: 9.375rem;
+  --height-dialog-scroll: 60vh;
+  --height-dialog-scroll-lg: 70vh;
+  --height-modal-screen: 90vh;
+  --height-drawer-screen: 80vh;
+  --height-configurator-main: calc(100vh - 10rem);
+  --height-configurator-sticky-visible: calc(100vh - 7.25rem);
+  --height-configurator-sticky-compact: calc(100vh - 4.5rem);
+  --height-editorial-row: 21.25rem;
+  --height-option-description: 2.75rem;
+  --height-switch: 1.15rem;
+  --height-tab-trigger: calc(100% - 1px);
+
+  /* Radius and shadows */
+  --radius-panel: 1.25rem;
+  --radius-card-large: 2rem;
+  --radius-hero-card: 2.5rem;
+  --radius-control: 0.5rem;
+  --radius-compact: 0.375rem;
+  --radius-input: 0.25rem;
+  --radius-swatch: 0.1875rem;
+  --radius-inherit: inherit;
+  --radius-tiny: calc(var(--radius) - 5px);
+  --shadow-card-soft: 0 4px 20px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.08);
+  --shadow-bottom-bar: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-configurator-bar: 0 -4px 24px rgba(0, 0, 0, 0.06);
+  --shadow-sidebar-outline: 0 0 0 1px hsl(var(--sidebar-border));
+  --shadow-sidebar-accent-outline: 0 0 0 1px hsl(var(--sidebar-accent));
+  --ease-feature-card: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-series-panel: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -189,30 +394,110 @@
   }
 }
 
+@layer utilities {
+  .site-modal-layer {
+    position: fixed;
+    z-index: 2147483647 !important;
+  }
+
+  .site-modal-panel {
+    position: relative;
+    z-index: 2147483647 !important;
+  }
+
+  .grid-form-sidebar {
+    grid-template-columns: 1fr 23.75rem;
+  }
+
+  .grid-sell-sidebar {
+    grid-template-columns: 1fr 22.5rem;
+  }
+
+  .grid-saved-vehicle {
+    grid-template-columns: minmax(18.75rem, 26.25rem) 1fr;
+  }
+
+  .grid-configurator-shell {
+    grid-template-columns: minmax(0, 1fr) 26.875rem;
+  }
+
+  .grid-configurator-shell-xl {
+    grid-template-columns: minmax(0, 1fr) 31.25rem;
+  }
+
+  .grid-ai-knowledge {
+    grid-template-columns: 26.25rem 1fr;
+  }
+
+  .aspect-photo {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-showcase {
+    aspect-ratio: 16 / 10;
+  }
+
+  .aspect-advisory-card {
+    aspect-ratio: 16 / 8.2;
+  }
+
+  .aspect-portrait-card {
+    aspect-ratio: 4 / 5;
+  }
+
+  .flex-series-active {
+    flex: 1.1 1 0%;
+  }
+
+  .flex-series-muted {
+    flex: 0.9 1 0%;
+  }
+
+  .model-carousel-rail {
+    padding-left: max(1.5rem, calc((100vw - 90rem) / 2 + 1.5rem));
+    padding-right: max(1.5rem, calc((100vw - 90rem) / 2 + 1.5rem));
+    scroll-padding-left: max(1.5rem, calc((100vw - 90rem) / 2 + 1.5rem));
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .model-carousel-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 48rem) {
+    .model-carousel-rail {
+      padding-left: max(3rem, calc((100vw - 90rem) / 2 + 3rem));
+      padding-right: max(3rem, calc((100vw - 90rem) / 2 + 3rem));
+      scroll-padding-left: max(3rem, calc((100vw - 90rem) / 2 + 3rem));
+    }
+  }
+}
+
 /* Porsche Design System Styles */
 @layer components {
   .porsche-btn-primary {
-    @apply bg-[#DA291C] text-white hover:bg-[#B01E0A] active:bg-[#9D2211] px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
+    @apply rounded-sm bg-brand-red px-2.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-dark-red active:bg-deep-red;
   }
 
   .porsche-btn-secondary {
-    @apply bg-white text-black border border-black hover:bg-gray-100 px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
+    @apply rounded-sm border border-absolute-black bg-white px-2.5 py-1.5 text-sm font-medium text-absolute-black transition-colors hover:bg-gray-100;
   }
 
   .porsche-btn-ghost {
-    @apply bg-transparent text-white border border-white hover:bg-[#1EAEDB] px-2.5 py-1.5 rounded-[2px] font-medium text-sm transition-colors;
+    @apply rounded-sm border border-white bg-transparent px-2.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-info-blue;
   }
 
   .porsche-card {
-    @apply bg-white rounded-[2px] border border-[#D2D2D2];
+    @apply rounded-sm border border-light-gray-surface bg-white;
   }
 
   .porsche-card-dark {
-    @apply bg-[#303030] text-white rounded-[2px] border border-[#303030];
+    @apply rounded-sm border border-dark-surface bg-dark-surface text-white;
   }
 
   .porsche-heading {
-    @apply text-[1.63rem] font-medium leading-[1.2] tracking-normal;
+    @apply text-heading font-medium tracking-normal;
   }
 
   .porsche-subheading {
@@ -224,22 +509,22 @@
   }
 
   .porsche-stat-label {
-    @apply text-[0.75rem] font-normal uppercase tracking-[1px] text-[#8F8F8F];
+    @apply text-xs font-normal uppercase tracking-label text-mid-gray;
   }
 
   .porsche-border-subtle {
-    @apply border-t border-[#D2D2D2];
+    @apply border-t border-light-gray-surface;
   }
 
   .dark .porsche-border-subtle {
-    @apply border-[#303030];
+    @apply border-dark-surface;
   }
 }
 
 /* Typography */
 @layer utilities {
   .text-porsche-heading {
-    @apply text-[1.625rem] font-medium leading-[1.2];
+    @apply text-heading font-medium;
   }
 
   .text-porsche-subheading {
@@ -247,15 +532,15 @@
   }
 
   .text-porsche-body {
-    @apply text-base font-normal leading-relaxed text-[#181818];
+    @apply text-base font-normal leading-relaxed text-near-black;
   }
 
   .text-porsche-label {
-    @apply text-xs uppercase font-medium tracking-wider text-[#666666];
+    @apply text-xs font-medium uppercase tracking-wider text-dark-gray;
   }
 
   .text-porsche-stat {
-    @apply text-3xl font-medium text-[#181818];
+    @apply text-3xl font-medium text-near-black;
   }
 
   .dark .text-porsche-body {
@@ -267,6 +552,6 @@
   }
 
   .dark .text-porsche-label {
-    @apply text-[#D2D2D2];
+    @apply text-light-gray-surface;
   }
 }

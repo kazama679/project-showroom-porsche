@@ -50,7 +50,7 @@ export function ConfiguratorToolbar({
 
   return (
     <div className={cn('sticky top-0 z-40 border-b border-neutral-200 bg-white/95 backdrop-blur', className)}>
-      <div className="mx-auto flex max-w-[1760px] items-center justify-between gap-3 px-4 py-3 md:px-8">
+      <div className="mx-auto flex max-w-showroom items-center justify-between gap-3 px-4 py-3 md:px-8">
         <div className="flex min-w-0 flex-shrink items-center gap-2 md:gap-4">
           <Link
             href={`/models/${modelId}`}
@@ -79,7 +79,7 @@ export function ConfiguratorToolbar({
         <div className="hidden min-w-0 flex-1 items-center justify-end gap-6 lg:flex xl:gap-8">
           <div className="min-w-0 text-center">
             <p className="truncate text-sm font-medium text-near-black">911 Carrera</p>
-            <p className="text-[10px] uppercase tracking-[0.16em] text-neutral-400">Porsche Code</p>
+            <p className="text-eyebrow uppercase tracking-porsche text-neutral-400">Porsche Code</p>
           </div>
           <div className="text-right min-w-0">
             <div className="flex items-center justify-end gap-1.5">
@@ -91,7 +91,7 @@ export function ConfiguratorToolbar({
                 <Info size={14} strokeWidth={1.5} />
               </button>
             </div>
-            <p className="max-w-[200px] truncate text-[10px] font-light text-neutral-400">
+            <p className="max-w-toolbar-code truncate text-eyebrow font-light text-neutral-400">
               {t('calculateMonthly')}
             </p>
           </div>
@@ -105,7 +105,7 @@ export function ConfiguratorToolbar({
                 <Info size={14} strokeWidth={1.5} />
               </button>
             </div>
-            <p className="text-[10px] text-neutral-400 font-light truncate max-w-[180px]">
+            <p className="max-w-toolbar-price truncate text-eyebrow font-light text-neutral-400">
               {modelName}
             </p>
           </div>
@@ -140,11 +140,11 @@ export function ConfiguratorToolbar({
       <div className="flex items-center justify-between gap-3 border-t border-neutral-100 px-4 py-2 lg:hidden">
         <div>
           <p className="text-base font-light text-near-black">{formatPrice(totalPrice, locale)}</p>
-          <p className="text-[10px] text-neutral-400 font-light">
+          <p className="text-eyebrow font-light text-neutral-400">
             ~{formatPrice(monthly, locale)}/{tc('month')}
           </p>
         </div>
-        <p className="text-xs text-dark-gray font-light truncate max-w-[50%]">{modelName}</p>
+        <p className="max-w-mobile-model-name truncate text-xs font-light text-dark-gray">{modelName}</p>
       </div>
     </div>
   )

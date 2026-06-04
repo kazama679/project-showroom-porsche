@@ -16,6 +16,7 @@ import com.ra.base_spring_boot.service.ICloudinaryService;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BrandServiceImpl implements IBrandService
 {
     private final IBrandRepository brandRepository;

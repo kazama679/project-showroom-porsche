@@ -155,7 +155,7 @@ function TestDriveContent() {
       <SiteHeader logoHref="/" />
 
       {/* Main Content */}
-      <main className="max-w-[1200px] mx-auto px-4 md:px-8 py-8">
+      <main className="max-w-content mx-auto px-4 md:px-8 py-8">
         
         {/* Back button */}
         <Link 
@@ -168,7 +168,7 @@ function TestDriveContent() {
 
         {/* Page Title */}
         <div className="text-center mb-16 max-w-2xl mx-auto px-4">
-          <h1 className="text-[2rem] md:text-[2.5rem] font-light mb-2 leading-[1.2]">
+          <h1 className="text-3xl md:text-4xl font-light mb-2 leading-tight">
             Đăng ký lái thử cùng Porsche.
           </h1>
           <p className="text-base text-near-black font-light">
@@ -177,51 +177,51 @@ function TestDriveContent() {
         </div>
 
         {/* Form Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-form-sidebar gap-8 items-start">
           
           {/* Left Column */}
           {isSubmitted ? (
-            <div className="bg-white p-8 rounded-[20px] shadow-sm">
+            <div className="bg-white p-8 rounded-panel shadow-sm">
               <div className="w-20 h-20 bg-green-50 rounded-xl flex items-center justify-center mb-8">
                 <Check size={32} className="text-near-black" strokeWidth={1.5} />
               </div>
               
-              <h2 className="text-[1.75rem] font-light mb-6 text-near-black">
+              <h2 className="text-section font-light mb-6 text-near-black">
                 Yêu cầu của bạn đã được gửi thành công.
               </h2>
               
-              <p className="text-[15px] font-light text-near-black mb-6 leading-relaxed">
+              <p className="text-body-sm font-light text-near-black mb-6 leading-relaxed">
                 Yêu cầu của bạn đã được gửi thành công đến <strong>{dealer?.name}</strong>. Họ sẽ liên hệ lại với bạn trong thời gian sớm nhất.
               </p>
               
-              <p className="text-[15px] font-light text-near-black mb-8 leading-relaxed">
+              <p className="text-body-sm font-light text-near-black mb-8 leading-relaxed">
                 Bản tóm tắt cũng đã được gửi đến <strong>{formData.email}</strong>. Có thể mất 2-3 phút để bạn nhận được bản tóm tắt này. Nếu không thấy trong hộp thư đến, có thể nó đã bị chuyển vào thư mục thư rác.
               </p>
               
-              <h3 className="text-[1.125rem] font-light text-near-black mb-4">
+              <h3 className="text-subheading font-light text-near-black mb-4">
                 Cấu hình của bạn
               </h3>
               
-              <div className="border border-near-black rounded-xl p-6 mb-12 w-full max-w-[320px]">
-                <p className="text-[11px] text-near-black font-medium tracking-wide mb-1">Mã Porsche</p>
+              <div className="border border-near-black rounded-xl p-6 mb-12 w-full max-w-code-card">
+                <p className="text-micro-label text-near-black font-medium tracking-wide mb-1">Mã Porsche</p>
                 <div className="flex items-center gap-2 mb-6">
-                  <span className="text-[1.375rem] font-medium text-near-black">{modelIdParam || 'PTGYLZZ2'}</span>
+                  <span className="text-code font-medium text-near-black">{modelIdParam || 'PTGYLZZ2'}</span>
                   <button className="text-near-black hover:opacity-70 transition-opacity" onClick={() => navigator.clipboard.writeText(modelIdParam || 'PTGYLZZ2')}>
                     <Copy size={20} strokeWidth={1.5} />
                   </button>
                 </div>
                 
-                <p className="text-[13px] font-light text-near-black leading-relaxed mb-4">
+                <p className="text-caption font-light text-near-black leading-relaxed mb-4">
                   Bạn có thể truy cập cấu hình xe của mình trong Trình cấu hình xe Porsche bằng Mã Porsche này.
                 </p>
-                <p className="text-[13px] font-light text-near-black leading-relaxed">
+                <p className="text-caption font-light text-near-black leading-relaxed">
                   Vui lòng lưu ý rằng Mã Porsche sẽ thay đổi nếu bạn chỉnh sửa cấu hình.
                 </p>
               </div>
               
               <Link 
                 href={modelIdParam ? `/configurator/${modelIdParam}` : '/models'}
-                className="inline-block bg-black text-white px-8 py-3.5 rounded-lg text-[15px] font-medium hover:bg-black/90 transition-colors"
+                className="inline-block bg-black text-white px-8 py-3.5 rounded-lg text-body-sm font-medium hover:bg-black/90 transition-colors"
               >
                 Quay lại Trình cấu hình xe
               </Link>
@@ -230,8 +230,8 @@ function TestDriveContent() {
           <div className="space-y-8">
             
             {/* Section 1: Select Dealer */}
-            <div id="dealer" className="bg-white p-6 md:p-8 rounded-[20px] shadow-sm">
-              <h2 className="text-xl md:text-[1.375rem] font-light mb-6">
+            <div id="dealer" className="bg-white p-6 md:p-8 rounded-panel shadow-sm">
+              <h2 className="text-xl md:text-code font-light mb-6">
                 1. Chọn một đại lý Porsche gần bạn
               </h2>
               
@@ -281,8 +281,8 @@ function TestDriveContent() {
             <hr className="border-gray-200 mx-8" />
 
             {/* Section 2: Contact Information */}
-            <div className="bg-white p-6 md:p-8 rounded-[20px] shadow-sm">
-              <h2 className="text-xl md:text-[1.375rem] font-light mb-8">
+            <div className="bg-white p-6 md:p-8 rounded-panel shadow-sm">
+              <h2 className="text-xl md:text-code font-light mb-8">
                 2. Hãy cho chúng tôi biết cách liên lạc với bạn.
               </h2>
               
@@ -438,7 +438,7 @@ function TestDriveContent() {
                     type="button" 
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-lg text-[15px] font-medium hover:bg-black/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-lg text-body-sm font-medium hover:bg-black/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
                     Nộp
@@ -462,15 +462,15 @@ function TestDriveContent() {
           )}
 
           {/* Right Column - Car Summary */}
-          <div className="lg:sticky lg:top-[5.5rem]">
-            <div className="bg-white rounded-[20px] shadow-sm overflow-hidden border border-gray-200">
+          <div className="lg:sticky lg:top-form-side-rail">
+            <div className="bg-white rounded-panel shadow-sm overflow-hidden border border-gray-200">
               {loading ? (
-                <div className="h-48 md:h-[220px] w-full flex items-center justify-center bg-gray-100">
+                <div className="h-48 md:h-card-image w-full flex items-center justify-center bg-gray-100">
                   <Loader2 className="w-6 h-6 animate-spin text-dark-gray" />
                 </div>
               ) : (
                 <>
-                  <div className="bg-gray-100 relative h-48 md:h-[220px] w-full">
+                  <div className="bg-gray-100 relative h-48 md:h-card-image w-full">
                     <Image
                       src={modelData?.defaultImage || "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%BA%A2nh%201-unrSSOkEFYoYPeYupVKuVrb5OozLpY.png"}
                       alt={modelData?.name || "Car"}
@@ -480,15 +480,15 @@ function TestDriveContent() {
                     />
                   </div>
     
-                  <div className="p-6 md:p-8 min-h-[160px] flex flex-col justify-between">
-                    <h3 className="text-lg md:text-[1.25rem] font-light text-near-black mb-3 leading-tight">
+                  <div className="p-6 md:p-8 min-h-card-summary flex flex-col justify-between">
+                    <h3 className="text-lg md:text-xl font-light text-near-black mb-3 leading-tight">
                       {modelData?.name ? `Porsche ${modelData.name}` : 'Mẫu xe hiện chưa có thông tin'}
                     </h3>
                     <div>
-                      <p className="text-sm md:text-[15px] font-medium text-near-black mb-1">
+                      <p className="text-sm md:text-body-sm font-medium text-near-black mb-1">
                         {modelData ? formatPrice(modelData.baseMsrp) : '--'}
                       </p>
-                      <p className="text-[11px] text-dark-gray font-light uppercase tracking-wider">Giá cơ bản</p>
+                      <p className="text-micro-label text-dark-gray font-light uppercase tracking-wider">Giá cơ bản</p>
                     </div>
                   </div>
                 </>
@@ -621,7 +621,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
       <div className="absolute inset-0 bg-black/30 backdrop-blur-md transition-opacity duration-300" onClick={onClose} />
 
       {/* Slide-in panel from right side */}
-      <div className="relative bg-white w-full max-w-[100%] md:max-w-[520px] lg:max-w-[640px] h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="relative bg-white w-full max-w-full md:max-w-modal-wide lg:max-w-modal-xl h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
         
         {/* Close Button */}
         <button
@@ -633,15 +633,15 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
 
         {/* Header */}
         <div className="px-6 pb-4 md:px-12 pt-6 md:pb-6">
-          <h2 className="text-[26px] md:text-[34px] leading-[1.1] font-medium tracking-tight text-black mb-6 pr-10">
+          <h2 className="text-heading md:text-display-sm leading-tight font-medium tracking-tight text-black mb-6 pr-10">
             Chọn đại lý Porsche tại địa phương
           </h2>
 
           <div className="mb-2">
-            <p className="text-[14px] font-medium text-black mb-1">
+            <p className="text-sm font-medium text-black mb-1">
               Tìm đại lý Porsche gần bạn
             </p>
-            <p className="text-[12px] text-neutral-500 mb-4">
+            <p className="text-xs text-neutral-500 mb-4">
               Nhập mã bưu chính, thành phố hoặc đường phố
             </p>
 
@@ -658,7 +658,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   }
                 }}
                 placeholder="Ví dụ New York"
-                className="w-full h-[52px] px-4 bg-white border border-neutral-300 rounded-xl text-[14px] text-black focus:outline-none focus:border-black placeholder-neutral-500"
+                className="w-full h-form-field-lg px-4 bg-white border border-neutral-300 rounded-xl text-sm text-black focus:outline-none focus:border-black placeholder-neutral-500"
               />
               {query && (
                 <button onClick={handleClearSearch} className="absolute right-4 flex w-8 h-8 items-center justify-center text-neutral-500 hover:text-black transition-colors">
@@ -678,7 +678,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
               <button
                 type="button"
                 onClick={handleCurrentLocation}
-                className="inline-block text-[15px] font-medium text-black hover:opacity-70 transition-opacity underline underline-offset-4"
+                className="inline-block text-body-sm font-medium text-black hover:opacity-70 transition-opacity underline underline-offset-4"
               >
                 Sử dụng vị trí hiện tại
               </button>
@@ -701,7 +701,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                       onClick={() => handlePickLocation(item)}
                       className="w-full flex items-center justify-between px-5 py-4 text-left border-b border-neutral-300 last:border-0 hover:bg-neutral-50 transition-colors"
                     >
-                      <p className="text-[15px] font-medium text-black line-clamp-1 pr-3">
+                      <p className="text-body-sm font-medium text-black line-clamp-1 pr-3">
                         {item.display_name}
                       </p>
                       <ChevronRight size={18} className="text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
@@ -709,7 +709,7 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   ))}
                 </div>
               ) : (
-                <p className="pt-6 text-center text-[15px] text-neutral-500 font-light">
+                <p className="pt-6 text-center text-body-sm text-neutral-500 font-light">
                   Không tìm thấy kết quả nào
                 </p>
               )}
@@ -724,17 +724,17 @@ function DealerModal({ onClose, onSelect }: { onClose: () => void; onSelect: (de
                   key={idx}
                   type="button"
                   onClick={() => onSelect(dealer)}
-                  className="w-full block bg-neutral-100 rounded-[12px] p-6 text-left hover:bg-neutral-200 transition-colors group"
+                  className="w-full block bg-neutral-100 rounded-xl p-6 text-left hover:bg-neutral-200 transition-colors group"
                 >
-                  <h3 className="text-[20px] font-medium text-black">
+                  <h3 className="text-xl font-medium text-black">
                     {dealer.name}
                   </h3>
-                  <p className="text-[16px] leading-[1.6] text-neutral-600">
+                  <p className="text-base leading-relaxed text-neutral-600">
                     {dealer.address}
                   </p>
                   
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-full bg-neutral-200 group-hover:bg-neutral-300 px-4 py-2 text-[15px] font-medium text-neutral-800 transition-colors">
+                    <span className="inline-flex items-center rounded-full bg-neutral-200 group-hover:bg-neutral-300 px-4 py-2 text-body-sm font-medium text-neutral-800 transition-colors">
                       Cách {dealer.distance}
                     </span>
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black shadow-sm group-hover:scale-105 transition-transform">

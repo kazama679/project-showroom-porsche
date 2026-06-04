@@ -44,7 +44,7 @@ export default function SignupPage() {
 
       <div className="w-full lg:w-1/3 bg-white flex flex-col">
         <div className="flex items-center justify-between px-8 lg:px-12 py-6 border-b border-gray-200">
-          <div className="text-base font-medium tracking-[0.15em]">PORSCHE</div>
+          <div className="text-base font-medium tracking-porsche">PORSCHE</div>
           <button className="text-gray-400 hover:text-black transition-colors"><Info size={20} /></button>
         </div>
 
@@ -85,7 +85,7 @@ export default function SignupPage() {
               </div>
 
               <button type="submit" disabled={loading || !fullName || !username || !email || !password}
-                className="cursor-pointer w-full bg-black text-white py-3 font-medium text-sm tracking-[1.28px] rounded-sm hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                className="cursor-pointer w-full bg-black text-white py-3 font-medium text-sm tracking-cta rounded-sm hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                 {loading ? (<><Loader2 size={18} className="animate-spin" />Registering...</>) : "Continue"}
               </button>
             </form>

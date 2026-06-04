@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormOptionItem;
 import com.ra.base_spring_boot.dto.response.OptionItemResponseDTO;
 import com.ra.base_spring_boot.service.IOptionItemService;
@@ -36,7 +37,7 @@ public class OptionItemController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(items)
+                        .data(PageResponse.from(items))
                         .build()
         );
     }

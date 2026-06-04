@@ -139,7 +139,7 @@ export default function CarModelOptionsPage() {
       key: 'id', 
       label: 'ID', 
       align: 'center' as const, 
-      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: number) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     { 
       key: 'carModelName', 
@@ -168,7 +168,7 @@ export default function CarModelOptionsPage() {
       label: 'Default', 
       align: 'center' as const, 
       render: (v: boolean) => (
-        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-micro tracking-widest font-bold">
           {v ? (
             <span className="flex items-center gap-1.5"><CheckCircle2 size={10} /> {tCommon('yes')}</span>
           ) : (
@@ -217,7 +217,7 @@ export default function CarModelOptionsPage() {
       {isAuthenticated && !isAdmin && (
         <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
           <ShieldAlert size={20} className="flex-shrink-0" />
-          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+          <p className="text-eyebrow uppercase font-bold tracking-widest">{t('no_permission')}</p>
         </div>
       )}
 
@@ -260,19 +260,19 @@ export default function CarModelOptionsPage() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-modal p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingAssignment ? t('edit_car_model_option') : t('add_car_model_option')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               Assign options items to specific vehicle models
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">
                 {t('model_name')} <span className="text-brand-red">*</span>
               </Label>
               <Select
@@ -293,7 +293,7 @@ export default function CarModelOptionsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">
                 {t('option_item_name')} <span className="text-brand-red">*</span>
               </Label>
               <Select
@@ -329,7 +329,7 @@ export default function CarModelOptionsPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-12 italic italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-12 italic italic font-black shadow-lg">
                 {editingAssignment ? t('update') : t('create')}
               </Button>
             </DialogFooter>

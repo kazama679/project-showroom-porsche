@@ -131,7 +131,7 @@ export default function TestDrivesPage() {
             <Calendar size={12} />
             {v}
           </div>
-          <span className="text-[10px] uppercase text-gray-400 tracking-widest">{item.preferredTime || '--'}</span>
+          <span className="text-eyebrow uppercase text-gray-400 tracking-widest">{item.preferredTime || '--'}</span>
         </div>
       )
     },
@@ -160,7 +160,7 @@ export default function TestDrivesPage() {
         const isPending = request.status === BookingStatus.PENDING
         
         if (!isPending) {
-          return <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">{t('no_actions')}</span>
+          return <span className="text-eyebrow uppercase font-bold text-gray-400 tracking-widest">{t('no_actions')}</span>
         }
 
         const isApproving = actionInProgress?.id === id && actionInProgress?.type === 'approve'

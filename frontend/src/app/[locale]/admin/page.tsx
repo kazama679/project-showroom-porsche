@@ -105,17 +105,17 @@ export default function DashboardPage() {
                   {kpi.icon}
                 </div>
                 {kpi.trend > 0 ? (
-                  <Badge variant="success" className="text-[10px] py-0 px-1.5 h-5">+ {kpi.trend}%</Badge>
+                  <Badge variant="success" className="text-eyebrow py-0 px-1.5 h-5">+ {kpi.trend}%</Badge>
                 ) : (
-                  <Badge variant="destructive" className="text-[10px] py-0 px-1.5 h-5">{kpi.trend}%</Badge>
+                  <Badge variant="destructive" className="text-eyebrow py-0 px-1.5 h-5">{kpi.trend}%</Badge>
                 )}
               </div>
-              <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400 mb-1">{kpi.label}</p>
+              <p className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400 mb-1">{kpi.label}</p>
               <div className="flex flex-col">
                 <span className="text-3xl font-black italic tracking-tighter text-near-black dark:text-white leading-none">
                   {kpi.value}
                 </span>
-                <span className="text-[10px] uppercase font-bold text-gray-500 mt-2 tracking-widest">{kpi.unit}</span>
+                <span className="text-eyebrow uppercase font-bold text-gray-500 mt-2 tracking-widest">{kpi.unit}</span>
               </div>
             </CardContent>
           </Card>
@@ -133,7 +133,7 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="h-[300px]">
+            <div className="h-feature-card">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trendData}>
                   <CartesianGrid stroke="#f0f0f0" vertical={false} />
@@ -160,7 +160,7 @@ export default function DashboardPage() {
                     }}
                     labelStyle={{ display: 'none' }}
                   />
-                  <Legend iconType="rect" formatter={(val) => <span className="text-[10px] uppercase font-bold tracking-widest text-gray-500">{val}</span>} />
+                  <Legend iconType="rect" formatter={(val) => <span className="text-eyebrow uppercase font-bold tracking-widest text-gray-500">{val}</span>} />
                   <Line
                     type="monotone"
                     dataKey="bookings"
@@ -190,7 +190,7 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="h-[300px]">
+            <div className="h-feature-card">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                 {carCategoryData.map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <div className="w-2 h-2" style={{ backgroundColor: colors[i % colors.length] }} />
-                    <span className="text-[9px] uppercase font-bold tracking-widest text-gray-500">{item.name}</span>
+                    <span className="text-micro uppercase font-bold tracking-widest text-gray-500">{item.name}</span>
                   </div>
                 ))}
               </div>
@@ -250,7 +250,7 @@ export default function DashboardPage() {
               {
                 key: 'date',
                 label: 'Date',
-                render: (v: string) => <span className="font-mono text-[10px] text-gray-400 font-bold uppercase">{v}</span>
+                render: (v: string) => <span className="font-mono text-eyebrow text-gray-400 font-bold uppercase">{v}</span>
               },
               {
                 key: 'status',
@@ -264,7 +264,7 @@ export default function DashboardPage() {
                     cancelled: 'destructive',
                   }
                   return (
-                    <Badge variant={variants[val] || 'default'} className="uppercase text-[9px] tracking-widest font-bold">
+                    <Badge variant={variants[val] || 'default'} className="uppercase text-micro tracking-widest font-bold">
                       {val}
                     </Badge>
                   )

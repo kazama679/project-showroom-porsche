@@ -41,7 +41,13 @@ export function SiteHeader({
   
   const [showAccountModal, setShowAccountModal] = useState(false)
 
+  const clearSelection = () => {
+    if (typeof window === 'undefined') return
+    window.getSelection()?.removeAllRanges()
+  }
+
   const handleMenuClick = () => {
+    clearSelection()
     if (onMenuClick) {
       onMenuClick()
     } else {
@@ -64,12 +70,12 @@ export function SiteHeader({
           className
         )}
       >
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-14 flex items-center justify-between gap-4">
+        <div className="max-w-page-wide mx-auto px-4 md:px-8 h-14 flex items-center justify-between gap-4">
           <button
             type="button"
             onClick={handleMenuClick}
             className={cn(
-              "flex items-center gap-2.5 hover:opacity-70 transition-opacity min-w-[88px]",
+              "flex items-center gap-2.5 hover:opacity-70 transition-opacity min-w-header-side",
               variant === 'transparent' ? 'text-white' : 'text-near-black'
             )}
             aria-label={t('menu')}
@@ -82,7 +88,7 @@ export function SiteHeader({
             <Link
               href={logoHref}
               className={cn(
-                "text-lg md:text-xl font-medium tracking-[0.28em] hover:opacity-80 transition-opacity",
+                "text-lg md:text-xl font-medium tracking-porsche-wide hover:opacity-80 transition-opacity",
                 variant === 'transparent' ? 'text-white' : 'text-near-black'
               )}
             >
@@ -91,7 +97,7 @@ export function SiteHeader({
           </div>
 
           <div className={cn(
-            "flex items-center justify-end gap-4 md:gap-5 min-w-[88px]",
+            "flex items-center justify-end gap-4 md:gap-5 min-w-header-side",
             variant === 'transparent' ? 'text-white' : 'text-near-black'
           )}>
             {showBookmark && (
@@ -113,7 +119,10 @@ export function SiteHeader({
             </button>
             <button
               type="button"
-              onClick={() => setShowAccountModal(true)}
+              onClick={() => {
+                clearSelection()
+                setShowAccountModal(true)
+              }}
               aria-label="Account"
               className="hover:opacity-70 transition-opacity"
             >

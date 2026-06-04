@@ -141,7 +141,7 @@ export default function OptionItemsPage() {
       key: 'id', 
       label: 'ID', 
       align: 'center' as const,
-      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: number) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     {
       key: 'imageUrl',
@@ -171,7 +171,7 @@ export default function OptionItemsPage() {
       key: 'optionGroupName', 
       label: t('option_item_group'), 
       sortable: true,
-      render: (v: string) => <Badge variant="secondary" className="uppercase text-[9px] font-bold tracking-widest">{v || '—'}</Badge>
+      render: (v: string) => <Badge variant="secondary" className="uppercase text-micro font-bold tracking-widest">{v || '—'}</Badge>
     },
     { 
       key: 'price', 
@@ -223,7 +223,7 @@ export default function OptionItemsPage() {
       {isAuthenticated && !isAdmin && (
         <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
           <ShieldAlert size={20} className="flex-shrink-0" />
-          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+          <p className="text-eyebrow uppercase font-bold tracking-widest">{t('no_permission')}</p>
         </div>
       )}
 
@@ -266,12 +266,12 @@ export default function OptionItemsPage() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-2xl p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingItem ? t('edit_option_item') : t('add_option_item')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingItem ? t('update_option_info') : t('add_option_item_subtitle')}
             </DialogDescription>
           </DialogHeader>
@@ -279,7 +279,7 @@ export default function OptionItemsPage() {
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_item_name')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('option_item_name')} *</Label>
                 <div className="relative">
                   <Layers size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -293,17 +293,17 @@ export default function OptionItemsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_item_group')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('option_item_group')} *</Label>
                 <Select
                   value={formData.optionGroupId?.toString() || ''}
                   onValueChange={(val) => setFormData({ ...formData, optionGroupId: parseInt(val) })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue placeholder={t('option_item_group')} />
                   </SelectTrigger>
                   <SelectContent>
                     {groups.map((g) => (
-                      <SelectItem key={g.id} value={g.id.toString()} className="uppercase font-bold text-[10px]">
+                      <SelectItem key={g.id} value={g.id.toString()} className="uppercase font-bold text-eyebrow">
                         {g.name}
                       </SelectItem>
                     ))}
@@ -314,7 +314,7 @@ export default function OptionItemsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_item_price')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('option_item_price')}</Label>
                 <div className="relative">
                   <DollarSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -328,21 +328,21 @@ export default function OptionItemsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Image Asset URL</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Image Asset URL</Label>
                 <div className="relative">
                   <Hash size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
                     placeholder="https://..."
                     value={formData.imageUrl || ''}
                     onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="pl-9 h-11 text-[10px] font-mono"
+                    className="pl-9 h-11 text-eyebrow font-mono"
                   />
                 </div>
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Asset Preview</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Asset Preview</Label>
               <div className="relative w-full h-32 bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-light-gray-surface dark:border-neutral-800 flex items-center justify-center overflow-hidden">
                 {formData.imageUrl?.trim() ? (
                   <Image
@@ -355,19 +355,19 @@ export default function OptionItemsPage() {
                 ) : (
                   <div className="text-center space-y-1">
                     <ImageIcon size={24} className="mx-auto text-gray-300" />
-                    <p className="text-[9px] uppercase font-bold tracking-widest text-gray-400">No image provided</p>
+                    <p className="text-micro uppercase font-bold tracking-widest text-gray-400">No image provided</p>
                   </div>
                 )}
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_item_description') || 'Description'}</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('option_item_description') || 'Description'}</Label>
               <Textarea
                 placeholder="Item specification details..."
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="min-h-[100px] rounded-none resize-none text-xs"
+                className="min-h-review-textarea rounded-none resize-none text-xs"
               />
             </div>
 
@@ -375,7 +375,7 @@ export default function OptionItemsPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-10 italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-10 italic font-black shadow-lg">
                 {editingItem ? t('update') : t('create')}
               </Button>
             </DialogFooter>

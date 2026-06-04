@@ -215,7 +215,7 @@ export default function ReviewsPage() {
       key: 'comment',
       label: t('comment'),
       render: (v: string) => (
-        <div className="max-w-[300px] truncate italic text-sm text-gray-500 group-hover:whitespace-normal group-hover:overflow-visible group-hover:transition-all">
+        <div className="max-w-comment-preview truncate italic text-sm text-gray-500 group-hover:whitespace-normal group-hover:overflow-visible group-hover:transition-all">
           &quot;{v}&quot;
         </div>
       )
@@ -225,7 +225,7 @@ export default function ReviewsPage() {
       label: t('status'),
       align: 'center' as const,
       render: (v: string) => (
-        <Badge variant={v === 'published' ? 'success' : 'warning'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={v === 'published' ? 'success' : 'warning'} className="uppercase text-micro tracking-widest font-bold">
           {v}
         </Badge>
       ),
@@ -294,7 +294,7 @@ export default function ReviewsPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-modal">
           <DialogHeader>
             <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">
               {editingReview ? 'Edit Review' : 'Add New Review'}
@@ -307,7 +307,7 @@ export default function ReviewsPage() {
           <div className="grid gap-4 py-4 font-porsche">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Customer Name</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-widest text-gray-400">Customer Name</Label>
                 <Input
                   placeholder="e.g. John Smith"
                   value={formData.customerName}
@@ -316,7 +316,7 @@ export default function ReviewsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Vehicle</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-widest text-gray-400">Vehicle</Label>
                 <Input
                   placeholder="e.g. Porsche 911"
                   value={formData.vehicle}
@@ -328,7 +328,7 @@ export default function ReviewsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Rating</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-widest text-gray-400">Rating</Label>
                 <Select value={formData.rating} onValueChange={(v) => setFormData({ ...formData, rating: v })}>
                   <SelectTrigger className="h-10">
                     <SelectValue />
@@ -343,7 +343,7 @@ export default function ReviewsPage() {
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Status</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-widest text-gray-400">Status</Label>
                 <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
                   <SelectTrigger className="h-10">
                     <SelectValue />
@@ -358,12 +358,12 @@ export default function ReviewsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Review Comment</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-widest text-gray-400">Review Comment</Label>
               <Textarea
                 placeholder="Message from customer..."
                 value={formData.comment}
                 onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-                className="min-h-[100px] italic h-24"
+                className="min-h-review-textarea italic h-24"
               />
             </div>
           </div>

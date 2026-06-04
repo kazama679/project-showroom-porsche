@@ -403,7 +403,7 @@ function LoadedModel({
           wheelVariantKey={wheelVariantKey || wheelMeshName}
         />
         <Html position={[0, 1.8, 0]} center>
-          <div className="w-[340px] rounded-lg bg-white/95 p-3 text-center text-xs text-near-black shadow-xl">
+          <div className="w-inventory-sidebar rounded-lg bg-white/95 p-3 text-center text-xs text-near-black shadow-xl">
             {error}
           </div>
         </Html>
@@ -472,8 +472,8 @@ export function CarModel3DViewer({
           target={[0, 0, 0]}
         />
       </Canvas>
-      <div className="absolute bottom-4 left-4 z-20 max-w-[520px] rounded-2xl bg-white/92 p-2 shadow-lg backdrop-blur">
-        <div className="mb-1 px-2 text-[11px] font-medium uppercase tracking-[0.12em] text-neutral-500">
+      <div className="absolute bottom-4 left-4 z-20 max-w-modal-wide rounded-2xl bg-white/92 p-2 shadow-lg backdrop-blur">
+        <div className="mb-1 px-2 text-micro-label font-medium uppercase tracking-section-label text-neutral-500">
           {t("testBodyParts")}
         </div>
         <div className="flex flex-wrap gap-2">

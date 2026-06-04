@@ -284,7 +284,7 @@ export default function ModelsPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>{editingModel ? t('edit_model') : t('add_new_model')}</DialogTitle>
             <DialogDescription>{editingModel ? t('update_model_info') : t('add_model_subtitle')}</DialogDescription>
@@ -380,28 +380,28 @@ export default function ModelsPage() {
       />
 
       <Dialog open={isSpecsModalOpen} onOpenChange={setIsSpecsModalOpen}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>{t('manage_specs')} - {currentSpecsModel?.name}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-6 py-4 max-h-[60vh] overflow-y-auto pr-2">
+          <div className="grid gap-6 py-4 max-h-dialog-scroll overflow-y-auto pr-2">
             <div className="space-y-4">
               <h4 className="font-bold text-xs uppercase tracking-widest text-brand-red flex items-center gap-2">
                 <Settings size={14} /> {t('performance_specs')}
               </h4>
               <div className="grid grid-cols-3 gap-4">
                 <div className="grid gap-2">
-                  <Label className="text-[10px] uppercase font-bold text-gray-500">{t('horsepower')}</Label>
+                  <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('horsepower')}</Label>
                   <Input type="number" value={specsFormData.performance?.horsepower || ''}
                     onChange={(e) => setSpecsFormData({ ...specsFormData, performance: { ...specsFormData.performance!, horsepower: parseInt(e.target.value) || null } })} />
                 </div>
                 <div className="grid gap-2">
-                  <Label className="text-[10px] uppercase font-bold text-gray-500 text-nowrap">{t('acceleration')}</Label>
+                  <Label className="text-eyebrow uppercase font-bold text-gray-500 text-nowrap">{t('acceleration')}</Label>
                   <Input type="number" value={specsFormData.performance?.acceleration0100 || ''}
                     onChange={(e) => setSpecsFormData({ ...specsFormData, performance: { ...specsFormData.performance!, acceleration0100: parseFloat(e.target.value) || null } })} />
                 </div>
                 <div className="grid gap-2">
-                  <Label className="text-[10px] uppercase font-bold text-gray-500">{t('top_speed')}</Label>
+                  <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('top_speed')}</Label>
                   <Input type="number" value={specsFormData.performance?.topSpeed || ''}
                     onChange={(e) => setSpecsFormData({ ...specsFormData, performance: { ...specsFormData.performance!, topSpeed: parseInt(e.target.value) || null } })} />
                 </div>
@@ -415,17 +415,17 @@ export default function ModelsPage() {
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-gray-500">{t('engine_type')}</Label>
+                    <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('engine_type')}</Label>
                     <Input value={specsFormData.engine?.engineType || ''}
                       onChange={(e) => setSpecsFormData({ ...specsFormData, engine: { ...specsFormData.engine!, engineType: e.target.value } })} />
                   </div>
                   <div className="grid gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-gray-500">{t('drivetrain')}</Label>
+                    <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('drivetrain')}</Label>
                     <Input value={specsFormData.engine?.drivetrain || ''}
                       onChange={(e) => setSpecsFormData({ ...specsFormData, engine: { ...specsFormData.engine!, drivetrain: e.target.value } })} />
                   </div>
                   <div className="grid gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-gray-500">{t('fuel_consumption')}</Label>
+                    <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('fuel_consumption')}</Label>
                     <Input type="number" value={specsFormData.engine?.fuelConsumption || ''}
                       onChange={(e) => setSpecsFormData({ ...specsFormData, engine: { ...specsFormData.engine!, fuelConsumption: parseFloat(e.target.value) || null } })} />
                   </div>
@@ -440,17 +440,17 @@ export default function ModelsPage() {
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-gray-500">{t('range')}</Label>
+                    <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('range')}</Label>
                     <Input type="number" value={specsFormData.electric?.rangeKm || ''}
                       onChange={(e) => setSpecsFormData({ ...specsFormData, electric: { ...specsFormData.electric!, rangeKm: parseInt(e.target.value) || null } })} />
                   </div>
                   <div className="grid gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-gray-500">{t('battery_capacity')}</Label>
+                    <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('battery_capacity')}</Label>
                     <Input type="number" value={specsFormData.electric?.batteryCapacity || ''}
                       onChange={(e) => setSpecsFormData({ ...specsFormData, electric: { ...specsFormData.electric!, batteryCapacity: parseFloat(e.target.value) || null } })} />
                   </div>
                   <div className="grid gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-gray-500">{t('charging_time')}</Label>
+                    <Label className="text-eyebrow uppercase font-bold text-gray-500">{t('charging_time')}</Label>
                     <Input type="number" value={specsFormData.electric?.chargingTime || ''}
                       onChange={(e) => setSpecsFormData({ ...specsFormData, electric: { ...specsFormData.electric!, chargingTime: parseFloat(e.target.value) || null } })} />
                   </div>

@@ -32,7 +32,7 @@ function DeleteConfirmDialog({
   onCancel: () => void
 }) {
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
       <div className="relative bg-white rounded-2xl max-w-md w-full shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-200">
         {/* Close */}
@@ -108,11 +108,11 @@ function SavedVehicleCard({
   return (
     <>
       <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-[minmax(300px,420px)_1fr] gap-0">
+        <div className="grid grid-cols-1 md:grid-saved-vehicle gap-0">
           {/* Left: Images */}
           <div className="p-4 md:p-5">
             {/* Main image */}
-            <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden mb-3">
+            <div className="relative w-full aspect-photo bg-gray-100 rounded-lg overflow-hidden mb-3">
               <Image
                 src={mainImage}
                 alt={config.modelName}
@@ -136,7 +136,7 @@ function SavedVehicleCard({
                     key={i}
                     type="button"
                     onClick={() => setActiveThumb(i)}
-                    className={`relative aspect-[4/3] rounded-md overflow-hidden bg-neutral-100 transition-all ${
+                    className={`relative aspect-photo rounded-md overflow-hidden bg-neutral-100 transition-all ${
                       activeThumb === i
                         ? 'ring-2 ring-near-black ring-offset-1'
                         : 'opacity-80 hover:opacity-100'
@@ -265,9 +265,9 @@ function SavedListingCard({ car, onRemove }: { car: VehicleListingResponse, onRe
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-      <div className="grid grid-cols-1 md:grid-cols-[minmax(300px,420px)_1fr] gap-0">
+      <div className="grid grid-cols-1 md:grid-saved-vehicle gap-0">
         <div className="p-4 md:p-5">
-          <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden mb-3">
+          <div className="relative w-full aspect-photo bg-gray-100 rounded-lg overflow-hidden mb-3">
             <Image
               src={mainImage}
               alt={car.model || 'Car'}

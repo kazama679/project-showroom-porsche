@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormCarImage;
 import com.ra.base_spring_boot.dto.response.CarImageResponseDTO;
 import com.ra.base_spring_boot.service.ICarImageService;
@@ -40,7 +41,7 @@ public class CarImageController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(images)
+                        .data(PageResponse.from(images))
                         .build()
         );
     }

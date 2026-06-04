@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.entity.Brand;
 import com.ra.base_spring_boot.service.IBrandService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class BrandsController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(brands)
+                        .data(PageResponse.from(brands))
                         .build()
         );
     }

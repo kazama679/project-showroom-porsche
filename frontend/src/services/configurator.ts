@@ -172,52 +172,14 @@ export interface PorscheConfiguratorAssets {
   source: string
   modelCode: string
   galleryImages: GalleryImage[]
-  threeD?: {
-    streamingAvailable: boolean
-    iodEnabled: boolean
-    serviceApi?: string
-    reservationUrl?: string
-    environments: Array<{
-      id: string
-      day?: string
-      night?: string
-    }>
-    defaultEnvironment: {
-      id: string
-      day?: string
-      night?: string
-    } | null
-    optionIds: string[]
-    engineConfig: {
-      orderType: string
-      modelName?: string
-      modelYear?: number
-      region: string
-      locale: string
-      defaultCamera: string
-      defaultLighting: string
-      defaultEnvironment: string
-    }
-    session: {
-      reservationUrl?: string
-      token?: string
-      expiresAt?: number
-      matchmakerUrl?: string
-      signalingServer?: string
-      websocketUrl?: string
-      error?: string
-    } | null
-  }
 }
 
 export async function getPorscheConfiguratorAssets(
   modelCode: string,
-  locale = 'en-US',
-  include3d = false
+  locale = 'en-US'
 ): Promise<PorscheConfiguratorAssets | null> {
   try {
     const params = new URLSearchParams({ modelCode, locale })
-    if (include3d) params.set('include3d', '1')
     const res = await fetch(`/api/porsche-configurator?${params.toString()}`)
     if (!res.ok) return null
     return (await res.json()) as PorscheConfiguratorAssets

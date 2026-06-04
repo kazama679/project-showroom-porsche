@@ -65,7 +65,7 @@ const HeroSection = ({ banner }: HeroSectionProps) => {
       {/* Content */}
       <div className="relative z-10 flex-1 flex items-center pl-6 md:pl-20">
         <div className="text-white max-w-2xl">
-          <h2 className="text-5xl md:text-7xl font-semibold leading-[1.08] mb-8 tracking-tight drop-shadow-md whitespace-pre-line">
+          <h2 className="text-5xl md:text-7xl font-semibold leading-none mb-8 tracking-tight drop-shadow-md whitespace-pre-line">
             {title}
           </h2>
 
@@ -158,7 +158,7 @@ const CardsSection = ({ banners }: CardsSectionProps) => {
             <Link
               key={i}
               href={`/models/${item.carModelId || 2}`}
-              className="relative h-[300px] rounded-[2.5rem] overflow-hidden group cursor-pointer block shadow-sm hover:shadow-lg transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
+              className="relative h-feature-card rounded-hero-card overflow-hidden group cursor-pointer block shadow-sm hover:shadow-lg transition-all duration-500 ease-feature-card"
             >
               <Image
                 src={item.imageUrl || 'https://res.cloudinary.com/dfireq2op/image/upload/v1778648038/porsche/cfa3dfd5-c8d8-4a51-869d-21584728d373.avif'}
@@ -173,7 +173,7 @@ const CardsSection = ({ banners }: CardsSectionProps) => {
 
               {/* Title & Arrow Button container */}
               <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end gap-4 z-10">
-                <h3 className="text-white text-lg md:text-xl font-medium tracking-tight leading-tight max-w-[75%]">
+                <h3 className="text-white text-lg md:text-xl font-medium tracking-tight leading-tight max-w-3/4">
                   {item.title}
                 </h3>
 
@@ -185,7 +185,7 @@ const CardsSection = ({ banners }: CardsSectionProps) => {
           ))}
         </div>
 
-        <h2 className="text-5xl md:text-7xl font-light text-neutral-900 leading-[1.1] max-w-4xl tracking-tight pt-10">
+        <h2 className="text-5xl md:text-7xl font-light text-neutral-900 leading-tight max-w-4xl tracking-tight pt-10">
           {t('journey_starts')}
         </h2>
       </div>
@@ -227,7 +227,7 @@ const ModelCard = ({
       href={href || '#'}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="relative h-[600px] w-full block overflow-hidden cursor-pointer"
+      className="relative h-hero w-full block overflow-hidden cursor-pointer"
     >
       {/* image */}
       <Image
@@ -341,11 +341,11 @@ const ModelsSection = () => {
                 key={series.id}
                 onMouseEnter={() => setActive(series.id)}
                 className={`
-                  transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
+                  transition-all duration-700 ease-series-panel
                   ${active === series.id
-                    ? 'flex-[1.1]'
+                    ? 'flex-series-active'
                     : active
-                      ? 'flex-[0.9]'
+                      ? 'flex-series-muted'
                       : 'flex-1'}
                 `}
               >
@@ -374,12 +374,12 @@ const ModelsSection = () => {
 const AiAdvisoryBanner = () => {
   return (
     <section className="bg-black text-white py-0">
-      <div className="relative overflow-hidden flex flex-col md:flex-row min-h-[340px]">
+      <div className="relative overflow-hidden flex flex-col md:flex-row min-h-editorial-row">
         {/* Left dark gradient panel */}
-        <div className="md:w-1/2 bg-[#111] flex flex-col justify-center p-12 md:p-20 relative z-10">
+        <div className="md:w-1/2 bg-advisory-surface flex flex-col justify-center p-12 md:p-20 relative z-10">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-brand-red text-white w-8 h-8 flex items-center justify-center font-bold text-sm">P</div>
-            <span className="text-brand-red text-xs tracking-[0.2em] uppercase font-medium">AI Advisory</span>
+            <span className="text-brand-red text-xs tracking-porsche-wide uppercase font-medium">AI Advisory</span>
           </div>
           <h3 className="text-3xl md:text-5xl font-light leading-tight mb-6">
             Tìm chiếc Porsche<br />
@@ -390,19 +390,19 @@ const AiAdvisoryBanner = () => {
           </p>
           <Link
             href="/advisory"
-            className="inline-flex items-center gap-2 bg-brand-red text-white px-8 py-3.5 text-sm tracking-[0.12em] font-semibold w-fit hover:bg-red-700 transition-colors"
+            className="inline-flex items-center gap-2 bg-brand-red text-white px-8 py-3.5 text-sm tracking-section-label font-semibold w-fit hover:bg-red-700 transition-colors"
           >
             Bắt đầu tư vấn →
           </Link>
         </div>
 
         {/* Right side visual */}
-        <div className="md:w-1/2 bg-[#0d0d0d] flex items-center justify-center p-12 relative overflow-hidden">
+        <div className="md:w-1/2 bg-advisory-ink flex items-center justify-center p-12 relative overflow-hidden">
           {/* Decorative rings */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[500px] h-[500px] rounded-full border border-white/5 absolute" />
-            <div className="w-[380px] h-[380px] rounded-full border border-white/5 absolute" />
-            <div className="w-[260px] h-[260px] rounded-full border border-white/5 absolute" />
+            <div className="w-editorial-media h-editorial-media rounded-full border border-white/5 absolute" />
+            <div className="w-96 h-96 rounded-full border border-white/5 absolute" />
+            <div className="w-64 h-64 rounded-full border border-white/5 absolute" />
           </div>
           {/* Center icon */}
           <div className="relative z-10 flex flex-col items-center gap-6 text-center">
@@ -446,12 +446,12 @@ const DealershipSection = () => {
           {t('find_dealer_desc')}
         </p>
 
-        <button className="bg-white text-black px-5 py-3 text-sm tracking-[0.15em] font-medium w-fit">
+        <button className="bg-white text-black px-5 py-3 text-sm tracking-porsche font-medium w-fit">
           {t('search_now')}
         </button>
       </div>
 
-      <div className="md:w-1/2 h-[500px] relative">
+      <div className="md:w-1/2 h-editorial-media relative">
         <Image
           src="https://a.storyblok.com/f/338913/1920x1080/1378ad4037/contentinfo_wide-16-9.jpg/m/1584x891/filters:format(webp):quality(45)"
           alt="dealership"
@@ -488,7 +488,7 @@ const Footer = () => {
 
       <div className="grid md:grid-cols-3 gap-14 border-t border-white/10 pt-16">
         <div>
-          <h4 className="mb-6 text-sm tracking-[0.15em] uppercase">
+          <h4 className="mb-6 text-sm tracking-porsche uppercase">
             {t('locations')}
           </h4>
 
@@ -499,7 +499,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="mb-6 text-sm tracking-[0.15em] uppercase">
+          <h4 className="mb-6 text-sm tracking-porsche uppercase">
             {t('company')}
           </h4>
 
@@ -511,7 +511,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="mb-6 text-sm tracking-[0.15em] uppercase">
+          <h4 className="mb-6 text-sm tracking-porsche uppercase">
             {t('follow_us')}
           </h4>
 
@@ -558,7 +558,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="w-full overflow-hidden">
+    <main className="w-full overflow-hidden select-none">
       <SiteHeader logoHref="/" variant="transparent" />
       <HeroSection banner={heroBanner} />
       <CardsSection banners={cardBanners} />

@@ -132,27 +132,27 @@ export default function InventoryPage() {
   )
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6]">
+    <div className="min-h-screen bg-gray-100">
       <SiteHeader className="z-50 bg-transparent absolute top-0 w-full border-none" />
       {/* Header */}
-      <div className="max-w-[1440px] mx-auto px-6 pt-24 pb-6">
-        <h1 className="text-[32px] font-normal leading-tight text-gray-900 mb-2">
+      <div className="max-w-compare mx-auto px-6 pt-24 pb-6">
+        <h1 className="text-3xl font-normal leading-tight text-gray-900 mb-2">
           {t('header_brand')}
         </h1>
-        <p className="text-[20px] text-gray-800 font-light">
+        <p className="text-xl text-gray-800 font-light">
           {t('header_desc')}
         </p>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 pb-12 flex flex-col lg:flex-row items-start gap-6">
+      <div className="max-w-compare mx-auto px-6 pb-12 flex flex-col lg:flex-row items-start gap-6">
         {/* Left Sidebar */}
-        <div className="w-full lg:w-[340px] flex-shrink-0 bg-white rounded-2xl p-6 shadow-sm">
+        <div className="w-full lg:w-inventory-sidebar flex-shrink-0 bg-white rounded-2xl p-6 shadow-sm">
           
           {/* Location */}
           <div className="mb-6 border-b border-gray-100 pb-6">
             <button
               onClick={() => toggleFilter('Vị trí')}
-              className="w-full flex items-center justify-between mb-4 font-semibold text-[15px]"
+              className="w-full flex items-center justify-between mb-4 font-semibold text-body-sm"
             >
               <span className="flex items-center gap-2">
                 <ChevronUp className={`w-4 h-4 transition-transform ${expandedFilters.includes('Vị trí') ? '' : 'rotate-180'}`} />
@@ -169,14 +169,14 @@ export default function InventoryPage() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder={t('filter_location_placeholder')}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-[14px] focus:outline-none focus:ring-1 focus:ring-gray-300 transition-shadow"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 transition-shadow"
                   />
                 </div>
                 
                 <div>
-                  <label className="text-[13px] text-gray-500 mb-1.5 block px-1">{t('filter_radius_title')}</label>
+                  <label className="text-caption text-gray-500 mb-1.5 block px-1">{t('filter_radius_title')}</label>
                   <div className="relative">
-                    <select className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] cursor-pointer focus:outline-none">
+                    <select className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm cursor-pointer focus:outline-none">
                       <option>{t('filter_radius_default')}</option>
                     </select>
                     <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -190,7 +190,7 @@ export default function InventoryPage() {
           <div className="mb-6 border-b border-gray-100 pb-6">
             <button
               onClick={() => toggleFilter('Tình trạng')}
-              className="w-full flex items-center justify-between mb-4 font-semibold text-[15px]"
+              className="w-full flex items-center justify-between mb-4 font-semibold text-body-sm"
             >
               <span className="flex items-center gap-2">
                 <ChevronUp className={`w-4 h-4 transition-transform ${expandedFilters.includes('Tình trạng') ? '' : 'rotate-180'}`} />
@@ -202,14 +202,14 @@ export default function InventoryPage() {
                 <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Mới')}>
                   <div className="flex items-center gap-3">
                     <CheckboxUI checked={selectedConditions.includes('Mới')} />
-                    <span className="text-[14px] text-gray-700">{t('filter_condition_new')}</span>
+                    <span className="text-sm text-gray-700">{t('filter_condition_new')}</span>
                   </div>
                 </label>
                 
                 <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Đã qua sử dụng')}>
                   <div className="flex items-center gap-3">
                     <CheckboxUI checked={selectedConditions.includes('Đã qua sử dụng')} />
-                    <span className="text-[14px] text-gray-700">{t('filter_condition_used')}</span>
+                    <span className="text-sm text-gray-700">{t('filter_condition_used')}</span>
                   </div>
                   <Info className="w-4 h-4 text-gray-500" />
                 </label>
@@ -217,7 +217,7 @@ export default function InventoryPage() {
                 <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Xe đã qua sử dụng được chứng nhận')}>
                   <div className="flex items-center gap-3">
                     <CheckboxUI checked={selectedConditions.includes('Xe đã qua sử dụng được chứng nhận')} />
-                    <span className="text-[14px] text-gray-700 max-w-[200px] leading-tight">{t('filter_condition_cpo')}</span>
+                    <span className="text-sm text-gray-700 max-w-toolbar-code leading-tight">{t('filter_condition_cpo')}</span>
                   </div>
                   <Info className="w-4 h-4 text-gray-500" />
                 </label>
@@ -225,7 +225,7 @@ export default function InventoryPage() {
                 <label className="flex items-center justify-between cursor-pointer group" onClick={() => toggleCondition('Cổ điển')}>
                   <div className="flex items-center gap-3">
                     <CheckboxUI checked={selectedConditions.includes('Cổ điển')} />
-                    <span className="text-[14px] text-gray-700">{t('filter_condition_classic')}</span>
+                    <span className="text-sm text-gray-700">{t('filter_condition_classic')}</span>
                   </div>
                   <Info className="w-4 h-4 text-gray-500" />
                 </label>
@@ -237,7 +237,7 @@ export default function InventoryPage() {
           <div className="mb-6 border-b border-gray-100 pb-6">
             <button
               onClick={() => toggleFilter('Dòng sản phẩm')}
-              className="w-full flex items-center justify-between mb-4 font-semibold text-[15px]"
+              className="w-full flex items-center justify-between mb-4 font-semibold text-body-sm"
             >
               <span className="flex items-center gap-2">
                 <ChevronUp className={`w-4 h-4 transition-transform ${expandedFilters.includes('Dòng sản phẩm') ? '' : 'rotate-180'}`} />
@@ -249,7 +249,7 @@ export default function InventoryPage() {
                 <select 
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] cursor-pointer focus:outline-none"
+                  className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm cursor-pointer focus:outline-none"
                 >
                   <option value="">{t('filter_model_line_default')}</option>
                   {uniqueModels.map(model => (
@@ -266,7 +266,7 @@ export default function InventoryPage() {
             {accordionFilters.map((filter) => (
               <button
                 key={filter.id}
-                className="w-full flex items-center justify-between border-b border-gray-100 pb-6 font-semibold text-[15px] opacity-70 hover:opacity-100 transition-opacity"
+                className="w-full flex items-center justify-between border-b border-gray-100 pb-6 font-semibold text-body-sm opacity-70 hover:opacity-100 transition-opacity"
               >
                 <span className="flex items-center gap-2">
                   <ChevronDown className="w-4 h-4" />
@@ -282,14 +282,14 @@ export default function InventoryPage() {
         <div className="flex-1 flex flex-col gap-6 w-full lg:w-auto">
           
           {/* Top Sort Bar */}
-          <div className="bg-white rounded-2xl h-[72px] flex items-center justify-between px-6 shadow-sm">
-            <div className="text-[14px] font-medium text-gray-500">
+          <div className="bg-white rounded-2xl h-compact-header flex items-center justify-between px-6 shadow-sm">
+            <div className="text-sm font-medium text-gray-500">
                Hiển thị {filteredListings.length} xe
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[14px] font-semibold">{t('sort_by_label')}</span>
+              <span className="text-sm font-semibold">{t('sort_by_label')}</span>
               <div className="relative">
-                <select className="appearance-none bg-gray-100 border-none rounded-lg pl-4 pr-10 py-2.5 text-[14px] font-medium cursor-pointer focus:outline-none w-[180px]">
+                <select className="appearance-none bg-gray-100 border-none rounded-lg pl-4 pr-10 py-2.5 text-sm font-medium cursor-pointer focus:outline-none w-toolbar-price">
                   <option>{t('sort_by_recommended')}</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-2.5 w-5 h-5 text-gray-600 pointer-events-none" />
@@ -301,7 +301,7 @@ export default function InventoryPage() {
           {loading ? (
              <div className="flex justify-center p-20 text-gray-500">Loading cars...</div>
           ) : filteredListings.length === 0 ? (
-             <div className="flex justify-center items-center flex-col p-20 text-gray-500 bg-white rounded-2xl border border-gray-100 min-h-[400px]">
+             <div className="flex justify-center items-center flex-col p-20 text-gray-500 bg-white rounded-2xl border border-gray-100 min-h-account-state">
                 <Search className="w-12 h-12 text-gray-300 mb-4" />
                 <p className="text-lg">No used cars match your search.</p>
                 <button onClick={() => { setSearchTerm(''); setSelectedConditions([]); setSelectedModel('') }} className="mt-4 text-blue-600 font-medium hover:underline">
@@ -331,15 +331,15 @@ export default function InventoryPage() {
                   <div key={car.id} className="bg-white rounded-3xl p-5 flex flex-col xl:flex-row gap-6 shadow-sm overflow-hidden border border-gray-100">
                     
                     {/* Images Section */}
-                    <div className="w-full xl:w-[480px] flex flex-col gap-2 flex-shrink-0 relative">
+                    <div className="w-full xl:w-inventory-image flex flex-col gap-2 flex-shrink-0 relative">
                       {/* Badges Overlay */}
                       <div className="absolute top-4 left-4 z-10 flex gap-2">
-                        <span className="bg-black text-white text-[12px] font-medium px-3 py-1.5 rounded-full shadow-sm">{t('badge_video')}</span>
-                        <span className="bg-black text-white text-[12px] font-medium px-3 py-1.5 rounded-full shadow-sm">{t('badge_audio')}</span>
+                        <span className="bg-black text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-sm">{t('badge_video')}</span>
+                        <span className="bg-black text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-sm">{t('badge_audio')}</span>
                       </div>
                       
                       {/* Main Image */}
-                      <div className="w-full h-[280px] sm:h-[320px] bg-gray-100 rounded-[20px] overflow-hidden relative">
+                      <div className="w-full h-inventory-card-mobile sm:h-inventory-card-desktop bg-gray-100 rounded-panel overflow-hidden relative">
                         <Image
                           src={mainImage}
                           alt="Vehicle image"
@@ -350,14 +350,14 @@ export default function InventoryPage() {
                       </div>
                       
                       {/* Thumbnails */}
-                      <div className="flex gap-2 h-[80px] sm:h-[100px]">
-                        <div className="flex-1 relative rounded-[12px] overflow-hidden bg-gray-100">
+                      <div className="flex gap-2 h-model-strip sm:h-review-textarea">
+                        <div className="flex-1 relative rounded-xl overflow-hidden bg-gray-100">
                           <Image src={mainImage} fill unoptimized className="object-cover" alt="Thumbnail 1" />
                         </div>
-                        <div className="flex-1 relative rounded-[12px] overflow-hidden bg-gray-100">
+                        <div className="flex-1 relative rounded-xl overflow-hidden bg-gray-100">
                           <Image src={thumb1} fill unoptimized className="object-cover" alt="Thumbnail 2" />
                         </div>
-                        <div className="flex-1 relative rounded-[12px] overflow-hidden bg-gray-100">
+                        <div className="flex-1 relative rounded-xl overflow-hidden bg-gray-100">
                           <Image src={thumb2} fill unoptimized className="object-cover" alt="Thumbnail 3" />
                         </div>
                       </div>
@@ -366,22 +366,22 @@ export default function InventoryPage() {
                     {/* Details Section */}
                     <div className="flex-1 flex flex-col py-2 px-2 xl:px-4">
                       <div className="flex-1">
-                        <h2 className="text-[26px] font-medium text-gray-900 leading-tight">
+                        <h2 className="text-heading font-medium text-gray-900 leading-tight">
                           Porsche {car.model} {car.trimLevel} {car.modelYear}
                         </h2>
                         
-                        {isCarNew && <p className="text-blue-600 text-[15px] font-medium mt-2">{t('condition_new')}</p>}
-                        {!isCarNew && car.mileage && <p className="text-gray-500 text-[15px] font-medium mt-2">{car.mileage.toLocaleString()} km</p>}
+                        {isCarNew && <p className="text-blue-600 text-body-sm font-medium mt-2">{t('condition_new')}</p>}
+                        {!isCarNew && car.mileage && <p className="text-gray-500 text-body-sm font-medium mt-2">{car.mileage.toLocaleString()} km</p>}
                         
                         <div className="mt-6 space-y-1.5">
-                          <p className="text-[14px] text-gray-700">
+                          <p className="text-sm text-gray-700">
                             {car.exteriorColor || 'Màu tiêu chuẩn'} <span className="text-gray-400 mx-1">•</span> {car.interiorColor || 'Nội thất tiêu chuẩn'}
                           </p>
-                          <p className="text-[14px] text-gray-700">
+                          <p className="text-sm text-gray-700">
                             {specsLine}
                           </p>
                           {showRangeForEv && (
-                            <p className="text-[14px] text-gray-700">
+                            <p className="text-sm text-gray-700">
                               {t('range_label')} 294 {t('range_unit')}
                             </p>
                           )}
@@ -389,29 +389,29 @@ export default function InventoryPage() {
                         
                         <div className="mt-8">
                           <div className="flex items-end gap-3 mb-1">
-                            <span className="text-[32px] font-medium text-gray-900 leading-none">
+                            <span className="text-3xl font-medium text-gray-900 leading-none">
                               {formatPrice(car.askingPrice)} {t('price_suffix')}
                             </span>
-                            <span className="text-[13px] text-gray-500 mb-1">{t('price_desc')}</span>
+                            <span className="text-caption text-gray-500 mb-1">{t('price_desc')}</span>
                           </div>
                           
-                          <a href="#" className="text-[14px] font-medium underline underline-offset-4 decoration-1 decoration-gray-400 hover:text-gray-600 mb-4 inline-block">
+                          <a href="#" className="text-sm font-medium underline underline-offset-4 decoration-1 decoration-gray-400 hover:text-gray-600 mb-4 inline-block">
                             {t('price_details')}
                           </a>
                           
-                          <p className="text-[14px] text-gray-700 mb-6 font-medium">
+                          <p className="text-sm text-gray-700 mb-6 font-medium">
                             {t('dealer_fee')} 699,00 {t('price_suffix')}
                           </p>
                           
                           <div className="flex items-center gap-3">
                             <Calculator className="w-5 h-5 text-gray-600" />
-                            <span className="text-[14px] font-medium">{t('payment_tweak')}</span>
+                            <span className="text-sm font-medium">{t('payment_tweak')}</span>
                           </div>
                           <div className="flex gap-2 mt-3 flex-wrap">
-                            <span className="bg-gray-200 text-gray-800 text-[13px] font-medium px-4 py-1.5 rounded-full whitespace-nowrap cursor-pointer hover:bg-gray-300 transition-colors">
+                            <span className="bg-gray-200 text-gray-800 text-caption font-medium px-4 py-1.5 rounded-full whitespace-nowrap cursor-pointer hover:bg-gray-300 transition-colors">
                               {t('payment_lease')}
                             </span>
-                            <span className="bg-gray-200 text-gray-800 text-[13px] font-medium px-4 py-1.5 rounded-full whitespace-nowrap cursor-pointer hover:bg-gray-300 transition-colors">
+                            <span className="bg-gray-200 text-gray-800 text-caption font-medium px-4 py-1.5 rounded-full whitespace-nowrap cursor-pointer hover:bg-gray-300 transition-colors">
                               {t('payment_finance')}
                             </span>
                           </div>
@@ -421,19 +421,19 @@ export default function InventoryPage() {
                       {/* Footer Actions */}
                       <div className="mt-10 sm:mt-8">
                         <div className="flex flex-col sm:flex-row gap-4">
-                          <Link href={`/inventory/${car.id}`} className="flex-1 sm:flex-none text-center bg-gray-900 text-white font-medium text-[15px] px-8 py-4 rounded hover:bg-black transition-colors shadow-sm">
+                          <Link href={`/inventory/${car.id}`} className="flex-1 sm:flex-none text-center bg-gray-900 text-white font-medium text-body-sm px-8 py-4 rounded hover:bg-black transition-colors shadow-sm">
                             {t('btn_show_details')}
                           </Link>
                           <button 
                             onClick={() => handleToggleListing(car.id, mainImage)} 
-                            className={`flex-1 sm:flex-none text-center hover:bg-gray-50 font-medium text-[15px] px-6 py-4 rounded flex items-center justify-center gap-3 border border-gray-200 transition-colors cursor-pointer shadow-sm ${isSaved(car.id) ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-900'}`}
+                            className={`flex-1 sm:flex-none text-center hover:bg-gray-50 font-medium text-body-sm px-6 py-4 rounded flex items-center justify-center gap-3 border border-gray-200 transition-colors cursor-pointer shadow-sm ${isSaved(car.id) ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-900'}`}
                           >
                             <Bookmark className={`w-5 h-5 ${isSaved(car.id) ? 'fill-current' : ''}`} />
                             {isSaved(car.id) ? t('saved') : t('btn_save')}
                           </button>
                         </div>
                         
-                        <div className="mt-6 text-[13px] text-gray-800 flex items-center flex-wrap gap-x-2">
+                        <div className="mt-6 text-caption text-gray-800 flex items-center flex-wrap gap-x-2">
                           <span className="font-bold">{car.sellerType === 'Dealer' ? (car.sellerFullName || 'Porsche Monmouth') : (car.sellerFullName || 'Porsche Dealer')}</span>
                           <span className="text-gray-400 hidden sm:inline">•</span>
                           <span>{car.city || 'West Long Branch'}, {car.stateProvince || 'NJ'}, {car.zipCode || '07764'}</span>

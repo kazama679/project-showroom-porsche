@@ -220,7 +220,7 @@ export default function ModelDetailPage() {
       <button
         className="
           fixed right-0 top-1/2 z-40
-          h-[88px] w-[40px]
+          h-side-rail w-side-rail
           -translate-y-1/2
           bg-blue-500
           text-white
@@ -228,7 +228,7 @@ export default function ModelDetailPage() {
           transition-colors hover:bg-blue-600
         "
       >
-        <span className="-rotate-90 whitespace-nowrap text-[16px] font-normal leading-none tracking-normal font-sans">
+        <span className="-rotate-90 whitespace-nowrap text-base font-normal leading-none tracking-normal font-sans">
           Feedback
         </span>
       </button>
@@ -249,7 +249,7 @@ export default function ModelDetailPage() {
       {/* Section 1: Model Overview */}
       <section className="bg-gray-50 py-16 px-6 md:px-16 relative overflow-hidden">
         {/* Giant Watermark Text */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-[150px] md:text-[250px] font-bold text-gray-200/50 whitespace-nowrap pointer-events-none select-none z-0 leading-none">
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-hero-watermark md:text-hero-watermark-desktop font-bold text-gray-200/50 whitespace-nowrap pointer-events-none select-none z-0 leading-none">
           {model.seriesName || model.name}
         </div>
 
@@ -268,7 +268,7 @@ export default function ModelDetailPage() {
           {/* Body Design tabs — series-specific, navigates to first model per body type */}
           <div className="flex justify-center gap-8 mb-12 border-b border-gray-300 pb-4 flex-wrap">
             {overviewBodyTypes.length === 0 ? (
-              <span className="text-[14px] text-mid-gray">No body designs available.</span>
+              <span className="text-sm text-mid-gray">No body designs available.</span>
             ) : (
               overviewBodyTypes.map((opt) => {
                 const checked = model.bodyTypeId === opt.id
@@ -398,11 +398,11 @@ export default function ModelDetailPage() {
 
       {/* Section 6: Which model is right for you? (911-style horizontal carousel) */}
       <section className="bg-white py-24">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+        <div className="max-w-compare mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between gap-6 mb-10 pb-4 border-b border-gray-100">
             <div className="flex items-center gap-1 md:gap-2 flex-wrap">
               {availableBodyTypes.length === 0 ? (
-                <span className="text-[14px] text-mid-gray">No body designs available.</span>
+                <span className="text-sm text-mid-gray">No body designs available.</span>
               ) : (
                 availableBodyTypes.map((opt) => {
                   const checked = selectedBodyTypeId === opt.id
@@ -412,7 +412,7 @@ export default function ModelDetailPage() {
                       type="button"
                       onClick={() => setSelectedBodyTypeId(opt.id)}
                       aria-label={opt.name}
-                      className={`px-4 cursor-pointer py-2 rounded-full text-[14px] font-semibold transition-colors ${
+                      className={`px-4 cursor-pointer py-2 rounded-full text-sm font-semibold transition-colors ${
                         checked
                           ? 'bg-black text-white'
                           : 'text-black hover:bg-gray-100'
@@ -449,10 +449,10 @@ export default function ModelDetailPage() {
           into the side margins. pl/pr match the content inset so the first card
           lines up with the filter bar until the user scrolls (Porsche-style).
         */}
-        <div className="relative left-1/2 -translate-x-1/2 w-screen max-w-[100vw]">
+        <div className="relative left-1/2 -translate-x-1/2 w-screen max-w-screen">
           <div
             ref={cardsScrollRef}
-            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth pl-[max(1.5rem,calc((100vw-90rem)/2+1.5rem))] md:pl-[max(3rem,calc((100vw-90rem)/2+3rem))] pr-[max(1.5rem,calc((100vw-90rem)/2+1.5rem))] md:pr-[max(3rem,calc((100vw-90rem)/2+3rem))] scroll-pl-[max(1.5rem,calc((100vw-90rem)/2+1.5rem))] md:scroll-pl-[max(3rem,calc((100vw-90rem)/2+3rem))] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth model-carousel-rail"
           >
             {filteredSeriesModels.map((m) => {
               const cardSpecs = seriesSpecsMap[m.id]
@@ -466,12 +466,12 @@ export default function ModelDetailPage() {
               return (
                 <div
                   key={m.id}
-                  className="relative min-w-[340px] max-w-[340px] pt-[90px] snap-start shrink-0 group cursor-pointer"
+                  className="relative min-w-model-card max-w-model-card pt-model-related-pad-top snap-start shrink-0 group cursor-pointer"
                   onClick={() => router.push(`/models/${m.id}`)}
                 >
                   {/* Floating car image */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[92%] h-[140px] z-10 pointer-events-none">
-                    <div className="relative w-full h-full transform group-hover:scale-[1.03] transition-transform duration-500">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-model-card-image h-model-related-image z-10 pointer-events-none">
+                    <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-500">
                       <Image
                         src={m.imageUrl || model.imageUrl || ''}
                         alt={m.name}
@@ -483,27 +483,27 @@ export default function ModelDetailPage() {
                   </div>
 
                   {/* Card body */}
-                  <div className="bg-gray-100 rounded-t-[20px] rounded-b-[16px] px-6 pt-6 pb-5 flex flex-col min-h-[520px]">
-                    <h4 className="text-[22px] font-bold text-black leading-tight mb-1">{m.name}</h4>
-                    <p className="text-[15px] text-gray-800 font-medium mb-4">
-                      From $ {m.basePrice?.toLocaleString()}<sup className="text-[11px]">¹</sup>
+                  <div className="bg-gray-100 rounded-t-panel rounded-b-2xl px-6 pt-6 pb-5 flex flex-col min-h-model-hero-card">
+                    <h4 className="text-model-title font-bold text-black leading-tight mb-1">{m.name}</h4>
+                    <p className="text-body-sm text-gray-800 font-medium mb-4">
+                      From $ {m.basePrice?.toLocaleString()}<sup className="text-micro-label">¹</sup>
                     </p>
 
                     {/* Badges */}
                     <div className="flex flex-wrap gap-2 mb-6">
-                      <span className="px-3 py-1 bg-black text-white text-[12px] font-semibold rounded-full">
+                      <span className="px-3 py-1 bg-black text-white text-xs font-semibold rounded-full">
                         {m.year || '2026'}
                       </span>
                       {m.fuelType && (
-                        <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-[12px] font-semibold rounded-full">
+                        <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-xs font-semibold rounded-full">
                           {m.fuelType}
                         </span>
                       )}
-                      <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-[12px] font-semibold rounded-full">
+                      <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-xs font-semibold rounded-full">
                         {driveValue}
                       </span>
                       {transmissionLabel && (
-                        <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-[12px] font-semibold rounded-full">
+                        <span className="px-3 py-1 bg-neutral-200 text-gray-800 text-xs font-semibold rounded-full">
                           {transmissionLabel}
                         </span>
                       )}
@@ -512,49 +512,49 @@ export default function ModelDetailPage() {
                     {/* Specs */}
                     <div className="space-y-5 flex-grow">
                       <div>
-                        <div className="text-[26px] font-bold text-black leading-none tabular-nums">
+                        <div className="text-heading font-bold text-black leading-none tabular-nums">
                           <AnimatedNumber value={accel} decimals={1} durationMs={900} />
-                          {accel != null && <span className="text-[20px] font-bold"> s</span>}
+                          {accel != null && <span className="text-xl font-bold"> s</span>}
                         </div>
-                        <div className="text-[12px] text-gray-500 font-semibold mt-1">0 - 60 mph</div>
+                        <div className="text-xs text-gray-500 font-semibold mt-1">0 - 60 mph</div>
                       </div>
                       <div>
-                        <div className="text-[26px] font-bold text-black leading-none tabular-nums">
+                        <div className="text-heading font-bold text-black leading-none tabular-nums">
                           <AnimatedNumber
                             value={hp}
                             decimals={0}
                             durationMs={900}
                             format={(v) => Math.round(v).toLocaleString()}
                           />
-                          {hp != null && <span className="text-[20px] font-bold"> hp</span>}
+                          {hp != null && <span className="text-xl font-bold"> hp</span>}
                         </div>
-                        <div className="text-[12px] text-gray-500 font-semibold mt-1">Max. engine power</div>
+                        <div className="text-xs text-gray-500 font-semibold mt-1">Max. engine power</div>
                       </div>
                       <div>
-                        <div className="text-[26px] font-bold text-black leading-none tabular-nums">
+                        <div className="text-heading font-bold text-black leading-none tabular-nums">
                           <AnimatedNumber
                             value={top}
                             decimals={0}
                             durationMs={900}
                             format={(v) => Math.round(v).toLocaleString()}
                           />
-                          {top != null && <span className="text-[20px] font-bold"> mph</span>}
+                          {top != null && <span className="text-xl font-bold"> mph</span>}
                         </div>
-                        <div className="text-[12px] text-gray-500 font-semibold mt-1">
+                        <div className="text-xs text-gray-500 font-semibold mt-1">
                           Top track speed (with summer tires)
                         </div>
                       </div>
                     </div>
 
                     {/* Disclaimer */}
-                    <p className="text-[11px] text-gray-400 leading-relaxed mt-6">
+                    <p className="text-micro-label text-gray-400 leading-relaxed mt-6">
                       ¹ Manufacturer&apos;s Suggested Retail Price. Excludes options; taxes; title; registration; delivery, processing and handling fee; dealer charges; potential tariffs. Dealer sets actual selling price.
                     </p>
 
                     <button
                       type="button"
                       onClick={() => router.push(`/models/${m.id}`)}
-                      className="mt-4 text-left text-[13px] font-bold text-black underline underline-offset-4 hover:text-gray-600 transition-colors"
+                      className="mt-4 text-left text-caption font-bold text-black underline underline-offset-4 hover:text-gray-600 transition-colors"
                     >
                       Technical data and standard equipment
                     </button>
@@ -587,11 +587,11 @@ export default function ModelDetailPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
             <h3 className="text-4xl md:text-5xl font-light text-black mb-6">The one and always.</h3>
-            <p className="text-[14px] text-gray-700 leading-relaxed max-w-md">
+            <p className="text-sm text-gray-700 leading-relaxed max-w-md">
               {model.shortDescription || 'A timeless silhouette refined through engineering, with performance and day-to-day usability in perfect balance.'}
             </p>
           </div>
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-gray-50">
+          <div className="relative aspect-portrait-card w-full overflow-hidden rounded-3xl bg-gray-50">
             <Image
               src={detailImageByOrder.order3 || model.imageUrl || ''}
               alt={`${model.name} detail 3`}

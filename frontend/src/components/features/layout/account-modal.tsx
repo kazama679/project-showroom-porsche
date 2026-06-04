@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X, ChevronRight, User } from 'lucide-react'
-import { Link } from '@/i18n/navigation';
-import { useRouter } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { Link, useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { authService, AuthUser } from '@/services/auth'
 
 interface AccountModalProps {
@@ -20,12 +20,39 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
   const tCommon = useTranslations('common')
   const [user, setUser] = useState<AuthUser | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (open) {
       setUser(authService.getUser())
     }
   }, [open])
+
+  useEffect(() => {
+    if (!open || !mounted) return
+
+    const clearSelection = () => window.getSelection()?.removeAllRanges()
+    const previousBodyUserSelect = document.body.style.userSelect
+    const previousHtmlUserSelect = document.documentElement.style.userSelect
+
+    clearSelection()
+    requestAnimationFrame(clearSelection)
+    const timeoutId = window.setTimeout(clearSelection, 50)
+    document.body.style.userSelect = 'none'
+    document.documentElement.style.userSelect = 'none'
+    document.addEventListener('selectionchange', clearSelection)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      document.removeEventListener('selectionchange', clearSelection)
+      document.body.style.userSelect = previousBodyUserSelect
+      document.documentElement.style.userSelect = previousHtmlUserSelect
+    }
+  }, [open, mounted])
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -42,23 +69,21 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
     }
   }
 
-  if (!open) return null
+  if (!open || !mounted) return null
 
   const isLoggedIn = !!user
 
-  // Menu items for left panel
   const menuItems = [
     { label: tNav('models'), href: '/models', hasArrow: true },
     { label: tAccount('ai_chat'), href: '/advisory', hasArrow: true },
-    { label: tAccount('Xe Đã Lưu'), href: '/saved-vehicles', hasArrow: false },
-    { label: 'Bán xe / Sell Car', href: '/sell-your-car', hasArrow: true },
+    { label: tNav('saved_vehicles'), href: '/saved-vehicles', hasArrow: false },
+    { label: tAccount('sell_car'), href: '/sell-your-car', hasArrow: true },
     { label: tAccount('buy_used_car'), href: '/inventory', hasArrow: true },
     { label: tAccount('services'), href: '#', hasArrow: true },
     { label: tAccount('experience'), href: '#', hasArrow: true },
     { label: tAccount('find_dealer'), href: '#', hasArrow: true },
   ]
 
-  // Service items for right panel
   const serviceItems: { label: string; href: string; badge?: number | null }[] = [
     { label: tAccount('make_payment'), href: '#' },
     { label: tAccount('my_porsche_app'), href: '#' },
@@ -70,31 +95,27 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
     { label: tAccount('contact_support'), href: '#' },
   ]
 
-  // Settings items
   const settingsItems = [
     { label: tAccount('profile'), href: '/account-settings' },
     { label: tAccount('privacy'), href: '#' },
   ]
 
-  return (
-    <div className="fixed inset-0 z-[100] flex">
-      {/* Backdrop */}
+  return createPortal(
+    <div className="site-modal-layer inset-0 flex isolate">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Panel container - slides from left */}
-      <div className="relative flex w-full max-w-[900px] h-full animate-in slide-in-from-left duration-300">
-        {/* Left panel: navigation */}
-        <div className="w-[320px] bg-white h-full overflow-y-auto border-r border-gray-200 flex flex-col">
+      <div className="site-modal-panel flex w-full max-w-account-modal h-full animate-in slide-in-from-left duration-300">
+        <div className="site-modal-panel w-advisory-sidebar bg-white h-full overflow-y-auto border-r border-gray-200 flex flex-col">
           <div className="flex-1 py-6">
-            {menuItems.map((item, idx) => (
+            {menuItems.map((item) => (
               <Link
-                key={idx}
+                key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className="flex items-center justify-between px-8 py-4 text-[15px] font-light text-near-black hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between px-8 py-4 text-body-sm font-light text-near-black hover:bg-gray-100 transition-colors"
               >
                 <span>{item.label}</span>
                 {item.hasArrow && (
@@ -104,7 +125,6 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
             ))}
           </div>
 
-          {/* Account button at bottom of left panel */}
           {isLoggedIn && (
             <div className="border-t border-gray-200 px-8 py-4">
               <div className="flex items-center gap-3">
@@ -119,13 +139,11 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
           )}
         </div>
 
-        {/* Right panel: account content */}
         <div className="flex-1 bg-white h-full overflow-y-auto relative">
-          {/* Close button */}
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-base"
             aria-label={tCommon('close')}
           >
             <X size={20} strokeWidth={1.5} />
@@ -134,27 +152,25 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
           <div className="px-8 py-8 pt-16">
             {isLoggedIn ? (
               <>
-                {/* Greeting */}
                 <h2 className="text-2xl font-light text-near-black mb-8">
                   {tAccount('welcome')}, {user.fullName}
                 </h2>
 
-                {/* Services */}
                 <div className="mb-8">
                   <p className="text-xs text-neutral-400 font-light uppercase tracking-wider mb-4">
                     {tAccount('services')}
                   </p>
                   <div className="space-y-0">
-                    {serviceItems.map((item, idx) => (
+                    {serviceItems.map((item) => (
                       <Link
-                        key={idx}
+                        key={item.label}
                         href={item.href}
                         onClick={onClose}
-                        className="block py-2.5 text-[15px] font-light text-near-black hover:text-dark-gray transition-colors"
+                        className="block py-2.5 text-body-sm font-light text-near-black hover:text-dark-gray transition-colors"
                       >
                         {item.label}
                         {item.badge !== null && item.badge !== undefined && (
-                          <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 text-[10px] text-near-black">
+                          <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 text-eyebrow text-near-black">
                             {item.badge}
                           </span>
                         )}
@@ -163,18 +179,17 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
                   </div>
                 </div>
 
-                {/* Settings */}
                 <div className="mb-8">
                   <p className="text-xs text-neutral-400 font-light uppercase tracking-wider mb-4">
                     {tAccount('settings')}
                   </p>
                   <div className="space-y-0">
-                    {settingsItems.map((item, idx) => (
+                    {settingsItems.map((item) => (
                       <Link
-                        key={idx}
+                        key={item.label}
                         href={item.href}
                         onClick={onClose}
-                        className="block py-2.5 text-[15px] font-light text-near-black hover:text-dark-gray transition-colors"
+                        className="block py-2.5 text-body-sm font-light text-near-black hover:text-dark-gray transition-colors"
                       >
                         {item.label}
                       </Link>
@@ -182,24 +197,22 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
                   </div>
                 </div>
 
-                {/* Logout button */}
                 <button
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="w-full max-w-[280px] py-3.5 border border-light-gray-surface rounded-lg text-sm font-normal text-near-black hover:border-near-black hover:bg-neutral-50 transition-colors disabled:opacity-50"
+                  className="w-full max-w-compact-action py-3.5 border border-light-gray-surface rounded-lg text-sm font-normal text-near-black hover:border-near-black hover:bg-neutral-50 transition-colors disabled:opacity-50"
                 >
                   {isLoggingOut ? tAccount('logging_out') : tAccount('logout')}
                 </button>
               </>
             ) : (
-              /* Not logged in */
-              <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+              <div className="flex flex-col items-center justify-center h-full min-h-account-state">
                 <User size={40} strokeWidth={1} className="text-neutral-300 mb-4" />
                 <h2 className="text-xl font-light text-near-black mb-2">
                   {tAuth('login_prompt')}
                 </h2>
-                <p className="text-sm text-dark-gray font-light mb-6 text-center max-w-[300px]">
+                <p className="text-sm text-dark-gray font-light mb-6 text-center max-w-comment-preview">
                   {tAuth('login_desc')}
                 </p>
                 <Link
@@ -214,6 +227,7 @@ export function AccountModal({ open, onClose }: AccountModalProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

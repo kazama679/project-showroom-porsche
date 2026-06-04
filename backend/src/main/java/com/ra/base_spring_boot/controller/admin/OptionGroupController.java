@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormOptionGroup;
 import com.ra.base_spring_boot.dto.response.OptionGroupResponseDTO;
 import com.ra.base_spring_boot.service.IOptionGroupService;
@@ -36,7 +37,7 @@ public class OptionGroupController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(groups)
+                        .data(PageResponse.from(groups))
                         .build()
         );
     }

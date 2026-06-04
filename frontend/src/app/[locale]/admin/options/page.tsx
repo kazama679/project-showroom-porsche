@@ -111,7 +111,7 @@ export default function OptionsPage() {
       key: 'id', 
       label: 'ID', 
       align: 'center' as const,
-      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: number) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     { 
       key: 'name', 
@@ -129,7 +129,7 @@ export default function OptionsPage() {
       label: t('option_display_order'), 
       align: 'center' as const, 
       render: (v: number) => (
-        <Badge variant="secondary" className="font-mono text-[10px]">
+        <Badge variant="secondary" className="font-mono text-eyebrow">
           {v ?? '—'}
         </Badge>
       )
@@ -174,7 +174,7 @@ export default function OptionsPage() {
       {isAuthenticated && !isAdmin && (
         <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
           <ShieldAlert size={20} className="flex-shrink-0" />
-          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+          <p className="text-eyebrow uppercase font-bold tracking-widest">{t('no_permission')}</p>
         </div>
       )}
 
@@ -217,19 +217,19 @@ export default function OptionsPage() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-modal p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingOption ? t('edit_option') : t('add_new_option')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingOption ? t('update_option_info') : t('add_option_subtitle')}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_name')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('option_name')} *</Label>
               <div className="relative">
                 <Layers size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -243,7 +243,7 @@ export default function OptionsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('option_display_order')}</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('option_display_order')}</Label>
               <div className="relative">
                 <Hash size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -260,7 +260,7 @@ export default function OptionsPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-10 italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-10 italic font-black shadow-lg">
                 {editingOption ? t('update') : t('create')}
               </Button>
             </DialogFooter>

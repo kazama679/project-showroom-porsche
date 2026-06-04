@@ -2,7 +2,7 @@
 
 ## 1. Visual Theme & Atmosphere
 
-Porsche's website is a digital editorial — a curated magazine where the Prancing Horse brand is presented with the gravitas of an art institution and the precision of Italian coachwork. The page opens onto an expanse of absolute black, broken only by the iconic Prancing Horse emblem floating alone in its own atmosphere. Below, the content unfolds in dramatic alternations between inky-dark cinematic sections and crisp white editorial panels. This chiaroscuro rhythm — darkness yielding to light, machinery yielding to human story — feels more like paging through a Porsche yearbook than scrolling a commercial website. Every section is a curated vignette: a concept car dissolving from shadow, two F1 drivers posed with sculptural stillness, a lineup of production models arranged in a jewel-toned parade.
+Porsche's website is a digital editorial — a curated magazine where performance engineering is presented with the restraint of a luxury design house. The page opens with generous negative space, precise typography, and product imagery that lets the car become the first visual signal. Below, the content unfolds in dramatic alternations between deep cinematic sections and crisp white editorial panels. This rhythm feels more like paging through a Porsche yearbook than scrolling a commercial website. Every section is a curated vignette: a studio render emerging from shadow, a detail crop of craftsmanship, or a lineup of production models arranged with disciplined spacing.
 
 The color language is monastically restrained for a brand built on speed and emotion. Brand Red (`#DA291C`) appears with almost surgical sparseness — reserved for the Subscribe CTA and accent moments that need to command immediate attention. The vast majority of the interface lives in black, white, and a carefully calibrated gray scale (from `#303030` dark surfaces through `#8F8F8F` mid-tones to `#D2D2D2` light borders). Two yellows — Racing Yellow (`#FFF200`) and the deeper Modena Yellow (`#F6E500`) — exist in the token system as heritage accents for special contexts, honoring Porsche's racing provenance. The restraint means that when red does appear, it carries the weight of the entire brand.
 
@@ -11,7 +11,7 @@ Typography relies on PorscheSans — a proprietary sans-serif family with medium
 **Key Characteristics:**
 - Chiaroscuro layout alternating between deep black sections and clean white editorial panels
 - Brand Red (`#DA291C`) used with extreme sparseness — accent, not atmosphere
-- Prancing Horse emblem as isolated hero element on a void-black field
+- Porsche crest or vehicle silhouette used with restraint, never as decorative clutter
 - PorscheSans proprietary typeface with compact proportions and medium weights
 - Photo-journalism imagery: concept renders, driver portraits, lineup parades — each section is a story
 - Uppercase Body-Font labels with wide letter-spacing (1px) for editorial annotation
@@ -22,7 +22,7 @@ Typography relies on PorscheSans — a proprietary sans-serif family with medium
 ## 2. Color Palette & Roles
 
 ### Primary
-- **Brand Red** (`#DA291C`): The iconic Rosso Corsa — primary accent and CTA color. Used for the Subscribe button, key action triggers, and brand moments where maximum visual authority is needed. The single most important color in the system (--f-color-accent-100)
+- **Brand Red** (`#DA291C`): Primary accent and CTA color. Used for key action triggers and brand moments where maximum visual authority is needed.
 - **Pure White** (`#FFFFFF`): Primary surface for editorial content panels, navigation text on dark backgrounds, and button fills. The canvas that provides breathing room between dark cinematic sections (--f-color-ui-0)
 
 ### Secondary & Accent
@@ -32,7 +32,7 @@ Typography relies on PorscheSans — a proprietary sans-serif family with medium
 - **Modena Yellow** (`#F6E500`): Slightly warmer and more golden than Racing Yellow — used for secondary heritage accents and category markers (--f-color-yellow)
 
 ### Surface & Background
-- **Absolute Black** (`#000000`): Hero sections, cinematic backgrounds, and the dominant dark surface — the void that makes imagery and the Prancing Horse emblem float
+- **Absolute Black** (`#000000`): Hero sections, cinematic backgrounds, and the dominant dark surface that lets vehicle imagery feel precise and premium
 - **Dark Surface** (`#303030`): Secondary dark surface for footer regions, newsletter sections, and layered dark panels — slightly lifted from pure black for depth differentiation (--f-color-ui-90)
 - **Light Gray Surface** (`#D2D2D2`): Subtle alternate surface for dividers and border treatments on white panels (--f-color-ui-20)
 - **Overlay Dark** (`hsla(0, 0%, 7%, 0.8)`): Semi-transparent near-black for modal overlays and image caption backgrounds (--f-color-overlay-darker)
@@ -177,8 +177,8 @@ Porsche's buttons are minimal white rectangles with near-zero radius — the CTA
 - Uses standard PrimeReact/Element Plus modal framework
 
 ### Navigation
-- **Desktop**: Prancing Horse logo centered at top of page, primary navigation below — not a traditional horizontal nav bar but a full-width header block on black background
-- **Logo**: Centered Prancing Horse emblem (44×42px) on absolute black — the single most prominent UI element
+- **Desktop**: restrained header with clear navigation, generous spacing, and a prominent but controlled Porsche identity signal
+- **Logo**: Porsche crest or wordmark appears with room to breathe; it should not compete with the vehicle imagery
 - **Links**: PorscheSans, 13px, weight 600, white text on dark backgrounds
 - **Mobile**: Hamburger collapse to vertical navigation drawer
 - **Footer**: Multi-column layout on `#303030` (Dark Surface) with category links in Body-Font uppercase
@@ -243,7 +243,7 @@ Porsche's approach to elevation is nearly as flat as Tesla's, but with a differe
 
 ### Decorative Depth
 - No UI gradients, no glows, no blur effects on interface elements
-- The Prancing Horse logo on black creates a "floating in void" effect through pure contrast — no glow or shadow needed
+- Vehicle imagery and the Porsche crest should feel grounded through pure contrast and spacing — no glow or ornamental shadow needed
 - Dark-to-light section transitions are hard cuts, not gradient blends — reinforcing the editorial page-turn metaphor
 
 ## 7. Do's and Don'ts
@@ -255,7 +255,7 @@ Porsche's approach to elevation is nearly as flat as Tesla's, but with a differe
 - Apply Body-Font in uppercase with 1px letter-spacing for all labels, category tags, and structural annotations
 - Keep border-radius at 2px for all interactive elements — razor precision, not rounded friendliness
 - Let photography carry the emotional weight — every image should be art-directed studio quality
-- Use the Prancing Horse emblem as a standalone hero element on black — never crowd it with adjacent content
+- Use the Porsche crest, wordmark, or vehicle silhouette sparingly — never crowd it with adjacent decoration
 - Maintain the 12px/10px button padding ratio — compact, purposeful, no excess
 - Use `#181818` (Near Black) for body text instead of pure `#000000` — the subtle warmth improves readability
 - Reserve the yellow accents (`#FFF200`, `#F6E500`) strictly for motorsport and racing heritage contexts
@@ -291,7 +291,7 @@ Porsche's approach to elevation is nearly as flat as Tesla's, but with a differe
 - Footer links: grouped with sufficient vertical spacing (16–20px) for touch accuracy
 
 ### Collapsing Strategy
-- **Navigation**: Full horizontal nav collapses to centered Prancing Horse logo + hamburger menu on mobile
+- **Navigation**: Full horizontal nav collapses to compact Porsche identity + hamburger menu on mobile
 - **Editorial sections**: 2-column image+text layouts collapse to single-column with image stacking above text
 - **Vehicle lineup**: Horizontal carousel maintains scroll behavior but reduces visible models from 5 to 2–3
 - **Footer**: 4-column link grid collapses to 2-column on tablet, single-column accordion on mobile

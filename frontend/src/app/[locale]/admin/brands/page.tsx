@@ -276,7 +276,7 @@ export default function BrandsPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-modal">
           <DialogHeader>
             <DialogTitle>{editingBrand ? t('edit_brand') : t('add_new_brand')}</DialogTitle>
             <DialogDescription>
@@ -325,7 +325,7 @@ export default function BrandsPage() {
                     onChange={(e) => setFormData({ ...formData, logo: e.target.files?.[0] || null })}
                     className="cursor-pointer file:bg-transparent file:border-0 file:text-xs file:font-semibold"
                   />
-                  <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-tight">SVG or PNG recommended, transparent background</p>
+                  <p className="text-eyebrow text-gray-400 mt-1 uppercase tracking-tight">SVG or PNG recommended, transparent background</p>
                 </div>
               </div>
             </div>

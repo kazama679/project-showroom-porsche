@@ -145,7 +145,7 @@ export default function CarsPage() {
       key: 'id', 
       label: 'ID', 
       align: 'center' as const,
-      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: number) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     { 
       key: 'name', 
@@ -161,7 +161,7 @@ export default function CarsPage() {
     { 
       key: 'seriesName', 
       label: t('model_series'),
-      render: (v: any) => <Badge variant="secondary" className="uppercase text-[9px] font-bold">{v || '—'}</Badge>
+      render: (v: any) => <Badge variant="secondary" className="uppercase text-micro font-bold">{v || '—'}</Badge>
     },
     { 
       key: 'year', 
@@ -169,7 +169,7 @@ export default function CarsPage() {
       align: 'center' as const, 
       sortable: true,
       render: (v: number) => (
-        <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase font-bold text-gray-400">
+        <div className="flex items-center justify-center gap-1.5 text-eyebrow uppercase font-bold text-gray-400">
           <Calendar size={12} />
           {v}
         </div>
@@ -186,7 +186,7 @@ export default function CarsPage() {
       label: t('status'), 
       align: 'center' as const,
       render: (v: boolean) => (
-        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-micro tracking-widest font-bold">
           {v ? t('active') : t('inactive')}
         </Badge>
       ),
@@ -231,7 +231,7 @@ export default function CarsPage() {
       {isAuthenticated && !isAdmin && (
         <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
           <ShieldAlert size={20} className="flex-shrink-0" />
-          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+          <p className="text-eyebrow uppercase font-bold tracking-widest">{t('no_permission')}</p>
         </div>
       )}
 
@@ -274,19 +274,19 @@ export default function CarsPage() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[700px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-3xl p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingCar ? t('edit_model') : t('add_new_model')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingCar ? t('update_model_info') : t('add_model_subtitle')}
             </DialogDescription>
           </DialogHeader>
           
-          <form onSubmit={handleSave} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+          <form onSubmit={handleSave} className="p-8 space-y-6 max-h-dialog-scroll-lg overflow-y-auto">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_name')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_name')} *</Label>
               <div className="relative">
                 <Type size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -301,17 +301,17 @@ export default function CarsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_series')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_series')} *</Label>
                 <Select
                   value={formData.seriesId?.toString() || ''}
                   onValueChange={(val) => setFormData({ ...formData, seriesId: parseInt(val) })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue placeholder={t('select_series')} />
                   </SelectTrigger>
                   <SelectContent>
                     {seriesList.map((s) => (
-                      <SelectItem key={s.id} value={s.id.toString()} className="uppercase font-bold text-[10px]">
+                      <SelectItem key={s.id} value={s.id.toString()} className="uppercase font-bold text-eyebrow">
                         {s.name}
                       </SelectItem>
                     ))}
@@ -320,17 +320,17 @@ export default function CarsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Body Type *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Body Type *</Label>
                 <Select
                   value={formData.bodyTypeId?.toString() || ''}
                   onValueChange={(val) => setFormData({ ...formData, bodyTypeId: parseInt(val) })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue placeholder="Select body type" />
                   </SelectTrigger>
                   <SelectContent>
                     {bodyTypes.map((b) => (
-                      <SelectItem key={b.id} value={b.id.toString()} className="uppercase font-bold text-[10px]">
+                      <SelectItem key={b.id} value={b.id.toString()} className="uppercase font-bold text-eyebrow">
                         {b.name}
                       </SelectItem>
                     ))}
@@ -341,7 +341,7 @@ export default function CarsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_year')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_year')} *</Label>
                 <div className="relative">
                   <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -355,7 +355,7 @@ export default function CarsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_price')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_price')} *</Label>
                 <div className="relative">
                   <DollarSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -372,32 +372,32 @@ export default function CarsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_fuel_type')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_fuel_type')}</Label>
                 <div className="relative">
                   <Fuel size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
                     value={formData.fuelType}
                     onChange={(e) => setFormData({ ...formData, fuelType: e.target.value })}
-                    className="pl-9 uppercase font-bold h-11 text-[10px]"
+                    className="pl-9 uppercase font-bold h-11 text-eyebrow"
                   />
                 </div>
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_transmission')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_transmission')}</Label>
                 <div className="relative">
                   <Settings size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
                     value={formData.transmission}
                     onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
-                    className="pl-9 uppercase font-bold h-11 text-[10px]"
+                    className="pl-9 uppercase font-bold h-11 text-eyebrow"
                   />
                 </div>
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_seats')}</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_seats')}</Label>
               <div className="relative">
                 <Users size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
@@ -410,7 +410,7 @@ export default function CarsPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('model_description')}</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('model_description')}</Label>
               <Input
                 value={formData.shortDescription}
                 onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
@@ -422,7 +422,7 @@ export default function CarsPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-12 italic italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-12 italic italic font-black shadow-lg">
                 {editingCar ? t('update') : t('create')}
               </Button>
             </DialogFooter>

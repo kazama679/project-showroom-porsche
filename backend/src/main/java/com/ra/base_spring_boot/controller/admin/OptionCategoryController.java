@@ -1,6 +1,7 @@
 package com.ra.base_spring_boot.controller.admin;
 
 import com.ra.base_spring_boot.dto.response.ResponseWrapper;
+import com.ra.base_spring_boot.dto.response.PageResponse;
 import com.ra.base_spring_boot.dto.request.FormOptionCategory;
 import com.ra.base_spring_boot.dto.response.OptionCategoryResponseDTO;
 import com.ra.base_spring_boot.service.IOptionCategoryService;
@@ -39,7 +40,7 @@ public class OptionCategoryController
                 ResponseWrapper.builder()
                         .status(HttpStatus.OK)
                         .code(200)
-                        .data(categories)
+                        .data(PageResponse.from(categories))
                         .build()
         );
     }

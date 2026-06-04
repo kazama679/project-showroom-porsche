@@ -214,7 +214,7 @@ export default function UsersPage() {
       key: 'role',
       label: t('role'),
       render: (val: string) => (
-        <Badge variant="outline" className="uppercase text-[9px] tracking-widest font-bold border-gray-200 dark:border-neutral-800">
+        <Badge variant="outline" className="uppercase text-micro tracking-widest font-bold border-gray-200 dark:border-neutral-800">
           {val}
         </Badge>
       )
@@ -224,7 +224,7 @@ export default function UsersPage() {
       label: t('join_date'),
       sortable: true,
       render: (v: string) => (
-        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-gray-400">
+        <div className="flex items-center gap-1.5 text-eyebrow uppercase font-bold text-gray-400">
           <Calendar size={12} />
           {v}
         </div>
@@ -235,7 +235,7 @@ export default function UsersPage() {
       label: t('status'),
       align: 'center' as const,
       render: (val: string) => (
-        <Badge variant={val === 'active' ? 'success' : 'destructive'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={val === 'active' ? 'success' : 'destructive'} className="uppercase text-micro tracking-widest font-bold">
           {val}
         </Badge>
       ),
@@ -312,7 +312,7 @@ export default function UsersPage() {
 
       {/* User Form Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-modal">
           <DialogHeader className="border-b pb-4">
             <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">
               {editingUser ? t('edit_user') : t('add_new_user')}
@@ -324,7 +324,7 @@ export default function UsersPage() {
           
           <form onSubmit={handleSave} className="space-y-6 py-6 font-porsche">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('full_name')} *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('full_name')} *</Label>
               <Input
                 placeholder={t('placeholder_fullname')}
                 value={formData.name}
@@ -336,7 +336,7 @@ export default function UsersPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('email_address')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('email_address')} *</Label>
                 <div className="relative">
                   <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -350,7 +350,7 @@ export default function UsersPage() {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('phone_number')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('phone_number')}</Label>
                 <div className="relative">
                   <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -366,34 +366,34 @@ export default function UsersPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('role')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('role')}</Label>
                 <Select
                   value={formData.role}
                   onValueChange={(val) => setFormData({ ...formData, role: val })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="customer" className="uppercase text-[10px] font-bold">{t('customer')}</SelectItem>
-                    <SelectItem value="staff" className="uppercase text-[10px] font-bold">{t('staff')}</SelectItem>
-                    <SelectItem value="admin" className="uppercase text-[10px] font-bold">{t('admin')}</SelectItem>
+                    <SelectItem value="customer" className="uppercase text-eyebrow font-bold">{t('customer')}</SelectItem>
+                    <SelectItem value="staff" className="uppercase text-eyebrow font-bold">{t('staff')}</SelectItem>
+                    <SelectItem value="admin" className="uppercase text-eyebrow font-bold">{t('admin')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('status')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('status')}</Label>
                 <Select
                   value={formData.status}
                   onValueChange={(val: any) => setFormData({ ...formData, status: val })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active" className="uppercase text-[10px] font-bold text-green-600">{t('active')}</SelectItem>
-                    <SelectItem value="inactive" className="uppercase text-[10px] font-bold text-red-600">{t('inactive')}</SelectItem>
+                    <SelectItem value="active" className="uppercase text-eyebrow font-bold text-green-600">{t('active')}</SelectItem>
+                    <SelectItem value="inactive" className="uppercase text-eyebrow font-bold text-red-600">{t('inactive')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -488,7 +488,18 @@
     "welcome": "Welcome",
     "services": "Services",
     "logout": "Logout",
-    "logging_out": "Logging out..."
+    "logging_out": "Logging out...",
+    "sell_car": "Sell Car",
+    "experience": "Experience",
+    "find_dealer": "Find a Dealer",
+    "make_payment": "Make a Payment",
+    "my_porsche_app": "My Porsche App",
+    "messages": "Messages",
+    "saved_searches": "Saved Searches",
+    "connect_services": "Connect Services",
+    "bookings_orders": "Bookings and Orders",
+    "contact_support": "Contact Support",
+    "privacy": "Privacy"
   },
   "accountSettings": {
     "title": "Account Settings",

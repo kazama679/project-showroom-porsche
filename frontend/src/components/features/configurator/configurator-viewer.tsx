@@ -12,7 +12,6 @@ import { useTranslations } from 'next-intl'
 import { GalleryImage } from '@/utils/configurator-data'
 import type { ConfigOption } from '@/utils/configurator-data'
 import { CarModel3DViewer } from '@/components/features/configurator/car-model-3d-viewer'
-import { Porsche3DStream } from '@/components/features/configurator/porsche-3d-stream'
 
 type ConfiguratorViewerProps = {
   images: GalleryImage[]
@@ -21,7 +20,6 @@ type ConfiguratorViewerProps = {
   modelName: string
   year: number
   onOpen360?: () => void
-  porscheModelCode?: string | null
   local3dModelUrl?: string | null
   selectedPaintOption?: ConfigOption
   selectedWheelOption?: ConfigOption
@@ -34,7 +32,6 @@ export function ConfiguratorViewer({
   modelName,
   year,
   onOpen360,
-  porscheModelCode,
   local3dModelUrl,
   selectedPaintOption,
   selectedWheelOption,
@@ -44,7 +41,7 @@ export function ConfiguratorViewer({
   const activeImage = images[activeIndex] ?? images[0]
   const canScrollLeft = activeIndex > 0
   const canScrollRight = activeIndex < images.length - 1
-  const is3DEnabled = Boolean(local3dModelUrl || porscheModelCode)
+  const is3DEnabled = Boolean(local3dModelUrl)
   const isShowing3D = is3DEnabled && show3DModel
 
   useEffect(() => {
@@ -55,7 +52,7 @@ export function ConfiguratorViewer({
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-start justify-between px-1 pb-4">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-neutral-500">
+          <p className="text-eyebrow uppercase tracking-porsche text-neutral-500">
             {t('porscheConfigurator')}
           </p>
           <h1 className="mt-1 text-3xl font-light text-near-black md:text-4xl">{modelName}</h1>
@@ -63,20 +60,16 @@ export function ConfiguratorViewer({
         </div>
       </div>
 
-      <div className="group relative flex-1 overflow-hidden rounded-lg border border-neutral-100 bg-gradient-to-b from-gray-50 to-white min-h-[360px] md:min-h-[560px]">
-        {isShowing3D ? (
-          local3dModelUrl ? (
-            <CarModel3DViewer
-              modelUrl={local3dModelUrl}
-              paintColorHex={selectedPaintOption?.colorHex || selectedPaintOption?.color}
-              paintMaterialTarget={selectedPaintOption?.materialTarget}
-              wheelMeshName={selectedWheelOption?.meshName}
-              wheelVariantKey={selectedWheelOption?.meshName || selectedWheelOption?.name}
-              className="absolute inset-0"
-            />
-          ) : (
-            <Porsche3DStream modelCode={porscheModelCode as string} className="absolute inset-0" />
-          )
+      <div className="group relative min-h-viewer-mobile flex-1 overflow-hidden rounded-lg border border-neutral-100 bg-gradient-to-b from-gray-50 to-white md:min-h-viewer-desktop">
+        {isShowing3D && local3dModelUrl ? (
+          <CarModel3DViewer
+            modelUrl={local3dModelUrl}
+            paintColorHex={selectedPaintOption?.colorHex || selectedPaintOption?.color}
+            paintMaterialTarget={selectedPaintOption?.materialTarget}
+            wheelMeshName={selectedWheelOption?.meshName}
+            wheelVariantKey={selectedWheelOption?.meshName || selectedWheelOption?.name}
+            className="absolute inset-0"
+          />
         ) : (
           <Image
             src={activeImage.src}

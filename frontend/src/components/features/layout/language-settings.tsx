@@ -45,7 +45,7 @@ export function LanguageSettings() {
           <Badge variant="brand" className="h-6 w-6 rounded-none p-0 flex items-center justify-center">
             <Globe size={12} />
           </Badge>
-          <h2 className="uppercase tracking-[0.2em] text-xs font-bold text-gray-400">
+          <h2 className="uppercase tracking-porsche-wide text-xs font-bold text-gray-400">
             {tAdmin('select_language') || 'Select Regional Language Settings'}
           </h2>
         </div>
@@ -77,14 +77,14 @@ export function LanguageSettings() {
                     }`}>
                       {lang.label}
                     </h3>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.1em] text-gray-400 mt-1">
+                    <p className="text-eyebrow uppercase font-bold tracking-form-label text-gray-400 mt-1">
                       {lang.description}
                     </p>
                   </div>
                 </div>
 
-                <div className={`mt-8 flex items-center gap-2 text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 ${
-                  isSelected ? 'text-brand-red' : 'text-transparent group-hover:text-near-black dark:group-hover:text-white translate-x-[-10px] group-hover:translate-x-0'
+                <div className={`mt-8 flex items-center gap-2 text-eyebrow uppercase font-bold tracking-porsche-wide transition-all duration-500 ${
+                  isSelected ? 'text-brand-red' : 'text-transparent group-hover:text-near-black dark:group-hover:text-white -translate-x-2.5 group-hover:translate-x-0'
                 }`}>
                   {isSelected ? tAdmin('currently_selected') || 'Currently Selected' : tAdmin('switch_to') || 'Switch to Language'}
                   <ChevronRight size={14} />
@@ -101,7 +101,7 @@ export function LanguageSettings() {
           <CardContent className="p-8 space-y-4">
             <div className="flex items-center gap-2 text-brand-red">
               <Info size={16} />
-              <h3 className="uppercase tracking-widest text-[10px] font-bold">
+              <h3 className="uppercase tracking-widest text-eyebrow font-bold">
                 {locale === 'vi' ? 'Thông tin' : 'Information'}
               </h3>
             </div>
@@ -122,15 +122,15 @@ export function LanguageSettings() {
 
         <div className="p-8 border border-light-gray-surface dark:border-neutral-800 flex flex-col justify-center gap-6">
           <div className="space-y-1">
-            <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400">
+            <p className="text-eyebrow uppercase font-bold tracking-widest text-gray-400">
               {locale === 'vi' ? 'Ngôn ngữ hiện tại' : 'Current Language'}
             </p>
             <p className="text-4xl font-black italic uppercase tracking-tighter text-near-black dark:text-white">
               {locale === 'vi' ? 'Tiếng Việt' : 'English'}
             </p>
           </div>
-          <div className="h-[2px] w-12 bg-brand-red" />
-          <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400 leading-loose">
+          <div className="h-px w-12 bg-brand-red" />
+          <p className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400 leading-loose">
             {locale === 'vi' 
               ? 'Trải nghiệm cá nhân hóa theo vùng lãnh thổ của bạn.' 
               : 'Personalized experience based on your regional settings.'}

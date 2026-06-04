@@ -82,13 +82,13 @@ function InlineField({ label, value, onSave, inputType = 'text', placeholder }: 
             <button
               onClick={handleSave}
               disabled={saving}
-              className="text-xs font-light tracking-[0.1em] text-black underline hover:no-underline disabled:opacity-50"
+              className="text-xs font-light tracking-form-label text-black underline hover:no-underline disabled:opacity-50"
             >
               {saving ? '...' : 'Lưu'}
             </button>
             <button
               onClick={() => { setDraft(value); setEditing(false) }}
-              className="text-xs font-light tracking-[0.1em] text-gray-500 hover:text-black"
+              className="text-xs font-light tracking-form-label text-gray-500 hover:text-black"
             >
               Hủy
             </button>
@@ -103,7 +103,7 @@ function InlineField({ label, value, onSave, inputType = 'text', placeholder }: 
           className="flex items-center gap-1.5 text-xs font-light text-gray-500 hover:text-black transition-colors mt-1"
         >
           {isEmpty ? <Plus size={13} /> : <Edit2 size={13} />}
-          <span className="tracking-[0.08em]">{isEmpty ? `Thêm ${label.toLowerCase()}` : 'Chỉnh sửa'}</span>
+          <span className="tracking-porsche-tight">{isEmpty ? `Thêm ${label.toLowerCase()}` : 'Chỉnh sửa'}</span>
         </button>
       )}
     </div>
@@ -207,7 +207,7 @@ function AddressAutocompleteField({ label, value, placeholder, onSave }: Address
               </div>
               <button
                 onClick={() => { setQuery(value); setEditing(false); setSuggestions([]) }}
-                className="text-xs font-light tracking-[0.1em] text-gray-500 hover:text-black shrink-0"
+                className="text-xs font-light tracking-form-label text-gray-500 hover:text-black shrink-0"
               >
                 Hủy
               </button>
@@ -247,7 +247,7 @@ function AddressAutocompleteField({ label, value, placeholder, onSave }: Address
           className="flex items-center gap-1.5 text-xs font-light text-gray-500 hover:text-black transition-colors mt-1 shrink-0"
         >
           {isEmpty ? <Plus size={13} /> : <Edit2 size={13} />}
-          <span className="tracking-[0.08em]">{isEmpty ? 'Thêm địa chỉ' : 'Chỉnh sửa'}</span>
+          <span className="tracking-porsche-tight">{isEmpty ? 'Thêm địa chỉ' : 'Chỉnh sửa'}</span>
         </button>
       )}
     </div>
@@ -270,7 +270,7 @@ function Accordion({ title, open, onToggle, children }: AccordionProps) {
         className="w-full flex items-center justify-between py-6 hover:bg-gray-50/50 transition-colors text-left group"
         aria-expanded={open}
       >
-        <h3 className="text-base font-light tracking-[0.04em] group-hover:text-gray-700 transition-colors">{title}</h3>
+        <h3 className="text-base font-light tracking-wide group-hover:text-gray-700 transition-colors">{title}</h3>
         <span className="text-gray-400 group-hover:text-gray-600 transition-colors">
           {open ? <Minus size={20} /> : <Plus size={20} />}
         </span>
@@ -466,7 +466,7 @@ export default function AccountSettings() {
               key={tab.id}
               id={`tab-${tab.id}`}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`pb-4 px-1 mr-8 font-light text-sm tracking-[0.06em] border-b-2 transition-all whitespace-nowrap ${
+              className={`pb-4 px-1 mr-8 font-light text-sm tracking-wider border-b-2 transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-black text-black'
                   : 'border-transparent text-gray-400 hover:text-gray-700'
@@ -484,7 +484,7 @@ export default function AccountSettings() {
             <div className="bg-gray-50 border border-gray-100 rounded-sm p-8 md:p-10">
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
                 <div className="flex-1">
-                  <p className="text-xs text-gray-400 font-light tracking-[0.12em] uppercase mb-2">Hoàn thiện hồ sơ Porsche của bạn</p>
+                  <p className="text-xs text-gray-400 font-light tracking-section-label uppercase mb-2">Hoàn thiện hồ sơ Porsche của bạn</p>
                   <h2 className="text-2xl md:text-3xl font-extralight mb-3 leading-snug">Giành chiến thắng trong cuộc đua dữ liệu.</h2>
                   <p className="text-gray-500 font-light text-sm leading-relaxed max-w-md">Bạn sắp hoàn tất rồi. Hãy điền đầy đủ để chúng tôi phục vụ bạn tốt hơn.</p>
                 </div>
@@ -511,7 +511,7 @@ export default function AccountSettings() {
                         : <Plus size={10} className="text-gray-400" strokeWidth={2} />
                       }
                     </div>
-                    <span className={`text-xs font-light tracking-[0.04em] ${item.done ? 'text-gray-700' : 'text-gray-400'}`}>
+                    <span className={`text-xs font-light tracking-wide ${item.done ? 'text-gray-700' : 'text-gray-400'}`}>
                       {item.key}
                     </span>
                   </div>
@@ -521,7 +521,7 @@ export default function AccountSettings() {
               {completionPercent < 100 && (
                 <button
                   onClick={() => toggleSection('name')}
-                  className="mt-8 px-6 py-3 bg-black text-white text-xs font-light tracking-[1.5px] uppercase hover:bg-gray-900 transition-colors rounded-sm"
+                  className="mt-8 px-6 py-3 bg-black text-white text-xs font-light tracking-button uppercase hover:bg-gray-900 transition-colors rounded-sm"
                 >
                   Hoàn tất hồ sơ của bạn
                 </button>
@@ -555,7 +555,7 @@ export default function AccountSettings() {
               <Accordion title="Địa chỉ email" open={expandedSections.email} onToggle={() => toggleSection('email')}>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-xs text-gray-400 font-light tracking-[0.12em] uppercase mb-3">Địa chỉ email ưa thích</p>
+                    <p className="text-xs text-gray-400 font-light tracking-section-label uppercase mb-3">Địa chỉ email ưa thích</p>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
                         <Lock size={14} className="text-gray-500" />
@@ -618,7 +618,7 @@ export default function AccountSettings() {
           <div className="max-w-xl space-y-10">
             {/* Email Section */}
             <div className="border-b border-gray-200 pb-8">
-              <h3 className="text-base font-light tracking-[0.04em] mb-5">Porsche ID (Email)</h3>
+              <h3 className="text-base font-light tracking-wide mb-5">Porsche ID (Email)</h3>
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-sm">
                 <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center shrink-0">
                   <Lock size={14} className="text-gray-600" />
@@ -635,11 +635,11 @@ export default function AccountSettings() {
 
             {/* Change Password */}
             <div>
-              <h3 className="text-base font-light tracking-[0.04em] mb-6">Đổi mật khẩu</h3>
+              <h3 className="text-base font-light tracking-wide mb-6">Đổi mật khẩu</h3>
               <form onSubmit={handleChangePassword} className="space-y-5">
                 {/* Current Password */}
                 <div>
-                  <label className="block text-xs text-gray-400 font-light tracking-[0.12em] uppercase mb-2">
+                  <label className="block text-xs text-gray-400 font-light tracking-section-label uppercase mb-2">
                     Mật khẩu hiện tại
                   </label>
                   <div className="relative">
@@ -664,7 +664,7 @@ export default function AccountSettings() {
 
                 {/* New Password */}
                 <div>
-                  <label className="block text-xs text-gray-400 font-light tracking-[0.12em] uppercase mb-2">
+                  <label className="block text-xs text-gray-400 font-light tracking-section-label uppercase mb-2">
                     Mật khẩu mới
                   </label>
                   <div className="relative">
@@ -693,7 +693,7 @@ export default function AccountSettings() {
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-xs text-gray-400 font-light tracking-[0.12em] uppercase mb-2">
+                  <label className="block text-xs text-gray-400 font-light tracking-section-label uppercase mb-2">
                     Xác nhận mật khẩu mới
                   </label>
                   <div className="relative">
@@ -724,7 +724,7 @@ export default function AccountSettings() {
                     id="btn-change-password"
                     type="submit"
                     disabled={pwSaving || pwForm.newPassword !== pwForm.confirmPassword}
-                    className="px-8 py-3 bg-black text-white text-xs font-light tracking-[1.5px] uppercase hover:bg-gray-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed rounded-sm"
+                    className="px-8 py-3 bg-black text-white text-xs font-light tracking-button uppercase hover:bg-gray-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed rounded-sm"
                   >
                     {pwSaving ? 'Đang đổi...' : 'Đổi mật khẩu'}
                   </button>

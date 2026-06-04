@@ -254,15 +254,15 @@ function ModelsContent() {
       {/* Header */}
       <SiteHeader logoHref="/" />
 
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-16">
+      <div className="max-w-compare mx-auto px-6 md:px-12 py-16">
         {/* Page Title & Load Build */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-          <h2 className="text-[44px] leading-tight font-normal text-black tracking-tight">
+          <h2 className="text-display-md leading-tight font-normal text-black tracking-tight">
             Model overview
           </h2>
           <div className="flex flex-col items-end gap-2.5">
-            <span className="text-[14px] text-gray-500 font-normal">You already have a build?</span>
-            <button className="cursor-pointer px-8 py-3.5 bg-black text-white font-medium text-[14px] rounded-[8px] hover:bg-gray-900 transition-all duration-300">
+            <span className="text-sm text-gray-500 font-normal">You already have a build?</span>
+            <button className="cursor-pointer px-8 py-3.5 bg-black text-white font-medium text-sm rounded-control hover:bg-gray-900 transition-all duration-300">
               Load saved build
             </button>
           </div>
@@ -275,7 +275,7 @@ function ModelsContent() {
               
               {/* Model Series */}
               <div className="pb-6">
-                <h3 className="text-black font-bold text-[15px] mb-4 tracking-wide uppercase">
+                <h3 className="text-black font-bold text-body-sm mb-4 tracking-wide uppercase">
                   Model series
                 </h3>
                 <div className="space-y-3.5">
@@ -284,17 +284,17 @@ function ModelsContent() {
                     className="cursor-pointer flex items-center gap-3.5 w-full group text-left"
                   >
                     <div
-                      className={`w-[22px] h-[22px] rounded-full border flex items-center justify-center transition-all shrink-0 ${
+                      className={`w-check h-check rounded-full border flex items-center justify-center transition-all shrink-0 ${
                         selectedSeriesId === null
                           ? 'border-black'
                           : 'border-gray-300 group-hover:border-black'
                       }`}
                     >
                       {selectedSeriesId === null && (
-                        <div className="w-[10px] h-[10px] rounded-full bg-black" />
+                        <div className="w-dot h-dot rounded-full bg-black" />
                       )}
                     </div>
-                    <span className={`text-[15px] transition-colors ${selectedSeriesId === null ? 'font-bold text-black' : 'font-normal text-gray-700 group-hover:text-black'}`}>
+                    <span className={`text-body-sm transition-colors ${selectedSeriesId === null ? 'font-bold text-black' : 'font-normal text-gray-700 group-hover:text-black'}`}>
                       All <span className="text-mid-gray">({allModels.length})</span>
                     </span>
                   </button>
@@ -309,17 +309,17 @@ function ModelsContent() {
                         className="cursor-pointer flex items-center gap-3.5 w-full group text-left"
                       >
                         <div
-                          className={`w-[22px] h-[22px] rounded-full border flex items-center justify-center transition-all shrink-0 ${
+                          className={`w-check h-check rounded-full border flex items-center justify-center transition-all shrink-0 ${
                             isSelected
                               ? 'border-black'
                               : 'border-gray-300 group-hover:border-black'
                           }`}
                         >
                           {isSelected && (
-                            <div className="w-[10px] h-[10px] rounded-full bg-black" />
+                            <div className="w-dot h-dot rounded-full bg-black" />
                           )}
                         </div>
-                        <span className={`text-[15px] transition-colors ${isSelected ? 'font-bold text-black' : 'font-normal text-gray-700 group-hover:text-black'}`}>
+                        <span className={`text-body-sm transition-colors ${isSelected ? 'font-bold text-black' : 'font-normal text-gray-700 group-hover:text-black'}`}>
                           {series.name} <span className="text-mid-gray">({count})</span>
                         </span>
                       </button>
@@ -334,7 +334,7 @@ function ModelsContent() {
                   onClick={() => toggleFilter('body')}
                   className="flex items-center justify-between w-full mb-4 group"
                 >
-                  <h4 className="text-black font-bold text-[15px] uppercase tracking-wide">
+                  <h4 className="text-black font-bold text-body-sm uppercase tracking-wide">
                     Body Design
                   </h4>
                   <ChevronUp
@@ -348,7 +348,7 @@ function ModelsContent() {
                 {expandedFilters.includes('body') && (
                   <div className="space-y-3.5 pb-2">
                     {bodyDesignOptions.filter(opt => opt.count > 0).length === 0 ? (
-                      <div className="text-[14px] text-mid-gray font-normal italic">
+                      <div className="text-sm text-mid-gray font-normal italic">
                         No body designs available.
                       </div>
                     ) : (
@@ -382,7 +382,7 @@ function ModelsContent() {
                                 <polyline points="20 6 9 17 4 12"></polyline>
                               </svg>
                             </span>
-                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                            <span className="text-body-sm text-gray-700 font-normal group-hover:text-black transition-colors">
                               {opt.name} <span className="text-mid-gray">({opt.count})</span>
                             </span>
                           </label>
@@ -399,7 +399,7 @@ function ModelsContent() {
                   onClick={() => toggleFilter('seats')}
                   className="flex items-center justify-between w-full mb-4 group"
                 >
-                  <h4 className="text-black font-bold text-[15px] uppercase tracking-wide">
+                  <h4 className="text-black font-bold text-body-sm uppercase tracking-wide">
                     Seats
                   </h4>
                   <ChevronUp
@@ -444,7 +444,7 @@ function ModelsContent() {
                                 <polyline points="20 6 9 17 4 12"></polyline>
                               </svg>
                             </span>
-                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                            <span className="text-body-sm text-gray-700 font-normal group-hover:text-black transition-colors">
                               {seatOption} <span className="text-mid-gray">({count})</span>
                             </span>
                           </label>
@@ -460,7 +460,7 @@ function ModelsContent() {
                   onClick={() => toggleFilter('drive')}
                   className="flex items-center justify-between w-full mb-4 group"
                 >
-                  <h4 className="text-black font-bold text-[15px] uppercase tracking-wide">
+                  <h4 className="text-black font-bold text-body-sm uppercase tracking-wide">
                     Drive
                   </h4>
                   <ChevronUp
@@ -505,7 +505,7 @@ function ModelsContent() {
                                 <polyline points="20 6 9 17 4 12"></polyline>
                               </svg>
                             </span>
-                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                            <span className="text-body-sm text-gray-700 font-normal group-hover:text-black transition-colors">
                               {driveOption} <span className="text-mid-gray">({count})</span>
                             </span>
                           </label>
@@ -521,7 +521,7 @@ function ModelsContent() {
                   onClick={() => toggleFilter('fuel')}
                   className="flex items-center justify-between w-full mb-4 group"
                 >
-                  <h4 className="text-black font-bold text-[15px] uppercase tracking-wide">
+                  <h4 className="text-black font-bold text-body-sm uppercase tracking-wide">
                     Fueltype
                   </h4>
                   <ChevronUp
@@ -566,7 +566,7 @@ function ModelsContent() {
                                 <polyline points="20 6 9 17 4 12"></polyline>
                               </svg>
                             </span>
-                            <span className="text-[15px] text-gray-700 font-normal group-hover:text-black transition-colors">
+                            <span className="text-body-sm text-gray-700 font-normal group-hover:text-black transition-colors">
                               {fuelOption} <span className="text-mid-gray">({count})</span>
                             </span>
                           </label>
@@ -580,7 +580,7 @@ function ModelsContent() {
               <div className="pt-6">
                 <button
                   onClick={handleResetFilters}
-                  className="cursor-pointer w-full text-center py-3.5 bg-gray-100 text-black font-semibold text-[14px] rounded-[8px] hover:bg-gray-200 active:bg-gray-300 transition-all duration-300 select-none"
+                  className="cursor-pointer w-full text-center py-3.5 bg-gray-100 text-black font-semibold text-sm rounded-control hover:bg-gray-200 active:bg-gray-300 transition-all duration-300 select-none"
                 >
                   Reset Filter
                 </button>
@@ -594,12 +594,12 @@ function ModelsContent() {
             {/* Model Variants Section */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-10 pb-4 border-b border-gray-100">
-                <h3 className="text-[26px] font-bold text-black tracking-tight">
+                <h3 className="text-heading font-bold text-black tracking-tight">
                   {selectedSeriesId ? `${selectedSeriesName} Model variants` : 'All Model variants'}
                 </h3>
                 <button 
                   onClick={() => router.push('/compare-models')}
-                  className="cursor-pointer flex items-center gap-2.5 text-black hover:opacity-70 transition-opacity font-semibold text-[14px]"
+                  className="cursor-pointer flex items-center gap-2.5 text-black hover:opacity-70 transition-opacity font-semibold text-sm"
                 >
                   <span>↔</span>
                   <span>Compare model variants</span>
@@ -607,13 +607,13 @@ function ModelsContent() {
               </div>
 
               {/* Model Cards Grid with expanded gap to accommodate floating images */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-[150px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-model-card-row">
                 {loading ? (
-                  <div className="col-span-1 md:col-span-2 py-32 text-center text-gray-400 font-normal text-[16px] tracking-wide animate-pulse">
+                  <div className="col-span-1 md:col-span-2 py-32 text-center text-gray-400 font-normal text-base tracking-wide animate-pulse">
                     Loading models...
                   </div>
                 ) : filteredModels.length === 0 ? (
-                  <div className="col-span-1 md:col-span-2 py-32 text-center text-gray-400 font-normal text-[16px] tracking-wide bg-gray-50 rounded-[2rem] border border-dashed border-gray-200">
+                  <div className="col-span-1 md:col-span-2 py-32 text-center text-gray-400 font-normal text-base tracking-wide bg-gray-50 rounded-card-large border border-dashed border-gray-200">
                     No models found matching the active filters.
                   </div>
                 ) : (
@@ -626,11 +626,11 @@ function ModelsContent() {
                     return (
                       <div
                         key={model.id}
-                        className="relative mt-[80px] pt-[115px] rounded-[32px] bg-white border border-gray-100/80 flex flex-col h-full shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] transition-all duration-500 group overflow-visible"
+                        className="relative mt-model-card-offset pt-model-card-pad-top rounded-card-large bg-white border border-gray-100/80 flex flex-col h-full shadow-card-soft hover:shadow-card-hover transition-all duration-500 group overflow-visible"
                       >
                         {/* Floating absolute positioned car image with balanced shift */}
-                        <div className="absolute top-[-95px] left-1/2 -translate-x-1/2 w-[90%] max-w-[560px] h-[180px] z-10 pointer-events-none">
-                          <div className="w-full h-full relative transform group-hover:scale-[1.04] transition-transform duration-500 ease-out">
+                        <div className="absolute -top-model-image-float left-1/2 -translate-x-1/2 w-model-car max-w-model-image h-model-image z-10 pointer-events-none">
+                          <div className="w-full h-full relative transform group-hover:scale-105 transition-transform duration-500 ease-out">
                             <Image
                               src={model.imageUrl || 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600&h=400&fit=crop'}
                               alt={model.name}
@@ -646,36 +646,36 @@ function ModelsContent() {
                           
                           {/* Model Name & Price */}
                           <div className="mb-5">
-                            <h4 className="text-[22px] font-bold text-black mb-1 leading-tight tracking-tight">
+                            <h4 className="text-model-title font-bold text-black mb-1 leading-tight tracking-tight">
                               {model.name}
                             </h4>
-                            <p className="text-gray-800 text-[15px] font-medium">
-                              From $ {model.basePrice?.toLocaleString()}<span className="text-[11px] align-top font-bold">¹</span>
+                            <p className="text-gray-800 text-body-sm font-medium">
+                              From $ {model.basePrice?.toLocaleString()}<span className="text-micro-label align-top font-bold">¹</span>
                             </p>
                           </div>
 
                           {/* Dynamic Badges/Pills exactly like mockup */}
                           <div className="flex flex-wrap gap-2 mb-6">
                             {/* Year - Dark Badge */}
-                            <span className="px-3 py-1 bg-black text-white text-[12px] font-semibold rounded-full select-none">
+                            <span className="px-3 py-1 bg-black text-white text-xs font-semibold rounded-full select-none">
                               {model.year || '2026'}
                             </span>
                             
                             {/* Fuel type - Grey Badge */}
                             {model.fuelType && (
-                              <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-[12px] font-semibold rounded-full select-none">
+                              <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-xs font-semibold rounded-full select-none">
                                 {model.fuelType}
                               </span>
                             )}
                             
                             {/* Drive type - Grey Badge */}
-                            <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-[12px] font-semibold rounded-full select-none">
+                            <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-xs font-semibold rounded-full select-none">
                               {driveValue}
                             </span>
                             
                             {/* Transmission type - Grey Badge */}
                             {model.transmission && (
-                              <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-[12px] font-semibold rounded-full select-none truncate max-w-[120px]" title={model.transmission}>
+                              <span className="px-3 py-1 bg-neutral-100 text-gray-800 text-xs font-semibold rounded-full select-none truncate max-w-model-pill" title={model.transmission}>
                                 {model.transmission.includes('(') ? model.transmission.split(' ')[0] : model.transmission}
                               </span>
                             )}
@@ -685,30 +685,30 @@ function ModelsContent() {
                           <div className="mt-auto pt-6 border-t border-gray-100 space-y-5 mb-8">
                             {/* 1. Acceleration */}
                             <div className="flex flex-col">
-                              <span className="text-[26px] font-bold text-black leading-none tracking-tight">
+                              <span className="text-heading font-bold text-black leading-none tracking-tight">
                                 {accelerationValue}
                               </span>
-                              <span className="text-[12px] text-gray-500 font-semibold tracking-wide mt-1 select-none">
+                              <span className="text-xs text-gray-500 font-semibold tracking-wide mt-1 select-none">
                                 0 - 60 mph
                               </span>
                             </div>
 
                             {/* 2. Horsepower */}
                             <div className="flex flex-col">
-                              <span className="text-[26px] font-bold text-black leading-none tracking-tight">
+                              <span className="text-heading font-bold text-black leading-none tracking-tight">
                                 {horsepowerValue}
                               </span>
-                              <span className="text-[12px] text-gray-500 font-semibold tracking-wide mt-1 select-none">
+                              <span className="text-xs text-gray-500 font-semibold tracking-wide mt-1 select-none">
                                 Max. engine power
                               </span>
                             </div>
 
                             {/* 3. Top Track Speed */}
                             <div className="flex flex-col">
-                              <span className="text-[26px] font-bold text-black leading-none tracking-tight">
+                              <span className="text-heading font-bold text-black leading-none tracking-tight">
                                 {topSpeedValue}
                               </span>
-                              <span className="text-[12px] text-gray-500 font-semibold tracking-wide mt-1 select-none">
+                              <span className="text-xs text-gray-500 font-semibold tracking-wide mt-1 select-none">
                                 {model.name.toLowerCase().includes('taycan') ? 'Top track speed' : 'Top track speed (with summer tires)'}
                               </span>
                             </div>
@@ -716,24 +716,24 @@ function ModelsContent() {
 
                           {/* Footer and Interactive buttons */}
                           <div className="mt-auto">
-                            <p className="text-gray-400 text-[11px] font-normal leading-relaxed mb-4 select-none">
+                            <p className="text-gray-400 text-micro-label font-normal leading-relaxed mb-4 select-none">
                               ¹ Manufacturer&apos;s Suggested Retail Price. Excludes options; taxes; title; registration; delivery, processing and handling fee; dealer charges; potential tariffs. Dealer sets actual selling price.
                             </p>
                             
-                            <a href="#" className="text-black text-[13px] font-bold underline underline-offset-4 mb-6 block hover:text-gray-600 transition-colors select-none">
+                            <a href="#" className="text-black text-caption font-bold underline underline-offset-4 mb-6 block hover:text-gray-600 transition-colors select-none">
                               Technical data and standard equipment
                             </a>
 
                             <div className="flex gap-3.5 mb-5">
                               <button 
                                 onClick={() => router.push(`/models/${model.id}`)}
-                                className="cursor-pointer flex-1 bg-black text-white py-3.5 rounded-[8px] text-[14px] font-bold hover:bg-gray-800 active:scale-[0.98] transition-all select-none"
+                                className="cursor-pointer flex-1 bg-black text-white py-3.5 rounded-control text-sm font-bold hover:bg-gray-800 active:scale-95 transition-all select-none"
                               >
                                 Explore in Detail
                               </button>
                               <button 
                                 onClick={() => router.push(`/configurator/${model.id}`)}
-                                className="cursor-pointer flex-1 bg-gray-100 text-black py-3.5 rounded-[8px] text-[14px] font-bold hover:bg-gray-200 active:scale-[0.98] transition-all select-none"
+                                className="cursor-pointer flex-1 bg-gray-100 text-black py-3.5 rounded-control text-sm font-bold hover:bg-gray-200 active:scale-95 transition-all select-none"
                               >
                                 Configure
                               </button>
@@ -742,9 +742,9 @@ function ModelsContent() {
                             <label className="flex items-center gap-2.5 cursor-pointer group w-fit select-none">
                               <input 
                                 type="checkbox"
-                                className="w-[18px] h-[18px] rounded border border-gray-300 group-hover:border-black transition-colors shrink-0 cursor-pointer"
+                                className="w-check-sm h-check-sm rounded border border-gray-300 group-hover:border-black transition-colors shrink-0 cursor-pointer"
                               />
-                              <span className="text-[13px] text-gray-700 group-hover:text-black font-semibold transition-colors">Compare</span>
+                              <span className="text-caption text-gray-700 group-hover:text-black font-semibold transition-colors">Compare</span>
                             </label>
                           </div>
                         </div>

@@ -37,7 +37,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className={`bg-white dark:bg-dark-surface rounded-sm shadow-lg ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto`}
+        className={`bg-white dark:bg-dark-surface rounded-sm shadow-lg ${sizeClasses[size]} w-full max-h-modal-screen overflow-y-auto`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

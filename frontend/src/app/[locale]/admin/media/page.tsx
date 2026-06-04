@@ -150,7 +150,7 @@ export default function MediaPage() {
       key: 'id', 
       label: 'ID', 
       align: 'center' as const,
-      render: (v: number) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: number) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     { 
       key: 'imageUrl', 
@@ -169,7 +169,7 @@ export default function MediaPage() {
               />
             ) : <ImageIcon size={20} className="text-gray-400" />}
           </div>
-          <span className="truncate max-w-[150px] font-mono text-[10px] text-gray-400 group-hover:text-near-black dark:group-hover:text-white transition-colors">
+          <span className="truncate max-w-36 font-mono text-eyebrow text-gray-400 group-hover:text-near-black dark:group-hover:text-white transition-colors">
             {value?.split('/').pop() || '—'}
           </span>
         </div>
@@ -179,7 +179,7 @@ export default function MediaPage() {
       key: 'imageType', 
       label: t('media_image_type'), 
       sortable: true,
-      render: (v: string) => <Badge variant="secondary" className="uppercase text-[9px] font-bold tracking-widest">{v}</Badge>
+      render: (v: string) => <Badge variant="secondary" className="uppercase text-micro font-bold tracking-widest">{v}</Badge>
     },
     { 
       key: 'carModelName', 
@@ -196,7 +196,7 @@ export default function MediaPage() {
       label: t('media_is_default'), 
       align: 'center' as const,
       render: (v: boolean) => (
-        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={v ? 'success' : 'secondary'} className="uppercase text-micro tracking-widest font-bold">
           {v ? (
             <span className="flex items-center gap-1.5"><CheckCircle2 size={10} /> {tCommon('yes')}</span>
           ) : (
@@ -245,7 +245,7 @@ export default function MediaPage() {
       {isAuthenticated && !isAdmin && (
         <div className="flex items-center gap-3 p-4 rounded-none border border-brand-red/30 bg-brand-red/5 text-brand-red">
           <ShieldAlert size={20} className="flex-shrink-0" />
-          <p className="text-[10px] uppercase font-bold tracking-widest">{t('no_permission')}</p>
+          <p className="text-eyebrow uppercase font-bold tracking-widest">{t('no_permission')}</p>
         </div>
       )}
 
@@ -288,19 +288,19 @@ export default function MediaPage() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[550px] p-0 rounded-none border-none overflow-hidden font-porsche">
+        <DialogContent className="sm:max-w-xl p-0 rounded-none border-none overflow-hidden font-porsche">
           <DialogHeader className="p-8 border-b bg-gray-50/50 dark:bg-neutral-900/50">
             <DialogTitle className="uppercase tracking-tighter text-3xl font-black italic">
               {editingMedia ? t('edit_media') : t('add_new_media')}
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-[0.2em] text-gray-400">
+            <DialogDescription className="text-xs uppercase font-bold tracking-porsche-wide text-gray-400">
               {editingMedia ? t('update_media_info') : t('add_media_subtitle')}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleSave} className="p-8 space-y-6">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Image Asset *</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Image Asset *</Label>
               <div className="space-y-4">
                 {previewUrl && (
                   <div className="relative aspect-video w-full overflow-hidden bg-gray-100 dark:bg-neutral-900 border dark:border-neutral-800 p-2">
@@ -332,31 +332,31 @@ export default function MediaPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('media_image_type')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('media_image_type')} *</Label>
                 <div className="relative">
                   <Layers size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
                     placeholder={t('media_placeholder_type')}
                     value={formData.imageType}
                     onChange={(e) => setFormData({ ...formData, imageType: e.target.value })}
-                    className="pl-9 uppercase font-bold h-11 text-[10px]"
+                    className="pl-9 uppercase font-bold h-11 text-eyebrow"
                     required
                   />
                 </div>
               </div>
 
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('media_car_model')} *</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('media_car_model')} *</Label>
                 <Select
                   value={formData.carModelId?.toString() || ''}
                   onValueChange={(val) => setFormData({ ...formData, carModelId: parseInt(val) })}
                 >
-                  <SelectTrigger className="h-11 font-bold uppercase text-[10px]">
+                  <SelectTrigger className="h-11 font-bold uppercase text-eyebrow">
                     <SelectValue placeholder={t('select_model')} />
                   </SelectTrigger>
                   <SelectContent>
                     {modelsList.map((m) => (
-                      <SelectItem key={m.id} value={m.id.toString()} className="uppercase font-bold text-[10px]">
+                      <SelectItem key={m.id} value={m.id.toString()} className="uppercase font-bold text-eyebrow">
                         {m.name}
                       </SelectItem>
                     ))}
@@ -367,7 +367,7 @@ export default function MediaPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">{t('media_sort_order')}</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">{t('media_sort_order')}</Label>
                 <div className="relative">
                   <Settings2 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
@@ -396,7 +396,7 @@ export default function MediaPage() {
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} disabled={saving} className="uppercase text-xs font-bold tracking-widest h-12 flex-1">
                 {tCommon('cancel')}
               </Button>
-              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-[0.2em] h-12 px-12 italic italic font-black shadow-lg">
+              <Button type="submit" variant="brand" loading={saving} className="uppercase text-xs font-bold tracking-porsche-wide h-12 px-12 italic italic font-black shadow-lg">
                 {editingMedia ? t('update') : t('create')}
               </Button>
             </DialogFooter>

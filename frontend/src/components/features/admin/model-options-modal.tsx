@@ -243,7 +243,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
               ) : assigned.length === 0 ? (
                 <p className="p-4 text-sm text-mid-gray text-center">{labels.noAssigned}</p>
               ) : (
-                <ul className="divide-y divide-neutral-200 dark:divide-neutral-700 max-h-[240px] overflow-y-auto">
+                <ul className="divide-y divide-neutral-200 dark:divide-neutral-700 max-h-model-options-list overflow-y-auto">
                   {assigned.map((row) => (
                     <li
                       key={row.id}
@@ -387,7 +387,7 @@ export function ModelOptionsModal({ isOpen, model, onClose, onNotify, labels }: 
               ) : addResults.length === 0 ? (
                 <p className="p-4 text-sm text-mid-gray text-center">{labels.noResults}</p>
               ) : (
-                <ul className="divide-y divide-neutral-200 dark:divide-neutral-700 max-h-[280px] overflow-y-auto">
+                <ul className="divide-y divide-neutral-200 dark:divide-neutral-700 max-h-inventory-card-mobile overflow-y-auto">
                   {addResults.map((opt) => {
                     const isAssigned = assignedOptionIds.has(opt.id)
                     return (

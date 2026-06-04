@@ -181,7 +181,7 @@ export default function BannersPage() {
       label: 'ID',
       align: 'center' as const,
       sortable: true,
-      render: (v: any) => <span className="font-mono text-[10px] text-gray-400">#{v}</span>
+      render: (v: any) => <span className="font-mono text-eyebrow text-gray-400">#{v}</span>
     },
     {
       key: 'title',
@@ -228,7 +228,7 @@ export default function BannersPage() {
       label: t('status'),
       align: 'center' as const,
       render: (v: boolean) => (
-        <Badge variant={v ? 'success' : 'destructive'} className="uppercase text-[9px] tracking-widest font-bold">
+        <Badge variant={v ? 'success' : 'destructive'} className="uppercase text-micro tracking-widest font-bold">
           {v ? t('active') : t('inactive')}
         </Badge>
       ),
@@ -284,7 +284,7 @@ export default function BannersPage() {
             />
           </div>
           <Select value={searchType} onValueChange={setSearchType}>
-            <SelectTrigger className="w-[140px] h-10">
+            <SelectTrigger className="w-select-compact h-10">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
@@ -319,7 +319,7 @@ export default function BannersPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader className="border-b pb-4">
             <DialogTitle className="uppercase tracking-tighter text-2xl font-black italic">
               {editingBanner ? t('edit_banner') : t('add_banner')}
@@ -331,7 +331,7 @@ export default function BannersPage() {
 
           <div className="grid gap-6 py-6 font-porsche">
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Banner Title</Label>
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Banner Title</Label>
               <Input
                 placeholder="e.g. Cayenne S E-Hybrid."
                 value={formData.title}
@@ -342,7 +342,7 @@ export default function BannersPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Banner Type</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Banner Type</Label>
                 <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v as any })}>
                   <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -352,7 +352,7 @@ export default function BannersPage() {
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Target Car Model</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Target Car Model</Label>
                 <Select 
                   value={formData.carModelId?.toString() || ''} 
                   onValueChange={(v) => setFormData({ ...formData, carModelId: v ? parseInt(v) : null })}
@@ -368,7 +368,7 @@ export default function BannersPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">
+              <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">
                 {formData.type === 'HERO' ? 'Video Path / Stream URL' : 'Image URL'}
               </Label>
               <div className="relative">
@@ -391,7 +391,7 @@ export default function BannersPage() {
 
             <div className="grid grid-cols-2 gap-8 items-center">
               <div className="grid gap-2">
-                <Label className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-400">Display Order</Label>
+                <Label className="text-eyebrow uppercase font-bold tracking-porsche-wide text-gray-400">Display Order</Label>
                 <Input
                   type="number"
                   value={formData.displayOrder}
@@ -405,7 +405,7 @@ export default function BannersPage() {
                   checked={formData.isActive}
                   onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
                 />
-                <Label htmlFor="banner-active" className="text-[10px] uppercase font-bold tracking-[0.2em] cursor-pointer">
+                <Label htmlFor="banner-active" className="text-eyebrow uppercase font-bold tracking-porsche-wide cursor-pointer">
                   {formData.isActive ? 'Active' : 'Inactive'}
                 </Label>
               </div>

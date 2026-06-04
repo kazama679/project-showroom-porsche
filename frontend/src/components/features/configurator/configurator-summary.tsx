@@ -57,7 +57,7 @@ function EquipmentRow({
           />
         ) : (
           <div className="w-12 h-12 rounded-md border border-light-gray-surface bg-gray-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] text-neutral-400">—</span>
+            <span className="text-eyebrow text-neutral-400">—</span>
           </div>
         )}
         <div className="min-w-0">
@@ -112,7 +112,7 @@ export function ConfiguratorSummary({
       id="section-summary"
       className="bg-white border-t border-gray-200 pt-16 pb-32"
     >
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="mx-auto max-w-page px-4 md:px-8">
         <div className="mb-16 text-center">
           <p className="text-sm text-dark-gray font-light mb-2">
             {t("deliveryExperience")}
@@ -247,7 +247,7 @@ export function ConfiguratorSummary({
                 </div>
               </div>
 
-              <p className="text-[10px] text-neutral-400 font-light mt-6 leading-relaxed">
+              <p className="mt-6 text-eyebrow font-light leading-relaxed text-neutral-400">
                 * {MSRP_DISCLAIMER}
               </p>
             </div>

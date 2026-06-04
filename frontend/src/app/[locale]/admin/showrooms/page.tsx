@@ -259,7 +259,7 @@ export default function ShowroomsPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-modal">
           <DialogHeader>
             <DialogTitle>{editingShowroom ? 'Edit Showroom' : 'Add New Showroom'}</DialogTitle>
             <DialogDescription>

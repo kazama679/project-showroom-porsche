@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CarModelOptionServiceImpl implements ICarModelOptionService {
     private final ICarModelOptionRepository carModelOptionRepository;
     private final ICarModelRepository carModelRepository;
